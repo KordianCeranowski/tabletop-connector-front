@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">TableTop</string>
+    <string name="app_name">Tabletop Connector</string>
+    <string name="hint_nickname">Nickname</string>
+    <string name="hint_password">Password</string>
+
+    <!-- Buttons   -->
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_sign_up">Sign Up</string>
+
 </resources>
