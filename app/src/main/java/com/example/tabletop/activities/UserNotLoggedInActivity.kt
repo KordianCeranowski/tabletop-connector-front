@@ -1,10 +1,10 @@
 package com.example.tabletop.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.example.tabletop.R
+import com.example.tabletop.utils.Helpers.Companion.getClassName
+import com.example.tabletop.utils.Helpers.Companion.justStartActivity
 import kotlinx.android.synthetic.main.activity_user_not_logged_in.*
 
 class UserNotLoggedInActivity : AppCompatActivity() {
@@ -25,9 +25,10 @@ class UserNotLoggedInActivity : AppCompatActivity() {
         */
 
         btnGoToLoginActivity.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-                .also { Log.d("MainActivity", "Starting activity: SignInActivity") }
+            justStartActivity(LoginActivity::class)
+        }
+        btnGoToMainActivity.setOnClickListener {
+            justStartActivity(MainActivity::class)
         }
     }
 }

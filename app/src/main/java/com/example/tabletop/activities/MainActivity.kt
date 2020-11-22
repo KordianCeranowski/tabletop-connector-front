@@ -8,6 +8,7 @@ import com.example.tabletop.R
 import com.example.tabletop.repository.Repository
 import com.example.tabletop.viewmodels.MainViewModel
 import com.example.tabletop.viewmodels.MainViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_user_not_logged_in.*
 
 class MainActivity : AppCompatActivity() {
@@ -27,17 +28,20 @@ class MainActivity : AppCompatActivity() {
             if (response.isSuccessful) {
                 Log.d("Response", response.body()?.userId.toString())
                 Log.d("Response", response.body()?.id.toString())
-                textView.text = response.body()?.title!!
+                testTextView.text = response.body()?.title!!
                 Log.d("Response", response.body()?.title!!)
                 Log.d("Response", response.body()?.body!!)
             } else {
                 Log.d("Response", response.errorBody().toString())
-                textView.text = response.code().toString()
+                testTextView.text = response.code().toString()
             }
         })
 
-        //todo splash screen
-        //todo recycler view
-        //todo sidebar
+        /*
+        todo:
+          splash screen
+          recycler view
+          sidebar
+        */
     }
 }
