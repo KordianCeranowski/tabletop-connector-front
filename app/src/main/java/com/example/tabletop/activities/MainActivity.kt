@@ -3,28 +3,29 @@ package com.example.tabletop.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.ViewModelProvider
 import com.example.tabletop.R
-import com.example.tabletop.repository.Repository
-import com.example.tabletop.viewmodels.MainViewModel
-import com.example.tabletop.viewmodels.MainViewModelFactory
+import com.example.tabletop.repository.PostRepository
+import com.example.tabletop.utils.Helpers.viewModelOf
+import com.example.tabletop.viewmodels.PostViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_user_not_logged_in.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var postViewModel: PostViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+        // val viewModelFactory = AnyViewModelFactory(PostRepository())
+        // postViewModel = ViewModelProvider(this, viewModelFactory)
+        //     .get(PostViewModel::class.java)
 
-        viewModel.getPost()
-        viewModel.myResponse.observe(this, { response ->
+        postViewModel = viewModelOf(PostRepository()) as PostViewModel
+
+        postViewModel.getPost()
+
+        postViewModel.myResponse.observe(this, { response ->
             if (response.isSuccessful) {
                 Log.d("Response", response.body()?.userId.toString())
                 Log.d("Response", response.body()?.id.toString())
@@ -43,5 +44,7 @@ class MainActivity : AppCompatActivity() {
           recycler view
           sidebar
         */
+
+
     }
 }

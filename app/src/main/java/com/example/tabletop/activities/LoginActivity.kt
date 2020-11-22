@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.tabletop.R
+import com.example.tabletop.utils.Helpers.justStartActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -18,6 +19,8 @@ class LoginActivity : AppCompatActivity() {
             val stars = password.replace(".".toRegex(), "*")
             Log.d("SignInActivity",
                 "Nickname: $nickname | Password: $stars")
+
+           justStartActivity(MainActivity())
         }
     }
 }

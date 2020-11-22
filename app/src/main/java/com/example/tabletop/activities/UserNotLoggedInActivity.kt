@@ -3,8 +3,8 @@ package com.example.tabletop.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tabletop.R
-import com.example.tabletop.utils.Helpers.Companion.getClassName
-import com.example.tabletop.utils.Helpers.Companion.justStartActivity
+import com.example.tabletop.utils.Helpers.getClassName
+import com.example.tabletop.utils.Helpers.justStartActivity
 import kotlinx.android.synthetic.main.activity_user_not_logged_in.*
 
 class UserNotLoggedInActivity : AppCompatActivity() {
@@ -25,10 +25,15 @@ class UserNotLoggedInActivity : AppCompatActivity() {
         */
 
         btnGoToLoginActivity.setOnClickListener {
-            justStartActivity(LoginActivity::class)
+            justStartActivity(LoginActivity())
         }
+
+        btnGoToRegisterActivity.setOnClickListener {
+            justStartActivity(RegisterActivity())
+        }
+
         btnGoToMainActivity.setOnClickListener {
-            justStartActivity(MainActivity::class)
+            justStartActivity(MainActivity())
         }
     }
 }
