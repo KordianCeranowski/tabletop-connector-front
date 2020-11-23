@@ -17,15 +17,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // val viewModelFactory = AnyViewModelFactory(PostRepository())
-        // postViewModel = ViewModelProvider(this, viewModelFactory)
-        //     .get(PostViewModel::class.java)
-
         postViewModel = viewModelOf(PostRepository()) as PostViewModel
 
         postViewModel.getPost()
 
-        postViewModel.myResponse.observe(this, { response ->
+        postViewModel.response.observe(this, { response ->
             if (response.isSuccessful) {
                 Log.d("Response", response.body()?.userId.toString())
                 Log.d("Response", response.body()?.id.toString())

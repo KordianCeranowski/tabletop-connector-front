@@ -2,9 +2,9 @@ package com.example.tabletop.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.example.tabletop.R
 import com.example.tabletop.utils.Helpers.justStartActivity
+import com.example.tabletop.utils.Helpers.logIt
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -17,10 +17,12 @@ class LoginActivity : AppCompatActivity() {
             val nickname = etLoginNickname.text.toString()
             val password = etLoginPassword.text.toString()
             val stars = password.replace(".".toRegex(), "*")
-            Log.d("SignInActivity",
-                "Nickname: $nickname | Password: $stars")
+            logIt("Nickname: $nickname | Password: $stars")
 
-           justStartActivity(MainActivity())
+
+
+
+            justStartActivity(MainActivity())
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.tabletop.utils
 
 import android.content.Intent
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,16 @@ object Helpers {
         }
         return ViewModelProvider(this, ViewModelFactory(repository))
             .get(viewModel::class.java)
+    }
+
+    fun AppCompatActivity.logIt(msg: Any?, tag: String = this.getClassName()) {
+        Log.d(tag, msg.toString())
+    }
+
+    fun AppCompatActivity.logIt(vararg msgs: Any?, tag: String = this.getClassName()) {
+        msgs.forEach {
+            Log.d(tag, it.toString())
+        }
     }
 
     fun Any.getClassName(): String = this::class.simpleName as String
