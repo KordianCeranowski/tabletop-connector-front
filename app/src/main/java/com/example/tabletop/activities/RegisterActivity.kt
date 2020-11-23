@@ -37,11 +37,15 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var userViewModel: UserViewModel
 
+    private fun init() {
+        userViewModel = viewModelOf(UserRepository()) as UserViewModel
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        userViewModel = viewModelOf(UserRepository()) as UserViewModel
+        init()
 
         btnRegister.setOnClickListener {
             val email = etRegisterEmail.text.toString().trim()
