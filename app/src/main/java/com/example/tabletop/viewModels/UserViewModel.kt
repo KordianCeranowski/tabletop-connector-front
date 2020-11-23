@@ -16,12 +16,6 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     val respListOfUsers = MutableLiveData<Response<List<User>>>()
 
-    fun getUser(id: Int) {
-        viewModelScope.launch {
-            respUser.value = repository.getUser(id)
-        }
-    }
-
     fun getCustomUsers(sort: String, order: String) {
         viewModelScope.launch {
             respListOfUsers.value = repository.getCustomUsers(sort, order)
@@ -34,15 +28,33 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
-    fun register(registerRequest: RegisterRequest) {
+    fun save(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            respUser.value = repository.register(registerRequest)
+            respUser.value = repository.save(registerRequest)
         }
     }
 
     fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
             respUser.value = repository.login(loginRequest)
+        }
+    }
+
+    fun getUser(id: Int) {
+        viewModelScope.launch {
+            respUser.value = repository.getUser(id)
+        }
+    }
+
+    fun remove(id: Int) {
+        viewModelScope.launch {
+            respUser.value = repository.remove(id)
+        }
+    }
+
+    fun edit(id: Int, user: User) {
+        viewModelScope.launch {
+            respUser.value = repository.edit(id, user)
         }
     }
 }

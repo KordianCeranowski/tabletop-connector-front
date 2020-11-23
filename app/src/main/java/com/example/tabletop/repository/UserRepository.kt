@@ -7,8 +7,6 @@ import com.example.tabletop.model.User
 import retrofit2.Response
 
 class UserRepository : Repository() {
-    suspend fun getUser(id: Int): Response<User> = RetrofitInstance.userApi.getUser(id)
-
     suspend fun getCustomUsers(sort: String, order: String): Response<List<User>> {
         return RetrofitInstance.userApi.getCustomUsers(sort, order)
     }
@@ -17,11 +15,17 @@ class UserRepository : Repository() {
         return RetrofitInstance.userApi.getCustomUsers(options)
     }
 
-    suspend fun register(registerRequest: RegisterRequest): Response<User> {
-        return RetrofitInstance.userApi.register(registerRequest)
+    suspend fun save(registerRequest: RegisterRequest): Response<User> {
+        return RetrofitInstance.userApi.save(registerRequest)
     }
 
     suspend fun login(loginRequest: LoginRequest): Response<User> {
         return RetrofitInstance.userApi.login(loginRequest)
     }
+
+    suspend fun getUser(id: Int): Response<User> = RetrofitInstance.userApi.getUser(id)
+
+    suspend fun remove(id: Int): Response<User> = RetrofitInstance.userApi.remove(id)
+
+    suspend fun edit(id: Int, user: User): Response<User> = RetrofitInstance.userApi.edit(id, user)
 }

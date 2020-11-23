@@ -103,7 +103,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun createUser(registerRequest: RegisterRequest) {
-        userViewModel.register(registerRequest)
+        userViewModel.save(registerRequest)
         userViewModel.respUser.observe(this, { response ->
             if (response.isSuccessful) {
                 response.run {

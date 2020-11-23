@@ -15,14 +15,33 @@ interface UserApi {
     ): Response<List<User>>
 
     @GET("user")
-    suspend fun getCustomUsers(@QueryMap options: Map<String, String>): Response<List<User>>
-
-    @GET("user/{id}")
-    suspend fun getUser(@Path("id") id: Int): Response<User>
+    suspend fun getCustomUsers(
+        @QueryMap options: Map<String, String>
+    ): Response<List<User>>
 
     @POST("user")
-    suspend fun register(@Body registerRequest: RegisterRequest): Response<User>
+    suspend fun save(
+        @Body registerRequest: RegisterRequest
+    ): Response<User>
 
     @POST("login")
-    suspend fun login(@Body loginRequest: LoginRequest): Response<User>
+    suspend fun login(
+        @Body loginRequest: LoginRequest
+    ): Response<User>
+
+    @GET("user/{id}")
+    suspend fun getUser(
+        @Path("id") id: Int
+    ): Response<User>
+
+    @DELETE("user/{id}")
+    suspend fun remove(
+        @Path("id") id: Int
+    ): Response<User>
+
+    @PUT("user/{id}")
+    suspend fun edit(
+        @Path("id") id: Int,
+        @Body user: User
+    ): Response<User>
 }
