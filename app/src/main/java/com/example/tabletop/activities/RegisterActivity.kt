@@ -6,11 +6,10 @@ import android.util.Patterns.EMAIL_ADDRESS
 import android.widget.Toast
 import com.example.tabletop.R
 import com.example.tabletop.model.RegisterRequest
-import com.example.tabletop.model.User
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.utils.Helpers.logIt
 import com.example.tabletop.utils.Helpers.viewModelOf
-import com.example.tabletop.viewmodels.UserViewModel
+import com.example.tabletop.viewModels.UserViewModel
 import kotlinx.android.synthetic.main.activity_register.*
 import java.util.regex.Pattern
 import kotlin.Exception

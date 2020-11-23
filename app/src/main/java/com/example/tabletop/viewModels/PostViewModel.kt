@@ -1,4 +1,4 @@
-package com.example.tabletop.viewmodels
+package com.example.tabletop.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -6,7 +6,7 @@ import android.util.Log
 import com.example.tabletop.R
 import com.example.tabletop.repository.PostRepository
 import com.example.tabletop.utils.Helpers.viewModelOf
-import com.example.tabletop.viewmodels.PostViewModel
+import com.example.tabletop.viewModels.PostViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

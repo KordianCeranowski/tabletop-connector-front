@@ -1,4 +1,4 @@
-package com.example.tabletop.viewmodels
+package com.example.tabletop.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,9 +16,9 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     val respListOfUsers = MutableLiveData<Response<List<User>>>()
 
-    fun getUser(userId: Int) {
+    fun getUser(id: Int) {
         viewModelScope.launch {
-            respUser.value = repository.getUser(userId)
+            respUser.value = repository.getUser(id)
         }
     }
 

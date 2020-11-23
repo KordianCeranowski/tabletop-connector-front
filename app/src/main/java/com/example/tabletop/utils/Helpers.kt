@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.tabletop.repository.PostRepository
 import com.example.tabletop.repository.Repository
 import com.example.tabletop.repository.UserRepository
-import com.example.tabletop.viewmodels.ViewModelFactory
-import com.example.tabletop.viewmodels.PostViewModel
-import com.example.tabletop.viewmodels.UserViewModel
+import com.example.tabletop.viewModels.ViewModelFactory
+import com.example.tabletop.viewModels.PostViewModel
+import com.example.tabletop.viewModels.UserViewModel
 
 object Helpers {
     fun AppCompatActivity.justStartActivity(activity: AppCompatActivity) {
