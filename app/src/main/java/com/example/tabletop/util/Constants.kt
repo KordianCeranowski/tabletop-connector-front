@@ -14,4 +14,19 @@ object Constants {
 
     //EVENT API
     const val EVENT_API_ENDPOINT = "events"
+
+
+    enum class LogType {
+        INFO, ERROR, WARNING, SUCCESS
+    }
+
+    enum class Sort {
+        ID,
+        DESC;
+    }
+
+    enum class Order {
+        ASC,
+        DESC;
+    }
 }

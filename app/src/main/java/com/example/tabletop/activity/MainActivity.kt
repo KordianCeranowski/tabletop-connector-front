@@ -43,7 +43,5 @@ class MainActivity : AppCompatActivity() {
           recycler view
           sidebar
         */
-
-
     }
 }

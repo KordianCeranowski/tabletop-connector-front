@@ -7,7 +7,9 @@ import android.widget.Toast
 import com.example.tabletop.R
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.repository.UserRepository
+import com.example.tabletop.util.Helpers.logError
 import com.example.tabletop.util.Helpers.logIt
+import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_register.*
@@ -54,30 +56,36 @@ class RegisterActivity : AppCompatActivity() {
 
             var areFieldsValid = true
 
-            if (isFieldValid(email, EMAIL_ADDRESS)) {
+            if (!isFieldValid(email, EMAIL_ADDRESS)) {
                 areFieldsValid = false
+                logError("email: $email")
             }
-            if (isFieldValid(nickname, _NICKNAME)) {
+            if (!isFieldValid(nickname, _NICKNAME)) {
                 areFieldsValid = false
+                logError("nickname: $nickname")
             }
-            if (isFieldValid(password, _PASSWORD)) {
+            if (!isFieldValid(password, _PASSWORD)) {
                 areFieldsValid = false
+                logError("password: $password")
             }
             if (password.isEmpty() || confirmPassword != password) {
                 areFieldsValid = false
+                logError("confirmPassword: $confirmPassword")
                 etRegisterConfirmPassword.error = "Passwords do not match"
             } else {
                 etRegisterConfirmPassword.error = null
             }
             if (areFieldsValid) {
-                logIt("All fields are valid")
+                logError("All fields are valid")
                  // val registerRequest = RegisterRequest(email, nickname, password)
                  // registerUser(registerRequest)
+            } else {
+                showToast("Please correct invalid fields")
             }
         }
     }
 
-    private fun isFieldValid(field: String, pattern: Pattern, ): Boolean {
+    private fun isFieldValid(field: String, pattern: Pattern): Boolean {
         val editText = when (pattern) {
             EMAIL_ADDRESS -> etRegisterEmail
             _NICKNAME -> etRegisterNickname
