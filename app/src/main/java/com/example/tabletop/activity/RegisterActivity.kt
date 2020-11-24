@@ -2,11 +2,14 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Patterns.EMAIL_ADDRESS
+import android.util.Patterns
 import android.widget.Toast
 import com.example.tabletop.R
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.repository.UserRepository
+import com.example.tabletop.util.Constants.EMAIL_PATTERN
+import com.example.tabletop.util.Constants.NICKNAME_PATTERN
+import com.example.tabletop.util.Constants.PASSWORD_PATTERN
 import com.example.tabletop.util.Helpers.logError
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.showToast
@@ -18,28 +21,11 @@ import kotlin.Exception
 
 class RegisterActivity : AppCompatActivity() {
 
-    private val _NICKNAME: Pattern =
-        Pattern.compile(
-            "^" +
-                    "(?=.*[A-z])"+      // at least 1 letter
-                    ".{2,}" +           // at least 2 characters
-                    "$")
-
-    private val _PASSWORD: Pattern =
-        Pattern.compile(
-            "^" +
-                    "(?=.*[0-9])" +     // at least 1 digit
-                    "(?=.*[a-z])"+      // at least 1 lower case letter
-                    "(?=.*[A-Z])"+      // at least 1 upper case letter
-                    "(?=.*[@#$%^&+=])"+ // at least 1 special character
-                    "(?=\\S+$)"+        // now white spaces
-                    ".{8,}" +           // at least 8 characters
-                    "$")
 
     private lateinit var userViewModel: UserViewModel
 
     private fun init() {
-        userViewModel = viewModelOf(UserRepository()) as UserViewModel
+        userViewModel = viewModelOf(UserRepository) as UserViewModel
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,15 +42,15 @@ class RegisterActivity : AppCompatActivity() {
 
             var areFieldsValid = true
 
-            if (!isFieldValid(email, EMAIL_ADDRESS)) {
+            if (!(isFieldValid(email, EMAIL_PATTERN))) {
                 areFieldsValid = false
                 logError("email: $email")
             }
-            if (!isFieldValid(nickname, _NICKNAME)) {
+            if (!(isFieldValid(nickname, NICKNAME_PATTERN))) {
                 areFieldsValid = false
                 logError("nickname: $nickname")
             }
-            if (!isFieldValid(password, _PASSWORD)) {
+            if (!(isFieldValid(password, PASSWORD_PATTERN))) {
                 areFieldsValid = false
                 logError("password: $password")
             }
@@ -76,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
                 etRegisterConfirmPassword.error = null
             }
             if (areFieldsValid) {
-                logError("All fields are valid")
+                logIt("All fields are valid")
                  // val registerRequest = RegisterRequest(email, nickname, password)
                  // registerUser(registerRequest)
             } else {
@@ -86,18 +72,12 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun isFieldValid(field: String, pattern: Pattern): Boolean {
-        val editText = when (pattern) {
-            EMAIL_ADDRESS -> etRegisterEmail
-            _NICKNAME -> etRegisterNickname
-            _PASSWORD -> etRegisterPassword
+        val (editText, fieldName) = when (pattern) {
+            EMAIL_PATTERN -> etRegisterEmail to "email"
+            NICKNAME_PATTERN -> etRegisterNickname to "nickname"
+            PASSWORD_PATTERN -> etRegisterPassword to "password"
             else -> throw Exception("Invalid pattern")
         }
-        val fieldName = when (pattern) {
-            EMAIL_ADDRESS -> "email"
-            _NICKNAME -> "nickname"
-            else -> "password"
-        }
-
         // logIt("Checking $fieldName...")
 
         return if (field.isEmpty()) {
@@ -124,18 +104,20 @@ class RegisterActivity : AppCompatActivity() {
                     )
                 }
             } else {
-                Toast.makeText(this, response.code(), Toast.LENGTH_SHORT).show()
-                // if (!isEmailTaken()) {
-                //     etRegisterEmail.error = "Email is already taken"
-                // } else {
-                //     etRegisterEmail.error = null
-                // }
-                //
-                // if (!isNicknameTaken()) {
-                //     etRegisterNickname.error = "Nickname is already taken"
-                // } else {
-                //     etRegisterNickname.error = null
-                // }
+                showToast(response.code())
+                /*
+                if (!isEmailTaken()) {
+                    etRegisterEmail.error = "Email is already taken"
+                } else {
+                    etRegisterEmail.error = null
+                }
+
+                if (!isNicknameTaken()) {
+                    etRegisterNickname.error = "Nickname is already taken"
+                } else {
+                    etRegisterNickname.error = null
+                }
+                 */
             }
         })
     }

@@ -16,7 +16,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
 
     private fun init() {
-        userViewModel = viewModelOf(UserRepository()) as UserViewModel
+        userViewModel = viewModelOf(UserRepository) as UserViewModel
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

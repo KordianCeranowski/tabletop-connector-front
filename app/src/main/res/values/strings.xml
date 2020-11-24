@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">Tabletop Connector</string>
+
+    <!-- Validation -->
     <string name="hint_email">Email</string>
     <string name="hint_nickname">Nickname</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
 
-    <!-- Buttons   -->
-    <string name="btn_sign_in">Sign In</string>
-    <string name="btn_sign_up">Sign Up</string>
+    <!-- Buttons -->
+    <string name="btn_login">Sign In</string>
+    <string name="btn_register">Sign Up</string>
+
     <string name="lorem_ipsum">According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don\'t care what humans think is impossible.</string>
 
 </resources>

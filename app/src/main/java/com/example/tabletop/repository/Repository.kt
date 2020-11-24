@@ -1,3 +1,6 @@
 package com.example.tabletop.repository
 
-abstract class Repository
+sealed class Repository
+object UserRepository : Repository()
+object EventRepository : Repository()
+object MockRepository : Repository()

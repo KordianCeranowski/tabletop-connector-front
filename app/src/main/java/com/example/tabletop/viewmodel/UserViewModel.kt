@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tabletop.model.LoginRequest
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.model.User
-import com.example.tabletop.repository.UserRepository
+import com.example.tabletop.repository.*
 import kotlinx.coroutines.launch
 import retrofit2.Response
 

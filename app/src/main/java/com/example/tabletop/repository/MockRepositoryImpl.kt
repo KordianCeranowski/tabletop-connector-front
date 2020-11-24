@@ -4,6 +4,6 @@ import com.example.tabletop.api.RetrofitInstance
 import com.example.tabletop.model.Post
 import retrofit2.Response
 
-class MockRepository : Repository() {
-    suspend fun getPost(): Response<Post> = RetrofitInstance.mockApi.getPost()
+suspend fun MockRepository.getPost(): Response<Post> {
+    return RetrofitInstance.mockApi.getPost()
 }

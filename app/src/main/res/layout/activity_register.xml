@@ -41,7 +41,7 @@
         android:layout_width="103dp"
         android:layout_height="63dp"
         android:layout_marginTop="24dp"
-        android:text="@string/btn_sign_up"
+        android:text="@string/btn_register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

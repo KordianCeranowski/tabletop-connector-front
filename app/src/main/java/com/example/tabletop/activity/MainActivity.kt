@@ -2,12 +2,15 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.example.tabletop.R
 import com.example.tabletop.repository.MockRepository
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.MockViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.concurrent.schedule
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,9 +20,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mockViewModel = viewModelOf(MockRepository()) as MockViewModel
+        mockViewModel = viewModelOf(MockRepository) as MockViewModel
 
-        mockViewModel.getPost()
+        Timer().schedule(500) {
+            mockViewModel.getPost()
+        }
+        //mockViewModel.getPost()
 
         mockViewModel.response.observe(this, { response ->
             if (response.isSuccessful) {

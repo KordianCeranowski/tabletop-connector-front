@@ -10,7 +10,6 @@
         android:id="@+id/testTextView"
         android:layout_width="403dp"
         android:layout_height="373dp"
-        android:text="@string/lorem_ipsum"
         android:textAlignment="center"
         android:textColor="@color/orange"
         android:textSize="26sp"
