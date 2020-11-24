@@ -1,16 +1,18 @@
-package com.example.tabletop.utils
+package com.example.tabletop.util
 
 import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.tabletop.repository.PostRepository
+import com.example.tabletop.repository.MockRepository
 import com.example.tabletop.repository.Repository
 import com.example.tabletop.repository.UserRepository
-import com.example.tabletop.viewModels.ViewModelFactory
-import com.example.tabletop.viewModels.PostViewModel
-import com.example.tabletop.viewModels.UserViewModel
+import com.example.tabletop.viewmodel.ViewModelFactory
+import com.example.tabletop.viewmodel.MockViewModel
+import com.example.tabletop.viewmodel.UserViewModel
+import java.util.*
+import kotlin.concurrent.schedule
 
 object Helpers {
     fun AppCompatActivity.justStartActivity(activity: AppCompatActivity) {
@@ -20,7 +22,7 @@ object Helpers {
     fun AppCompatActivity.viewModelOf(repository: Repository): ViewModel {
         val viewModel = when (repository) {
             is UserRepository -> UserViewModel(repository)
-            is PostRepository -> PostViewModel(repository)
+            is MockRepository -> MockViewModel(repository)
             else -> throw Exception("Invalid repository")
         }
         return ViewModelProvider(this, ViewModelFactory(repository))
@@ -28,12 +30,16 @@ object Helpers {
     }
 
     fun AppCompatActivity.logIt(msg: Any?, tag: String = this.getClassName()) {
-        Log.d(tag, msg.toString())
+        Timer().schedule(1) {
+            Log.d(tag, msg.toString())
+        }
     }
 
     fun AppCompatActivity.logIt(vararg msgs: Any?, tag: String = this.getClassName()) {
         msgs.forEach {
-            Log.d(tag, it.toString())
+            Timer().schedule(1) {
+                Log.d(tag, it.toString())
+            }
         }
     }
 

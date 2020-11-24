@@ -1,4 +1,4 @@
-package com.example.tabletop.viewModels
+package com.example.tabletop.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +14,8 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     val respUser = MutableLiveData<Response<User>>()
 
+    val respRegister = MutableLiveData<Response<Triple<String, String, String>>>()
+
     val respListOfUsers = MutableLiveData<Response<List<User>>>()
 
     fun getCustomUsers(sort: String, order: String) {
@@ -28,9 +30,9 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
-    fun save(registerRequest: RegisterRequest) {
+    fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            respUser.value = repository.save(registerRequest)
+            respRegister.value = repository.register(registerRequest)
         }
     }
 
@@ -40,19 +42,19 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
-    fun getUser(id: Int) {
+    fun getUser(id: String) {
         viewModelScope.launch {
             respUser.value = repository.getUser(id)
         }
     }
 
-    fun remove(id: Int) {
+    fun remove(id: String) {
         viewModelScope.launch {
             respUser.value = repository.remove(id)
         }
     }
 
-    fun edit(id: Int, user: User) {
+    fun edit(id: String, user: User) {
         viewModelScope.launch {
             respUser.value = repository.edit(id, user)
         }

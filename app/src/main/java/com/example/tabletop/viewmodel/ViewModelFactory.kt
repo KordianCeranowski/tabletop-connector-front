@@ -1,8 +1,8 @@
-package com.example.tabletop.viewModels
+package com.example.tabletop.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.tabletop.repository.PostRepository
+import com.example.tabletop.repository.MockRepository
 import com.example.tabletop.repository.Repository
 import com.example.tabletop.repository.UserRepository
 
@@ -12,7 +12,7 @@ class ViewModelFactory(private val repository: Repository) : ViewModelProvider.F
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (repository) {
             is UserRepository -> UserViewModel(repository)
-            is PostRepository -> PostViewModel(repository)
+            is MockRepository -> MockViewModel(repository)
             else -> throw Exception("Invalid repository")
         } as T
     }

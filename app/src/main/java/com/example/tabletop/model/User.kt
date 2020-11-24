@@ -1,8 +1,12 @@
 package com.example.tabletop.model
 
 data class User(
-    val id: Int,
+    val id: String,
     val email: String,
-    val nickname: String,
-    val password: String
+    val username: String,
+    val password: String,
+    // val firstName: String,
+    // val lastName: String,
+    // val phoneNumber: String,
+    // val address: Address,
 )

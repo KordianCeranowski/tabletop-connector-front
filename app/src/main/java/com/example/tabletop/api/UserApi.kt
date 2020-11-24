@@ -3,45 +3,48 @@ package com.example.tabletop.api
 import com.example.tabletop.model.LoginRequest
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.model.User
-import retrofit2.Call
+import com.example.tabletop.util.Constants.USER_API_ENDPOINT
+import com.example.tabletop.util.Constants.USER_API_LOGIN_ENDPOINT
+import com.example.tabletop.util.Constants.USER_API_REGISTER_ENDPOINT
 import retrofit2.Response
 import retrofit2.http.*
 
 interface UserApi {
-    @GET("user")
+    @GET(USER_API_ENDPOINT)
     suspend fun getCustomUsers(
         @Query("_sort") sort: String,
         @Query("_order") order: String
     ): Response<List<User>>
 
-    @GET("user")
+    @GET(USER_API_ENDPOINT)
     suspend fun getCustomUsers(
         @QueryMap options: Map<String, String>
     ): Response<List<User>>
 
-    @POST("user")
-    suspend fun save(
+    @POST(USER_API_REGISTER_ENDPOINT)
+    suspend fun register(
         @Body registerRequest: RegisterRequest
-    ): Response<User>
+    ): Response<Triple<String, String, String>>
 
-    @POST("login")
+    @Headers("Authorization: test")
+    @POST(USER_API_LOGIN_ENDPOINT)
     suspend fun login(
         @Body loginRequest: LoginRequest
     ): Response<User>
 
-    @GET("user/{id}")
+    @GET("$USER_API_ENDPOINT/{id}")
     suspend fun getUser(
-        @Path("id") id: Int
+        @Path("id") id: String
     ): Response<User>
 
-    @DELETE("user/{id}")
+    @DELETE("$USER_API_ENDPOINT/{id}")
     suspend fun remove(
-        @Path("id") id: Int
+        @Path("id") id: String
     ): Response<User>
 
-    @PUT("user/{id}")
+    @PUT("$USER_API_ENDPOINT/{id}")
     suspend fun edit(
-        @Path("id") id: Int,
+        @Path("id") id: String,
         @Body user: User
     ): Response<User>
 }

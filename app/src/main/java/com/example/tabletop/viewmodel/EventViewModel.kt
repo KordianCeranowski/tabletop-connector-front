@@ -1,10 +1,9 @@
-package com.example.tabletop.viewModels
+package com.example.tabletop.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.model.Event
-import com.example.tabletop.model.User
 import com.example.tabletop.repository.EventRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -33,19 +32,19 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
         }
     }
 
-    fun getUser(id: Int) {
+    fun getUser(id: String) {
         viewModelScope.launch {
             respEvent.value = repository.getEvent(id)
         }
     }
 
-    fun remove(id: Int) {
+    fun remove(id: String) {
         viewModelScope.launch {
             respEvent.value = repository.remove(id)
         }
     }
 
-    fun edit(id: Int, event: Event) {
+    fun edit(id: String, event: Event) {
         viewModelScope.launch {
             respEvent.value = repository.edit(id, event)
         }

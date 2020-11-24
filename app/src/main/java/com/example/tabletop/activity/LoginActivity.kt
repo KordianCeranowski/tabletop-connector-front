@@ -1,4 +1,4 @@
-package com.example.tabletop.activities
+package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,10 +6,9 @@ import android.widget.Toast
 import com.example.tabletop.R
 import com.example.tabletop.model.LoginRequest
 import com.example.tabletop.repository.UserRepository
-import com.example.tabletop.utils.Helpers.justStartActivity
-import com.example.tabletop.utils.Helpers.logIt
-import com.example.tabletop.utils.Helpers.viewModelOf
-import com.example.tabletop.viewModels.UserViewModel
+import com.example.tabletop.util.Helpers.logIt
+import com.example.tabletop.util.Helpers.viewModelOf
+import com.example.tabletop.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -45,7 +44,6 @@ class LoginActivity : AppCompatActivity() {
                 // login(loginRequest)
             }
 
-            justStartActivity(MainActivity())
         }
     }
 
@@ -60,6 +58,7 @@ class LoginActivity : AppCompatActivity() {
                         message()
                     )
                 }
+                //justStartActivity(MainActivity())
             } else {
                 Toast.makeText(this, response.code(), Toast.LENGTH_SHORT).show()
             }

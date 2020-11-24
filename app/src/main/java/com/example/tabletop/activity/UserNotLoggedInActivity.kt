@@ -1,9 +1,9 @@
-package com.example.tabletop.activities
+package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tabletop.R
-import com.example.tabletop.utils.Helpers.justStartActivity
+import com.example.tabletop.util.Helpers.justStartActivity
 import kotlinx.android.synthetic.main.activity_user_not_logged_in.*
 
 class UserNotLoggedInActivity : AppCompatActivity() {
