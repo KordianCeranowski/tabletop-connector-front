@@ -10,11 +10,19 @@ import retrofit2.Response
 
 class MockViewModel(private val repository: MockRepository) : ViewModel() {
 
-    val response = MutableLiveData<Response<Post>>()
+    val responseSingle = MutableLiveData<Response<Post>>()
+
+    val responseMany = MutableLiveData<Response<List<Post>>>()
 
     fun getPost() {
         viewModelScope.launch {
-            response.value = repository.getPost()
+            responseSingle.value = repository.getPost()
+        }
+    }
+
+    fun getCustomPosts(userId: Int, sort: String, order: String) {
+        viewModelScope.launch {
+            responseMany.value = repository.getCustomPosts(userId, sort, order)
         }
     }
 }

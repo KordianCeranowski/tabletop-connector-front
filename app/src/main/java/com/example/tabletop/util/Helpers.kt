@@ -2,6 +2,7 @@
 
 import android.content.Intent
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
@@ -54,6 +55,10 @@ object Helpers {
         }
         return ViewModelProvider(this, ViewModelFactory(repository))
             .get(viewModel::class.java)
+    }
+
+    fun AppCompatActivity.getEditTextString(vararg editTexts: EditText): List<String> {
+        return editTexts.map { it.text.toString().trim() }
     }
 
     fun Any.getClassName(): String = this::class.simpleName as String

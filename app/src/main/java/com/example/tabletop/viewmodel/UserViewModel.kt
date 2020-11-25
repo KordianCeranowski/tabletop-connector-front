@@ -12,51 +12,51 @@ import retrofit2.Response
 
 class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
-    val respUser = MutableLiveData<Response<User>>()
+    val responseSingle = MutableLiveData<Response<User>>()
 
-    val respRegister = MutableLiveData<Response<Triple<String, String, String>>>()
+    val responseRegister = MutableLiveData<Response<Triple<String, String, String>>>()
 
-    val respListOfUsers = MutableLiveData<Response<List<User>>>()
+    val responseMany = MutableLiveData<Response<List<User>>>()
 
     fun getCustomUsers(sort: String, order: String) {
         viewModelScope.launch {
-            respListOfUsers.value = repository.getCustomUsers(sort, order)
+            responseMany.value = repository.getCustomUsers(sort, order)
         }
     }
 
     fun getCustomUsers(options: Map<String, String>) {
         viewModelScope.launch {
-            respListOfUsers.value = repository.getCustomUsers(options)
+            responseMany.value = repository.getCustomUsers(options)
         }
     }
 
     fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            respRegister.value = repository.register(registerRequest)
+            responseRegister.value = repository.register(registerRequest)
         }
     }
 
     fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
-            respUser.value = repository.login(loginRequest)
+            responseSingle.value = repository.login(loginRequest)
         }
     }
 
     fun getUser(id: String) {
         viewModelScope.launch {
-            respUser.value = repository.getUser(id)
+            responseSingle.value = repository.getUser(id)
         }
     }
 
     fun remove(id: String) {
         viewModelScope.launch {
-            respUser.value = repository.remove(id)
+            responseSingle.value = repository.remove(id)
         }
     }
 
     fun edit(id: String, user: User) {
         viewModelScope.launch {
-            respUser.value = repository.edit(id, user)
+            responseSingle.value = repository.edit(id, user)
         }
     }
 }

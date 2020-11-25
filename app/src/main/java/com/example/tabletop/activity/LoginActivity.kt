@@ -15,15 +15,11 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var userViewModel: UserViewModel
 
-    private fun init() {
-        userViewModel = viewModelOf(UserRepository) as UserViewModel
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        init()
+        setupViewModel()
 
         btnLogin.setOnClickListener {
             val nickname = etLoginNickname.text.toString().trim()
@@ -47,9 +43,13 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupViewModel() {
+        userViewModel = viewModelOf(UserRepository) as UserViewModel
+    }
+
     private fun login(loginRequest: LoginRequest) {
         userViewModel.login(loginRequest)
-        userViewModel.respUser.observe(this, { response ->
+        userViewModel.responseSingle.observe(this, { response ->
             if (response.isSuccessful) {
                 response.run {
                     logIt(

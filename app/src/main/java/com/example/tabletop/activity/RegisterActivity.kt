@@ -2,11 +2,13 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.EditText
 import com.example.tabletop.R
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Constants
 import com.example.tabletop.util.Constants.MyPattern.*
+import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.logError
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.showToast
@@ -16,39 +18,55 @@ import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : AppCompatActivity() {
 
-
     private lateinit var userViewModel: UserViewModel
 
-    private fun init() {
-        userViewModel = viewModelOf(UserRepository) as UserViewModel
-    }
+    // data class Form(
+    //     val email: String,
+    //     val nickname: String,
+    //     val password: String,
+    //     val confirmPassword: String
+    // )
 
+
+    //etRegisterEmail.text.toString().trim(),
+    //             etRegisterNickname.text.toString().trim(),
+    //             etRegisterPassword.text.toString().trim()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        init()
+        setupViewModel()
 
         btnRegister.setOnClickListener {
             if (isFormValid()) {
-                val email = etRegisterEmail.text.toString().trim()
-                val nickname = etRegisterNickname.text.toString().trim()
-                val password = etRegisterPassword.text.toString().trim()
-                val confirmPassword = etRegisterConfirmPassword.text.toString().trim()
                 logIt("All fields are valid")
-                 // val registerRequest = RegisterRequest(email, nickname, password)
-                 // registerUser(registerRequest)
+                //val fieldValues = getTextOf(
+                //    etRegisterEmail,
+                //    etRegisterNickname,
+                //    etRegisterPassword
+                // )
+                // registerUser(RegisterRequest(fieldValues[0], fieldValues[1], fieldValues[2]))
             } else {
                 showToast("Please correct invalid fields")
             }
         }
     }
 
+    private fun setupViewModel() {
+        userViewModel = viewModelOf(UserRepository) as UserViewModel
+    }
+
     private fun isFormValid(): Boolean {
-        val email = etRegisterEmail.text.toString().trim()
-        val nickname = etRegisterNickname.text.toString().trim()
-        val password = etRegisterPassword.text.toString().trim()
-        val confirmPassword = etRegisterConfirmPassword.text.toString().trim()
+        val fieldValues = getEditTextString(
+            etRegisterEmail,
+            etRegisterNickname,
+            etRegisterPassword,
+            etRegisterConfirmPassword
+        )
+        val email = fieldValues[0]
+        val nickname = fieldValues[1]
+        val password = fieldValues[2]
+        val confirmPassword = fieldValues[3]
 
         var areFieldsValid = true
 
@@ -99,7 +117,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun registerUser(registerRequest: RegisterRequest) {
         userViewModel.register(registerRequest)
-        userViewModel.respUser.observe(this, { response ->
+        userViewModel.responseSingle.observe(this, { response ->
             if (response.isSuccessful) {
                 response.run {
                     logIt(
