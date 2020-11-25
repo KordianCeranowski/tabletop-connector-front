@@ -12,6 +12,7 @@ import com.example.tabletop.viewmodel.MockViewModel
 import com.example.tabletop.viewmodel.UserViewModel
 import com.example.tabletop.util.Constants.LogType
 import com.example.tabletop.viewmodel.EventViewModel
+import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -63,13 +64,5 @@ object Helpers {
             if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
     }
 
-    // class MyValidator() {
-    //     fun validate(editText: EditText) {
-    //
-    //     }
-    //
-    //     private fun isValid(editText: EditText) {
-    //
-    //     }
-    // }
+
 }

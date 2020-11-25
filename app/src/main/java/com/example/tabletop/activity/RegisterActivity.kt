@@ -2,22 +2,17 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Patterns
-import android.widget.Toast
 import com.example.tabletop.R
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.repository.UserRepository
-import com.example.tabletop.util.Constants.EMAIL_PATTERN
-import com.example.tabletop.util.Constants.NICKNAME_PATTERN
-import com.example.tabletop.util.Constants.PASSWORD_PATTERN
+import com.example.tabletop.util.Constants
+import com.example.tabletop.util.Constants.MyPattern.*
 import com.example.tabletop.util.Helpers.logError
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_register.*
-import java.util.regex.Pattern
-import kotlin.Exception
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -35,33 +30,11 @@ class RegisterActivity : AppCompatActivity() {
         init()
 
         btnRegister.setOnClickListener {
-            val email = etRegisterEmail.text.toString().trim()
-            val nickname = etRegisterNickname.text.toString().trim()
-            val password = etRegisterPassword.text.toString().trim()
-            val confirmPassword = etRegisterConfirmPassword.text.toString().trim()
-
-            var areFieldsValid = true
-
-            if (!(isFieldValid(email, EMAIL_PATTERN))) {
-                areFieldsValid = false
-                logError("email: $email")
-            }
-            if (!(isFieldValid(nickname, NICKNAME_PATTERN))) {
-                areFieldsValid = false
-                logError("nickname: $nickname")
-            }
-            if (!(isFieldValid(password, PASSWORD_PATTERN))) {
-                areFieldsValid = false
-                logError("password: $password")
-            }
-            if (password.isEmpty() || confirmPassword != password) {
-                areFieldsValid = false
-                logError("confirmPassword: $confirmPassword")
-                etRegisterConfirmPassword.error = "Passwords do not match"
-            } else {
-                etRegisterConfirmPassword.error = null
-            }
-            if (areFieldsValid) {
+            if (isFormValid()) {
+                val email = etRegisterEmail.text.toString().trim()
+                val nickname = etRegisterNickname.text.toString().trim()
+                val password = etRegisterPassword.text.toString().trim()
+                val confirmPassword = etRegisterConfirmPassword.text.toString().trim()
                 logIt("All fields are valid")
                  // val registerRequest = RegisterRequest(email, nickname, password)
                  // registerUser(registerRequest)
@@ -71,12 +44,44 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun isFieldValid(field: String, pattern: Pattern): Boolean {
-        val (editText, fieldName) = when (pattern) {
-            EMAIL_PATTERN -> etRegisterEmail to "email"
-            NICKNAME_PATTERN -> etRegisterNickname to "nickname"
-            PASSWORD_PATTERN -> etRegisterPassword to "password"
-            else -> throw Exception("Invalid pattern")
+    private fun isFormValid(): Boolean {
+        val email = etRegisterEmail.text.toString().trim()
+        val nickname = etRegisterNickname.text.toString().trim()
+        val password = etRegisterPassword.text.toString().trim()
+        val confirmPassword = etRegisterConfirmPassword.text.toString().trim()
+
+        var areFieldsValid = true
+
+        if (!(isFieldValid(email, EMAIL_PATTERN))) {
+            areFieldsValid = false
+            logError("email: $email")
+        }
+        if (!(isFieldValid(nickname, NICKNAME_PATTERN))) {
+            areFieldsValid = false
+            logError("nickname: $nickname")
+        }
+        if (!(isFieldValid(password, PASSWORD_PATTERN))) {
+            areFieldsValid = false
+            logError("password: $password")
+        }
+        if (password.isEmpty() || confirmPassword != password) {
+            areFieldsValid = false
+            logError("confirmPassword: $confirmPassword")
+            etRegisterConfirmPassword.error = "Passwords do not match"
+        } else {
+            etRegisterConfirmPassword.error = null
+        }
+        return areFieldsValid
+    }
+
+    private fun isFieldValid(field: String, myPattern: Constants.MyPattern): Boolean {
+        val (editText, fieldName, pattern) = when (myPattern) {
+            EMAIL_PATTERN ->
+                Triple(etRegisterEmail, "email", EMAIL_PATTERN.value)
+            NICKNAME_PATTERN ->
+                Triple(etRegisterNickname, "nickname", NICKNAME_PATTERN.value)
+            PASSWORD_PATTERN ->
+                Triple(etRegisterPassword, "password", PASSWORD_PATTERN.value)
         }
         // logIt("Checking $fieldName...")
 
