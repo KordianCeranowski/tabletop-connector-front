@@ -7,7 +7,7 @@
     tools:context=".activity.RegisterActivity">
 
     <EditText
-        android:id="@+id/etRegisterPassword"
+        android:id="@+id/register_etPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -15,14 +15,14 @@
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/etRegisterNickname"
+        app:layout_constraintEnd_toEndOf="@+id/register_etNickname"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/etRegisterNickname"
-        app:layout_constraintTop_toBottomOf="@+id/etRegisterNickname"
+        app:layout_constraintStart_toStartOf="@+id/register_etNickname"
+        app:layout_constraintTop_toBottomOf="@+id/register_etNickname"
         app:layout_constraintVertical_bias="0.022" />
 
     <EditText
-        android:id="@+id/etRegisterConfirmPassword"
+        android:id="@+id/register_etConfirmPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -30,10 +30,10 @@
         android:hint="@string/hint_confirm_password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/etRegisterPassword"
+        app:layout_constraintEnd_toEndOf="@+id/register_etPassword"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/etRegisterPassword"
-        app:layout_constraintTop_toBottomOf="@+id/etRegisterNickname"
+        app:layout_constraintStart_toStartOf="@+id/register_etPassword"
+        app:layout_constraintTop_toBottomOf="@+id/register_etNickname"
         app:layout_constraintVertical_bias="0.25" />
 
     <Button
@@ -43,27 +43,27 @@
         android:layout_marginTop="24dp"
         android:text="@string/btn_register"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/etRegisterConfirmPassword"
-        app:layout_constraintStart_toStartOf="@+id/etRegisterConfirmPassword"
+        app:layout_constraintEnd_toEndOf="@+id/register_etConfirmPassword"
+        app:layout_constraintStart_toStartOf="@+id/register_etConfirmPassword"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.793" />
 
     <EditText
-        android:id="@+id/etRegisterNickname"
+        android:id="@+id/register_etNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/hint_nickname"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/etRegisterEmail"
+        app:layout_constraintEnd_toEndOf="@+id/register_etEmail"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/etRegisterEmail"
-        app:layout_constraintTop_toBottomOf="@+id/etRegisterEmail"
+        app:layout_constraintStart_toStartOf="@+id/register_etEmail"
+        app:layout_constraintTop_toBottomOf="@+id/register_etEmail"
         app:layout_constraintVertical_bias="0.064" />
 
     <EditText
-        android:id="@+id/etRegisterEmail"
+        android:id="@+id/register_etEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"

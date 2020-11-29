@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.UserNotLoggedInActivity">
+        <activity android:name=".activity.UserLoggedOutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

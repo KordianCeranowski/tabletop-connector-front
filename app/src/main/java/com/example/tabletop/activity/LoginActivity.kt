@@ -2,53 +2,62 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.example.tabletop.R
+import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.model.LoginRequest
 import com.example.tabletop.repository.UserRepository
+import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.UserViewModel
-import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
 
     private lateinit var userViewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
 
-        setupViewModel()
+        setup()
 
-        btnLogin.setOnClickListener {
-            val nickname = etLoginNickname.text.toString().trim()
-            val password = etLoginPassword.text.toString().trim()
-
-            var areFieldsValid = true
-            if (nickname.isEmpty()) {
-                etLoginNickname.error = "Field cannot be empty"
-                areFieldsValid = false
-            }
-            if (password.isEmpty()) {
-                etLoginPassword.error = "Field cannot be empty"
-                areFieldsValid = false
-            }
-            if (areFieldsValid) {
+        binding.btnLogin.setOnClickListener {
+            val (nickname, password) = getEditTextString(
+                binding.loginEtNickname,
+                binding.loginEtPassword
+            )
+            if (isFormValid(nickname, password)) {
                 logIt("All fields are valid")
                 // val loginRequest = LoginRequest(nickname, password)
-                // login(loginRequest)
+                // loginUser(loginRequest)
+            } else {
+                showToast("Please correct invalid fields")
             }
-
         }
     }
+    private fun setup() {
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    private fun setupViewModel() {
         userViewModel = viewModelOf(UserRepository) as UserViewModel
     }
 
-    private fun login(loginRequest: LoginRequest) {
+    private fun isFormValid(nickname: String, password: String): Boolean {
+
+        var areFieldsValid = true
+        if (nickname.isEmpty()) {
+            binding.loginEtNickname.error = "Field cannot be empty"
+            areFieldsValid = false
+        }
+        if (password.isEmpty()) {
+            binding.loginEtPassword.error = "Field cannot be empty"
+            areFieldsValid = false
+        }
+        return areFieldsValid
+    }
+
+    private fun loginUser(loginRequest: LoginRequest) {
         userViewModel.login(loginRequest)
         userViewModel.responseSingle.observe(this, { response ->
             if (response.isSuccessful) {

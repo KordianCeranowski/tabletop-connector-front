@@ -2,15 +2,17 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.tabletop.R
+import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
 import com.example.tabletop.util.Helpers.justStartActivity
-import kotlinx.android.synthetic.main.activity_user_not_logged_in.*
 
-class UserNotLoggedInActivity : AppCompatActivity() {
+class UserLoggedOutActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityUserLoggedOutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_not_logged_in)
+
+        setup()
 
         //todo splash screen
         /*
@@ -23,16 +25,20 @@ class UserNotLoggedInActivity : AppCompatActivity() {
          }
         */
 
-        btnGoToLoginActivity.setOnClickListener {
+        binding.btnGoToLoginActivity.setOnClickListener {
             justStartActivity<LoginActivity>()
         }
 
-        btnGoToRegisterActivity.setOnClickListener {
+        binding.btnGoToRegisterActivity.setOnClickListener {
             justStartActivity<RegisterActivity>()
         }
 
-        btnGoToMainActivity.setOnClickListener {
+        binding.btnGoToMainActivity.setOnClickListener {
             justStartActivity<MainActivity>()
         }
+    }
+    private fun setup() {
+        binding = ActivityUserLoggedOutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 }

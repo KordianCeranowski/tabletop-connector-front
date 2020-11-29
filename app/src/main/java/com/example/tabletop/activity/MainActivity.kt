@@ -5,14 +5,21 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
 import com.example.tabletop.adapter.MockAdapter
+import com.example.tabletop.databinding.ActivityMainBinding
+import com.example.tabletop.databinding.ActivityRegisterBinding
+import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
 import com.example.tabletop.repository.MockRepository
+import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.MockViewModel
+import com.example.tabletop.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private lateinit var mockViewModel: MockViewModel
 
@@ -20,10 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        setupViewModel()
-        setupRecyclerView()
+        setup()
 
         mockViewModel.getCustomPosts(2,"id","desc")
 
@@ -59,12 +64,13 @@ class MainActivity : AppCompatActivity() {
           sidebar
         */
     }
+    private fun setup() {
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    private fun setupViewModel() {
         mockViewModel = viewModelOf(MockRepository) as MockViewModel
-    }
 
-    private fun setupRecyclerView() {
+        //RECYCLER VIEW
         recyclerView.adapter = mockAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
     }

@@ -2,9 +2,7 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.renderscript.ScriptGroup
-import android.widget.EditText
-import com.example.tabletop.R
+import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Constants
@@ -15,26 +13,27 @@ import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.UserViewModel
-import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityRegisterBinding
 
     private lateinit var userViewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
 
-        setupViewModel()
+        setup()
 
-        btnRegister.setOnClickListener {
-            if (isFormValid()) {
+        binding.btnRegister.setOnClickListener {
+            val (email, nickname, password, confirmPassword) = getEditTextString(
+                binding.registerEtEmail,
+                binding.registerEtNickname,
+                binding.registerEtPassword,
+                binding.registerEtConfirmPassword
+            )
+            if (isFormValid(email, nickname, password, confirmPassword)) {
                 logIt("All fields are valid")
-                val (email, nickname, password) = getEditTextString(
-                    etRegisterEmail,
-                    etRegisterNickname,
-                    etRegisterPassword
-                )
                 registerUser(RegisterRequest(email, nickname, password))
             } else {
                 showToast("Please correct invalid fields")
@@ -42,20 +41,20 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupViewModel() {
+    private fun setup() {
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         userViewModel = viewModelOf(UserRepository) as UserViewModel
     }
 
-    private fun isFormValid(): Boolean {
-        val (email, nickname, password, confirmPassword) = getEditTextString(
-            etRegisterEmail,
-            etRegisterNickname,
-            etRegisterPassword,
-            etRegisterConfirmPassword
-        )
-
+    private fun isFormValid(
+        email: String,
+        nickname: String,
+        password: String,
+        confirmPassword: String
+    ): Boolean {
         var areFieldsValid = true
-
         if (!(isFieldValid(email, EMAIL_PATTERN))) {
             areFieldsValid = false
             logError("email: $email")
@@ -71,9 +70,9 @@ class RegisterActivity : AppCompatActivity() {
         if (password.isEmpty() || confirmPassword != password) {
             areFieldsValid = false
             logError("confirmPassword: $confirmPassword")
-            etRegisterConfirmPassword.error = "Passwords do not match"
+            binding.registerEtConfirmPassword.error = "Passwords do not match"
         } else {
-            etRegisterConfirmPassword.error = null
+            binding.registerEtConfirmPassword.error = null
         }
         return areFieldsValid
     }
@@ -81,11 +80,11 @@ class RegisterActivity : AppCompatActivity() {
     private fun isFieldValid(field: String, myPattern: Constants.MyPattern): Boolean {
         val (editText, fieldName, pattern) = when (myPattern) {
             EMAIL_PATTERN ->
-                Triple(etRegisterEmail, "email", EMAIL_PATTERN.value)
+                Triple(binding.registerEtEmail, "email", EMAIL_PATTERN.value)
             NICKNAME_PATTERN ->
-                Triple(etRegisterNickname, "nickname", NICKNAME_PATTERN.value)
+                Triple(binding.registerEtNickname, "nickname", NICKNAME_PATTERN.value)
             PASSWORD_PATTERN ->
-                Triple(etRegisterPassword, "password", PASSWORD_PATTERN.value)
+                Triple(binding.registerEtPassword, "password", PASSWORD_PATTERN.value)
         }
         // logIt("Checking $fieldName...")
 
