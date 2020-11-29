@@ -7,6 +7,7 @@ import com.example.tabletop.R
 import com.example.tabletop.model.LoginRequest
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.logIt
+import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
 import com.example.tabletop.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_login.*
@@ -60,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 //justStartActivity(MainActivity())
             } else {
-                Toast.makeText(this, response.code(), Toast.LENGTH_SHORT).show()
+                showToast(response.code())
             }
         })
     }

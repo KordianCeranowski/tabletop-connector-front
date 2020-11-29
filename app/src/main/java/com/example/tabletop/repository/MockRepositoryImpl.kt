@@ -8,6 +8,6 @@ suspend fun MockRepository.getPost(): Response<Post> {
     return RetrofitInstance.mockApi.getPost()
 }
 
-suspend fun MockRepository.getCustomPosts(userId: Int,sort: String, order: String): Response<List<Post>> {
+suspend fun MockRepository.getCustomPosts(userId: Int, sort: String, order: String): Response<List<Post>> {
     return RetrofitInstance.mockApi.getCustomPosts(userId, sort, order)
 }

@@ -24,15 +24,15 @@ class UserNotLoggedInActivity : AppCompatActivity() {
         */
 
         btnGoToLoginActivity.setOnClickListener {
-            justStartActivity(LoginActivity())
+            justStartActivity<LoginActivity>()
         }
 
         btnGoToRegisterActivity.setOnClickListener {
-            justStartActivity(RegisterActivity())
+            justStartActivity<RegisterActivity>()
         }
 
         btnGoToMainActivity.setOnClickListener {
-            justStartActivity(MainActivity())
+            justStartActivity<MainActivity>()
         }
     }
 }

@@ -7,11 +7,11 @@ import com.example.tabletop.repository.*
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <A : ViewModel?> create(modelClass: Class<A>): A {
         return when (repository) {
             is UserRepository -> UserViewModel(repository)
             is EventRepository -> EventViewModel(repository)
             is MockRepository -> MockViewModel(repository)
-        } as T
+        } as A
     }
 }

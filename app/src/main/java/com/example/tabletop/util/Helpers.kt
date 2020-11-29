@@ -19,7 +19,35 @@ import kotlin.concurrent.schedule
 
 object Helpers {
 
-    // LOGGING
+    fun AppCompatActivity.viewModelOf(repository: Repository): ViewModel {
+        val viewModel = when (repository) {
+            is UserRepository -> UserViewModel(repository)
+            is EventRepository -> EventViewModel(repository)
+            is MockRepository -> MockViewModel(repository)
+        }
+        return ViewModelProvider(this, ViewModelFactory(repository))
+            .get(viewModel::class.java)
+    }
+
+    fun AppCompatActivity.getEditTextString(vararg editTexts: EditText): List<String> {
+        return editTexts.map { it.text.toString().trim() }
+    }
+
+    fun Any.getClassName(): String = this::class.simpleName as String
+
+    // WILL BE DEPRECATED BY ANKO LIBRARY
+    inline fun <reified A: AppCompatActivity> AppCompatActivity.justStartActivity() {
+        startActivity(Intent(this, A::class.java))
+    }
+
+    fun AppCompatActivity.showToast(msg: Any, long: Boolean = false) {
+        Toast.makeText(
+            this,
+            msg.toString(),
+            if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+        ).show()
+    }
+
     fun AppCompatActivity.logIt(
         vararg msgs: Any?,
         logType: LogType = LogType.INFO,
@@ -41,33 +69,4 @@ object Helpers {
             }
         }
     }
-
-    // OTHER
-    fun AppCompatActivity.justStartActivity(activity: AppCompatActivity) {
-        startActivity(Intent(this, activity::class.java))
-    }
-
-    fun AppCompatActivity.viewModelOf(repository: Repository): ViewModel {
-        val viewModel = when (repository) {
-            is UserRepository -> UserViewModel(repository)
-            is EventRepository -> EventViewModel(repository)
-            is MockRepository -> MockViewModel(repository)
-        }
-        return ViewModelProvider(this, ViewModelFactory(repository))
-            .get(viewModel::class.java)
-    }
-
-    fun AppCompatActivity.getEditTextString(vararg editTexts: EditText): List<String> {
-        return editTexts.map { it.text.toString().trim() }
-    }
-
-    fun Any.getClassName(): String = this::class.simpleName as String
-
-    fun AppCompatActivity.showToast(msg: Any, long: Boolean = false) {
-        Toast.makeText(this,
-            msg.toString(),
-            if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
-    }
-
-
 }

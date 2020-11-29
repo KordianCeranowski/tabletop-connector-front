@@ -2,6 +2,7 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.renderscript.ScriptGroup
 import android.widget.EditText
 import com.example.tabletop.R
 import com.example.tabletop.model.RegisterRequest
@@ -20,17 +21,6 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var userViewModel: UserViewModel
 
-    // data class Form(
-    //     val email: String,
-    //     val nickname: String,
-    //     val password: String,
-    //     val confirmPassword: String
-    // )
-
-
-    //etRegisterEmail.text.toString().trim(),
-    //             etRegisterNickname.text.toString().trim(),
-    //             etRegisterPassword.text.toString().trim()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -40,12 +30,12 @@ class RegisterActivity : AppCompatActivity() {
         btnRegister.setOnClickListener {
             if (isFormValid()) {
                 logIt("All fields are valid")
-                //val fieldValues = getTextOf(
-                //    etRegisterEmail,
-                //    etRegisterNickname,
-                //    etRegisterPassword
-                // )
-                // registerUser(RegisterRequest(fieldValues[0], fieldValues[1], fieldValues[2]))
+                val (email, nickname, password) = getEditTextString(
+                    etRegisterEmail,
+                    etRegisterNickname,
+                    etRegisterPassword
+                )
+                registerUser(RegisterRequest(email, nickname, password))
             } else {
                 showToast("Please correct invalid fields")
             }
@@ -57,16 +47,12 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun isFormValid(): Boolean {
-        val fieldValues = getEditTextString(
+        val (email, nickname, password, confirmPassword) = getEditTextString(
             etRegisterEmail,
             etRegisterNickname,
             etRegisterPassword,
             etRegisterConfirmPassword
         )
-        val email = fieldValues[0]
-        val nickname = fieldValues[1]
-        val password = fieldValues[2]
-        val confirmPassword = fieldValues[3]
 
         var areFieldsValid = true
 
