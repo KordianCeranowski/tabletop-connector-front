@@ -8,7 +8,7 @@ import com.example.tabletop.R
 import com.example.tabletop.model.Post
 import kotlinx.android.synthetic.main.row_mock_post.view.*
 
-class MockAdapter : RecyclerView.Adapter<MockAdapter.MyViewHolder>() {
+class MockAdapter() : RecyclerView.Adapter<MockAdapter.MyViewHolder>() {
 
     private var viewItems = emptyList<Post>()
 
@@ -21,10 +21,12 @@ class MockAdapter : RecyclerView.Adapter<MockAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.userId_txt.text = viewItems[position].userId.toString()
-        holder.itemView.id_txt.text = viewItems[position].id.toString()
-        holder.itemView.title_txt.text = viewItems[position].title
-        holder.itemView.body_txt.text = viewItems[position].body
+        holder.itemView.apply {
+            userId_txt.text = viewItems[position].userId.toString()
+            id_txt.text = viewItems[position].id.toString()
+            title_txt.text = viewItems[position].title
+            body_txt.text = viewItems[position].body
+        }
     }
 
     override fun getItemCount(): Int {

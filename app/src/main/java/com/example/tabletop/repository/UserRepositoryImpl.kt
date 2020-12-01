@@ -1,9 +1,9 @@
 package com.example.tabletop.repository
 
 import com.example.tabletop.api.RetrofitInstance.userApi
-import com.example.tabletop.model.LoginRequest
-import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.model.User
+import com.example.tabletop.util.LoginRequest
+import com.example.tabletop.util.RegisterRequest
 import retrofit2.Response
 
 suspend fun UserRepository.getCustomUsers(sort: String, order: String): Response<List<User>> {

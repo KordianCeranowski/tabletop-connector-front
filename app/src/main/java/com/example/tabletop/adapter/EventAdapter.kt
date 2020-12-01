@@ -1,30 +1,32 @@
 package com.example.tabletop.adapter
 
+import android.annotation.SuppressLint
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
 import com.example.tabletop.model.Event
+import kotlinx.android.synthetic.main.activity_register.view.*
 import kotlinx.android.synthetic.main.row_event.view.*
 
-class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
+class EventAdapter : RecyclerView.Adapter<EventAdapter.MockViewHolder>() {
 
     private var viewItems = emptyList<Event>()
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class MockViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MockViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.row_event, parent, false)
-        return MyViewHolder(view)
+        return MockViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.tvRowEventName.text = viewItems[position].name
-        //holder.itemView.id_txt.text = viewItems[position].date.toString()
-        // holder.itemView.title_txt.text = viewItems[position].title
-        // holder.itemView.body_txt.text = viewItems[position].body
+    override fun onBindViewHolder(holder: MockViewHolder, position: Int) {
+        holder.itemView.apply {
+            row_event_name.text = viewItems[position].name
+        }
     }
 
     override fun getItemCount(): Int {

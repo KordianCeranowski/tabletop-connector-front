@@ -3,10 +3,10 @@ package com.example.tabletop.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tabletop.model.LoginRequest
-import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.model.User
 import com.example.tabletop.repository.*
+import com.example.tabletop.util.LoginRequest
+import com.example.tabletop.util.RegisterRequest
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -31,7 +31,7 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
     }
 
     fun register(registerRequest: RegisterRequest) {
-        viewModelScope.launch {
+        val launch = viewModelScope.launch {
             responseRegister.value = repository.register(registerRequest)
         }
     }

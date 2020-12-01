@@ -1,22 +1,23 @@
 package com.example.tabletop.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
 import com.example.tabletop.adapter.MockAdapter
 import com.example.tabletop.databinding.ActivityMainBinding
-import com.example.tabletop.databinding.ActivityRegisterBinding
-import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
 import com.example.tabletop.repository.MockRepository
-import com.example.tabletop.repository.UserRepository
-import com.example.tabletop.util.Helpers.logIt
-import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
+import com.example.tabletop.util.runLoggingConfig
 import com.example.tabletop.viewmodel.MockViewModel
-import com.example.tabletop.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import splitties.toast.UnreliableToastApi
+import splitties.toast.toast
+import splitties.views.dsl.core.add
 
+@UnreliableToastApi
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -36,42 +37,43 @@ class MainActivity : AppCompatActivity() {
             if (response.isSuccessful) {
                 response.body()?.let { mockAdapter.setData(it) }
             } else {
-               showToast(response.code())
+               toast(response.code())
             }
         }
 
-        // mockViewModel.getPost()
-        //
-        // mockViewModel.responseSingle.observe(this, { response ->
-        //     if (response.isSuccessful) {
-        //         response.body()?.run {
-        //             logIt(
-        //                 "User ID: $userId",
-        //                 "Title: $title",
-        //                 "Body: $body"
-        //             )
-        //             // testTextView.text = title
-        //         }
-        //     } else {
-        //         logIt(response.errorBody())
-        //         // testTextView.text = response.code().toString()
-        //     }
-        // })
-
         /*
-        todo:
-          splash screen
-          sidebar
+        mockViewModel.getPost()
+
+        mockViewModel.responseSingle.observe(this, { response ->
+            if (response.isSuccessful) {
+                response.body()?.run {
+                    logIt(
+                        "User ID: $userId",
+                        "Title: $title",
+                        "Body: $body"
+                    )
+                    // testTextView.text = title
+                }
+            } else {
+                logIt(response.errorBody())
+                // testTextView.text = response.code().toString()
+            }
+         })
         */
     }
+
     private fun setup() {
+        runLoggingConfig()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         mockViewModel = viewModelOf(MockRepository) as MockViewModel
 
         //RECYCLER VIEW
-        recyclerView.adapter = mockAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = mockAdapter
+        }
     }
 }

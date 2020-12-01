@@ -3,8 +3,11 @@ package com.example.tabletop.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
-import com.example.tabletop.util.Helpers.justStartActivity
+import com.example.tabletop.util.runLoggingConfig
+import splitties.activities.start
+import splitties.toast.UnreliableToastApi
 
+@UnreliableToastApi
 class UserLoggedOutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserLoggedOutBinding
@@ -14,30 +17,26 @@ class UserLoggedOutActivity : AppCompatActivity() {
 
         setup()
 
-        //todo splash screen
-        /*
-        todo later:
-         on running app {
-             if (user was logged in)
-                 start UserNotLoggedInActivity
-             else
-                 start LoginActivity
-         }
-        */
+        binding.btnGoToMainActivity.setOnClickListener {
+            start<MainActivity>()
+        }
+
+        binding.btnGoToTestActivity.setOnClickListener {
+            start<TestActivity>()
+        }
 
         binding.btnGoToLoginActivity.setOnClickListener {
-            justStartActivity<LoginActivity>()
+            start<LoginActivity>()
         }
 
         binding.btnGoToRegisterActivity.setOnClickListener {
-            justStartActivity<RegisterActivity>()
-        }
-
-        binding.btnGoToMainActivity.setOnClickListener {
-            justStartActivity<MainActivity>()
+            start<RegisterActivity>()
         }
     }
+
     private fun setup() {
+        runLoggingConfig()
+
         binding = ActivityUserLoggedOutBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }

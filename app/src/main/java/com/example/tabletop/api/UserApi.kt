@@ -1,11 +1,11 @@
 package com.example.tabletop.api
 
-import com.example.tabletop.model.LoginRequest
-import com.example.tabletop.model.RegisterRequest
 import com.example.tabletop.model.User
 import com.example.tabletop.util.Constants.USER_API_ENDPOINT
 import com.example.tabletop.util.Constants.USER_API_LOGIN_ENDPOINT
 import com.example.tabletop.util.Constants.USER_API_REGISTER_ENDPOINT
+import com.example.tabletop.util.LoginRequest
+import com.example.tabletop.util.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.*
 

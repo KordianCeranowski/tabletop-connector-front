@@ -4,23 +4,34 @@ import android.util.Patterns
 import java.util.regex.Pattern
 
 object Constants {
+    // URL
     const val MOCK_BASE_URL = "https://jsonplaceholder.typicode.com"
 
     const val BASE_URL = "localhost:8000/api"
 
+    // USER API
+    const val USER_API_ENDPOINT = "users"
+
+    const val USER_API_REGISTER_ENDPOINT = "auth/jwt/create"
+
+    const val USER_API_LOGIN_ENDPOINT = "BLANK"//todo
+
+    // EVENT API
+    const val EVENT_API_ENDPOINT = "events"
+
     // VALIDATION PATTERNS
-    enum class MyPattern(val value: Pattern) {
-        EMAIL_PATTERN(
+    enum class ValidationPattern(val value: Pattern) {
+        EMAIL(
             Patterns.EMAIL_ADDRESS
         ),
-        NICKNAME_PATTERN(
+        NICKNAME(
             Pattern.compile(
-            "^" +
-                    "(?=.*[A-z])"+      // at least 1 letter
-                    ".{2,}" +           // at least 2 characters
-                    "$")
+                "^" +
+                        "(?=.*[A-z])"+      // at least 1 letter
+                        ".{2,}" +           // at least 2 characters
+                        "$")
         ),
-        PASSWORD_PATTERN(
+        PASSWORD(
             Pattern.compile(
                 "^" +
                         "(?=.*[0-9])" +     // at least 1 digit
@@ -33,16 +44,7 @@ object Constants {
         )
     }
 
-    // USER API
-    const val USER_API_ENDPOINT = "users"
-
-    const val USER_API_REGISTER_ENDPOINT = "auth/jwt/create"
-
-    const val USER_API_LOGIN_ENDPOINT = "BLANK"//todo
-
-    // EVENT API
-    const val EVENT_API_ENDPOINT = "events"
-
+    // OTHER ENUMS
     enum class LogType {
         INFO, ERROR, WARNING, SUCCESS
     }

@@ -3,14 +3,17 @@ package com.example.tabletop.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tabletop.databinding.ActivityLoginBinding
-import com.example.tabletop.model.LoginRequest
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.logIt
-import com.example.tabletop.util.Helpers.showToast
 import com.example.tabletop.util.Helpers.viewModelOf
+import com.example.tabletop.util.LoginRequest
 import com.example.tabletop.viewmodel.UserViewModel
+import net.alexandroid.utils.mylogkt.logD
+import splitties.toast.UnreliableToastApi
+import splitties.toast.toast
 
+@UnreliableToastApi
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -28,11 +31,11 @@ class LoginActivity : AppCompatActivity() {
                 binding.loginEtPassword
             )
             if (isFormValid(nickname, password)) {
-                logIt("All fields are valid")
+                logD("All fields are valid")
                 // val loginRequest = LoginRequest(nickname, password)
                 // loginUser(loginRequest)
             } else {
-                showToast("Please correct invalid fields")
+                toast("Please correct invalid fields")
             }
         }
     }
@@ -70,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 //justStartActivity(MainActivity())
             } else {
-                showToast(response.code())
+                toast(response.code())
             }
         })
     }
