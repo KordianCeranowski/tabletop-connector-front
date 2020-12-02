@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginUser(loginRequest: LoginRequest) {
         userViewModel.login(loginRequest)
-        userViewModel.responseSingle.observe(this, { response ->
+        userViewModel.responseOne.observe(this, { response ->
             if (response.isSuccessful) {
                 response.run {
                     logIt(

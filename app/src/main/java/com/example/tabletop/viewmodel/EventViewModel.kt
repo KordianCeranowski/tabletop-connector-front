@@ -7,46 +7,70 @@ import com.example.tabletop.model.Event
 import com.example.tabletop.repository.*
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import kotlin.reflect.KFunction
 
 class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
-    val responseSingle = MutableLiveData<Response<Event>>()
+    val responseOne = MutableLiveData<Response<Event>>()
 
     val responseMany = MutableLiveData<Response<List<Event>>>()
 
-    fun getCustomUsers(sort: String, order: String) {
+    // private fun <T> saveEventAndExecute(
+    //     request: KFunction<Unit>,
+    //     event: T,
+    //     args: List<Any> = emptyList(),
+    //     action: (List<Any>) -> Unit
+    // ) {
+    //
+    // }
+    //
+    // init {
+    //     repository::getAll
+    // }
+    //
+    // fun testGetAll() {
+    //
+    // }
+
+    fun getAll() {
         viewModelScope.launch {
-            responseMany.value = repository.getCustomUsers(sort, order)
+            responseMany.value = repository.getAll()
         }
     }
 
-    fun getCustomUsers(options: Map<String, String>) {
+    fun getMany(sort: String, order: String) {
         viewModelScope.launch {
-            responseMany.value = repository.getCustomUsers(options)
+            responseMany.value = repository.getMany(sort, order)
+        }
+    }
+
+    fun getMany(options: Map<String, String>) {
+        viewModelScope.launch {
+            responseMany.value = repository.getMany(options)
         }
     }
 
     fun save(event: Event) {
         viewModelScope.launch {
-            responseSingle.value = repository.save(event)
+            responseOne.value = repository.save(event)
         }
     }
 
-    fun getUser(id: String) {
+    fun getOne(id: String) {
         viewModelScope.launch {
-            responseSingle.value = repository.getEvent(id)
+            responseOne.value = repository.getOne(id)
         }
     }
 
     fun remove(id: String) {
         viewModelScope.launch {
-            responseSingle.value = repository.remove(id)
+            responseOne.value = repository.remove(id)
         }
     }
 
-    fun edit(id: String, event: Event) {
+    fun edit(id: String, newEvent: Event) {
         viewModelScope.launch {
-            responseSingle.value = repository.edit(id, event)
+            responseOne.value = repository.edit(id, newEvent)
         }
     }
 }

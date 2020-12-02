@@ -2,5 +2,6 @@ package com.example.tabletop.model
 
 data class Message(
     val handle: String,
-    val content: String
+    val content: String,
+    val id: String = ""
 )

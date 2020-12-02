@@ -12,21 +12,21 @@ import retrofit2.Response
 
 class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
-    val responseSingle = MutableLiveData<Response<User>>()
-
-    val responseRegister = MutableLiveData<Response<Triple<String, String, String>>>()
+    val responseOne = MutableLiveData<Response<User>>()
 
     val responseMany = MutableLiveData<Response<List<User>>>()
 
-    fun getCustomUsers(sort: String, order: String) {
+    val responseRegister = MutableLiveData<Response<Triple<String, String, String>>>()
+
+    fun getMany(sort: String, order: String) {
         viewModelScope.launch {
-            responseMany.value = repository.getCustomUsers(sort, order)
+            responseMany.value = repository.getMany(sort, order)
         }
     }
 
-    fun getCustomUsers(options: Map<String, String>) {
+    fun getMany(options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = repository.getCustomUsers(options)
+            responseMany.value = repository.getMany(options)
         }
     }
 
@@ -38,25 +38,25 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
-            responseSingle.value = repository.login(loginRequest)
+            responseOne.value = repository.login(loginRequest)
         }
     }
 
-    fun getUser(id: String) {
+    fun getOne(id: String) {
         viewModelScope.launch {
-            responseSingle.value = repository.getUser(id)
+            responseOne.value = repository.getOne(id)
         }
     }
 
     fun remove(id: String) {
         viewModelScope.launch {
-            responseSingle.value = repository.remove(id)
+            responseOne.value = repository.remove(id)
         }
     }
 
     fun edit(id: String, user: User) {
         viewModelScope.launch {
-            responseSingle.value = repository.edit(id, user)
+            responseOne.value = repository.edit(id, user)
         }
     }
 }

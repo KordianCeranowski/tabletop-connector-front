@@ -7,13 +7,16 @@ import retrofit2.http.*
 
 interface EventApi {
     @GET(EVENT_API_ENDPOINT)
-    suspend fun getCustomEvents(
+    suspend fun getAll(): Response<List<Event>>
+
+    @GET(EVENT_API_ENDPOINT)
+    suspend fun getMany(
         @Query("_sort") sort: String,
         @Query("_order") order: String
     ): Response<List<Event>>
 
     @GET(EVENT_API_ENDPOINT)
-    suspend fun getCustomEvents(
+    suspend fun getMany(
         @QueryMap options: Map<String, String>
     ): Response<List<Event>>
 
@@ -22,17 +25,17 @@ interface EventApi {
         @Body event: Event
     ): Response<Event>
 
-    @GET("$EVENT_API_ENDPOINT/{id}")
-    suspend fun getEvent(
+    @GET("$EVENT_API_ENDPOINT{id}")
+    suspend fun getOne(
         @Path("id") id: String
     ): Response<Event>
 
-    @DELETE("$EVENT_API_ENDPOINT/{id}")
+    @DELETE("$EVENT_API_ENDPOINT{id}")
     suspend fun remove(
         @Path("id") id: String
     ): Response<Event>
 
-    @PUT("$EVENT_API_ENDPOINT/{id}")
+    @PUT("$EVENT_API_ENDPOINT{id}")
     suspend fun edit(
         @Path("id") id: String,
         @Body event: Event

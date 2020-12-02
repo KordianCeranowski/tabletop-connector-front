@@ -11,13 +11,13 @@ import retrofit2.http.*
 
 interface UserApi {
     @GET(USER_API_ENDPOINT)
-    suspend fun getCustomUsers(
+    suspend fun getMany(
         @Query("_sort") sort: String,
         @Query("_order") order: String
     ): Response<List<User>>
 
     @GET(USER_API_ENDPOINT)
-    suspend fun getCustomUsers(
+    suspend fun getMany(
         @QueryMap options: Map<String, String>
     ): Response<List<User>>
 
@@ -33,7 +33,7 @@ interface UserApi {
     ): Response<User>
 
     @GET("$USER_API_ENDPOINT/{id}")
-    suspend fun getUser(
+    suspend fun getOne(
         @Path("id") id: String
     ): Response<User>
 

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.repository.UserRepository
-import com.example.tabletop.util.Constants
 import com.example.tabletop.util.Constants.ValidationPattern
 import com.example.tabletop.util.Form
 import com.example.tabletop.util.Helpers.getEditTextString
@@ -114,7 +113,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun registerUser(registerRequest: RegisterRequest) {
         userViewModel.register(registerRequest)
-        userViewModel.responseSingle.observe(this, { response ->
+        userViewModel.responseOne.observe(this, { response ->
             if (response.isSuccessful) {
                 response.run {
                     logIt(

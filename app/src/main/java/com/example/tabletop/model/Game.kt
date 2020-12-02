@@ -7,5 +7,6 @@ data class Game(
     val maxPlayers: Int,
     val minPlaytime: Int,
     val maxPlaytime: Int,
-    val vendor: String
+    val vendor: String,
+    val id: String = ""
 )
