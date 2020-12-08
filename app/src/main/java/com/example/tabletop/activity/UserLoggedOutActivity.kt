@@ -2,6 +2,8 @@ package com.example.tabletop.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.tabletop.activity.sample.LocationActivity
+import com.example.tabletop.activity.sample.SidebarActivity
 import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
 import com.example.tabletop.util.Helpers.getMockEvent
 import com.example.tabletop.util.Helpers.startWithExtra
@@ -24,7 +26,7 @@ class UserLoggedOutActivity : AppCompatActivity() {
         }
 
         binding.btnStartTestActivity.setOnClickListener {
-            start<TestActivity>()
+            start<SidebarActivity>()
         }
 
         binding.btnStartLoginActivity.setOnClickListener {
@@ -42,6 +44,10 @@ class UserLoggedOutActivity : AppCompatActivity() {
 
         binding.btnStartEventFormActivity.setOnClickListener {
             start<EventFormActivity>()
+        }
+
+        binding.btnStartLocationActivity.setOnClickListener {
+            start<LocationActivity>()
         }
     }
 
