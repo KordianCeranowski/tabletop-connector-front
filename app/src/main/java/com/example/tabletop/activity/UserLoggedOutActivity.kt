@@ -3,6 +3,8 @@ package com.example.tabletop.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
+import com.example.tabletop.util.Helpers.getMockEvent
+import com.example.tabletop.util.Helpers.startWithExtra
 import com.example.tabletop.util.runLoggingConfig
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
@@ -17,20 +19,29 @@ class UserLoggedOutActivity : AppCompatActivity() {
 
         setup()
 
-        binding.btnGoToMainActivity.setOnClickListener {
+        binding.btnStartMainActivity.setOnClickListener {
             start<MainActivity>()
         }
 
-        binding.btnGoToTestActivity.setOnClickListener {
+        binding.btnStartTestActivity.setOnClickListener {
             start<TestActivity>()
         }
 
-        binding.btnGoToLoginActivity.setOnClickListener {
+        binding.btnStartLoginActivity.setOnClickListener {
             start<LoginActivity>()
         }
 
-        binding.btnGoToRegisterActivity.setOnClickListener {
+        binding.btnStartRegisterActivity.setOnClickListener {
             start<RegisterActivity>()
+        }
+
+        binding.btnStartEventActivity.setOnClickListener {
+            val event = getMockEvent()
+            startWithExtra<EventActivity>("EVENT" to event)
+        }
+
+        binding.btnStartEventFormActivity.setOnClickListener {
+            start<EventFormActivity>()
         }
     }
 

@@ -22,10 +22,10 @@ class MockAdapter() : RecyclerView.Adapter<MockAdapter.MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.itemView.apply {
-            userId_txt.text = viewItems[position].userId.toString()
-            id_txt.text = viewItems[position].id.toString()
-            title_txt.text = viewItems[position].title
-            body_txt.text = viewItems[position].body
+            tv_user_id.text = viewItems[position].userId.toString()
+            tv_id.text = viewItems[position].id.toString()
+            tv_title.text = viewItems[position].title
+            tv_body.text = viewItems[position].body
         }
     }
 

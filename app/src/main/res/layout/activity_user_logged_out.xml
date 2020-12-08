@@ -10,7 +10,7 @@
     tools:context=".activity.UserLoggedOutActivity">
 
     <Button
-        android:id="@+id/btnGoToLoginActivity"
+        android:id="@+id/btn_start_login_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_login"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.565" />
 
     <Button
-        android:id="@+id/btnGoToRegisterActivity"
+        android:id="@+id/btn_start_register_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_register"
@@ -46,7 +46,7 @@
         app:layout_constraintVertical_bias="0.157" />
 
     <Button
-        android:id="@+id/btnGoToMainActivity"
+        android:id="@+id/btn_start_main_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Main"
@@ -58,15 +58,39 @@
         app:layout_constraintVertical_bias="0.272" />
 
     <Button
-        android:id="@+id/btnGoToTestActivity"
+        android:id="@+id/btn_start_test_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test"
+        android:text="Sidebar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.417" />
+
+    <Button
+        android:id="@+id/btn_start_event_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.417" />
+
+    <Button
+        android:id="@+id/btn_start_event_form_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Form"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.565" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,7 @@
 package com.example.tabletop.model
 
+import java.io.Serializable
+
 data class Address(
     val country: String,
     val city: String,
@@ -9,4 +11,4 @@ data class Address(
     val geo_x: Double?,
     val geo_y: Double?,
     val id: String = ""
-)
+) : Serializable
