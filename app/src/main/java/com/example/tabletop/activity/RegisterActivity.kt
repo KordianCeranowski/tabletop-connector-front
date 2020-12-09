@@ -1,7 +1,7 @@
 package com.example.tabletop.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.viewbinding.library.activity.viewBinding
 import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Constants.ValidationPattern
@@ -17,15 +17,18 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
 @UnreliableToastApi
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityRegisterBinding
+    override val binding: ActivityRegisterBinding by viewBinding()
 
     private lateinit var userViewModel: UserViewModel
 
+    override fun setup() {
+        userViewModel = viewModelOf(UserRepository) as UserViewModel
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setup()
 
         binding.btnRegister.setOnClickListener {
@@ -42,13 +45,6 @@ class RegisterActivity : AppCompatActivity() {
                 toast("Please correct invalid fields")
             }
         }
-    }
-
-    private fun setup() {
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        userViewModel = viewModelOf(UserRepository) as UserViewModel
     }
 
     private fun isFormValid(form: Form): Boolean {

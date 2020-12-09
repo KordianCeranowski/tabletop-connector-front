@@ -1,7 +1,7 @@
 package com.example.tabletop.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.viewbinding.library.activity.viewBinding
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.getEditTextString
@@ -14,15 +14,18 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
 @UnreliableToastApi
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
+    override val binding: ActivityLoginBinding by viewBinding()
 
     private lateinit var userViewModel: UserViewModel
 
+    override fun setup() {
+        userViewModel = viewModelOf(UserRepository) as UserViewModel
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setup()
 
         binding.btnLogin.setOnClickListener {
@@ -39,15 +42,8 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-    private fun setup() {
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        userViewModel = viewModelOf(UserRepository) as UserViewModel
-    }
 
     private fun isFormValid(nickname: String, password: String): Boolean {
-
         var areFieldsValid = true
         if (nickname.isEmpty()) {
             binding.loginEtNickname.error = "Field cannot be empty"
@@ -71,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
                         message()
                     )
                 }
-                //justStartActivity(MainActivity())
+                //start<MainActivity>()
             } else {
                 toast(response.code())
             }

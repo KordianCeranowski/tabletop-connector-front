@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.viewbinding.library.activity.viewBinding
 import androidx.core.app.ActivityCompat
+import com.example.tabletop.activity.BaseActivity
 import com.example.tabletop.databinding.ActivityLocationBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -13,9 +15,9 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
 @UnreliableToastApi
-class LocationActivity : AppCompatActivity() {
+class LocationActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityLocationBinding
+    override val binding: ActivityLocationBinding by viewBinding()
 
     private val LOCATION_PERMISSION_REQ_CODE = 1000
 
@@ -24,10 +26,7 @@ class LocationActivity : AppCompatActivity() {
     private var latitude = 0.0
     private var longitude = 0.0
 
-    private fun setup() {
-        binding = ActivityLocationBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun setup() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
@@ -49,6 +48,7 @@ class LocationActivity : AppCompatActivity() {
                 LOCATION_PERMISSION_REQ_CODE
             )
             logW("DONE")
+            //todo make it so after granting privileges it runs the code below
             return
         }
         fusedLocationClient.lastLocation

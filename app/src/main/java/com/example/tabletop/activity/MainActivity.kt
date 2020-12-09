@@ -1,6 +1,7 @@
 package com.example.tabletop.activity
 
 import android.os.Bundle
+import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.adapter.EventAdapter
@@ -21,9 +22,9 @@ import splitties.toast.UnreliableToastApi
 import java.util.*
 
 @UnreliableToastApi
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    override val binding: ActivityMainBinding by viewBinding()
 
     //private lateinit var mockViewModel: MockViewModel
 
@@ -32,13 +33,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var eventViewModel: EventViewModel
 
     private val eventAdapter by lazy { EventAdapter() }
-    
-    private fun setup() {
-        runLoggingConfig()
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun setup() {
         //mockViewModel = viewModelOf(MockRepository) as MockViewModel
 
         // //RECYCLER VIEW - MOCK
@@ -56,7 +52,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setup()
 
         eventViewModel = viewModelOf(EventRepository) as EventViewModel

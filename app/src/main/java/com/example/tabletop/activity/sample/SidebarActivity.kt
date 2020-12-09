@@ -2,9 +2,11 @@ package com.example.tabletop.activity.sample
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tabletop.R
+import com.example.tabletop.activity.BaseActivity
 import com.example.tabletop.databinding.ActivitySidebarBinding
 import com.example.tabletop.util.runLoggingConfig
 import kotlinx.android.synthetic.main.activity_sidebar.*
@@ -12,17 +14,13 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
 @UnreliableToastApi
-class SidebarActivity : AppCompatActivity() {
+class SidebarActivity : BaseActivity() {
 
-    private lateinit var binding: ActivitySidebarBinding
+    override val binding: ActivitySidebarBinding by viewBinding()
 
     private lateinit var toggle: ActionBarDrawerToggle
 
-    private fun setup() {
-        runLoggingConfig()
-
-        binding = ActivitySidebarBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun setup() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

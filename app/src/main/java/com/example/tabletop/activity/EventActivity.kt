@@ -1,17 +1,17 @@
 package com.example.tabletop.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.viewbinding.library.activity.viewBinding
+import androidx.viewbinding.ViewBinding
 import com.example.tabletop.databinding.ActivityEventBinding
 import com.example.tabletop.model.Event
 
-class EventActivity : AppCompatActivity() {
+class EventActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityEventBinding
+    override val binding: ActivityEventBinding by viewBinding()
 
-    private fun setup() {
-        binding = ActivityEventBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun setup() {
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,7 +1,7 @@
 package com.example.tabletop.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.viewbinding.library.activity.viewBinding
 import com.example.tabletop.activity.sample.LocationActivity
 import com.example.tabletop.activity.sample.SidebarActivity
 import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
@@ -12,9 +12,13 @@ import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 
 @UnreliableToastApi
-class UserLoggedOutActivity : AppCompatActivity() {
+class UserLoggedOutActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityUserLoggedOutBinding
+    override val binding: ActivityUserLoggedOutBinding by viewBinding()
+
+    override fun setup() {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +53,5 @@ class UserLoggedOutActivity : AppCompatActivity() {
         binding.btnStartLocationActivity.setOnClickListener {
             start<LocationActivity>()
         }
-    }
-
-    private fun setup() {
-        runLoggingConfig()
-
-        binding = ActivityUserLoggedOutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
     }
 }
