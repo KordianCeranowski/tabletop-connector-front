@@ -1,6 +1,6 @@
 package com.example.tabletop.api
 
-import com.example.tabletop.model.Post
+import com.example.tabletop.model.helpers.Post
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

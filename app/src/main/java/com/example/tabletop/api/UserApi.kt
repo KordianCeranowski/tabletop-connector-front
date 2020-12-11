@@ -22,9 +22,9 @@ interface UserApi {
     ): Response<List<User>>
 
     @POST(USER_API_REGISTER_ENDPOINT)
-    suspend fun register(
-        @Body registerRequest: RegisterRequest
-    ): Response<Triple<String, String, String>>
+    suspend fun save(
+        @Body user: User
+    ): Response<User>
 
     @Headers("Authorization: test")
     @POST(USER_API_LOGIN_ENDPOINT)

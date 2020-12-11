@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
-import com.example.tabletop.model.Post
+import com.example.tabletop.model.helpers.Post
 import kotlinx.android.synthetic.main.row_mock_post.view.*
 
 class MockAdapter() : RecyclerView.Adapter<MockAdapter.MyViewHolder>() {

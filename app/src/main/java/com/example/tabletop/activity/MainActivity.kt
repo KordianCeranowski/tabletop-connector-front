@@ -2,19 +2,18 @@ package com.example.tabletop.activity
 
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.adapter.EventAdapter
 import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.model.Address
 import com.example.tabletop.model.Event
 import com.example.tabletop.repository.EventRepository
+import com.example.tabletop.repository.MockRepository
+import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.getFullResponse
-import com.example.tabletop.util.Helpers.gson
-import com.example.tabletop.util.Helpers.viewModelOf
-import com.example.tabletop.util.runLoggingConfig
 import com.example.tabletop.viewmodel.EventViewModel
-import com.google.gson.GsonBuilder
+import com.example.tabletop.viewmodel.UserViewModel
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.android.synthetic.main.activity_main.*
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
@@ -26,11 +25,11 @@ class MainActivity : BaseActivity() {
 
     override val binding: ActivityMainBinding by viewBinding()
 
-    //private lateinit var mockViewModel: MockViewModel
+    //private val mockViewModel: MockViewModel by lazyViewModels { MockViewModel(MockRepository) }
 
     //private val mockAdapter by lazy { MockAdapter() }
 
-    private lateinit var eventViewModel: EventViewModel
+    private val eventViewModel: EventViewModel by lazyViewModels { EventViewModel(EventRepository) }
 
     private val eventAdapter by lazy { EventAdapter() }
 
@@ -53,8 +52,6 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
-
-        eventViewModel = viewModelOf(EventRepository) as EventViewModel
 
         val newEvent = Event(
             "TEST 1",

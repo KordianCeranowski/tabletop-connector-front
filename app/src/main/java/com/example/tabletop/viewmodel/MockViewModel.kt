@@ -1,28 +1,46 @@
 package com.example.tabletop.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tabletop.model.Post
+import com.example.tabletop.activity.sample.BaseViewModel
+import com.example.tabletop.model.helpers.Post
 import com.example.tabletop.repository.*
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
-class MockViewModel(private val repository: MockRepository) : ViewModel() {
-
-    val responseSingle = MutableLiveData<Response<Post>>()
-
-    val responseMany = MutableLiveData<Response<List<Post>>>()
+class MockViewModel(private val repository: MockRepository) : BaseViewModel<Post>() {
 
     fun getPost() {
         viewModelScope.launch {
-            responseSingle.value = repository.getPost()
+            responseOne.value = repository.getOne()
         }
     }
 
     fun getCustomPosts(userId: Int, sort: String, order: String) {
         viewModelScope.launch {
-            responseMany.value = repository.getCustomPosts(userId, sort, order)
+            responseMany.value = repository.getMany(userId, sort, order)
         }
+    }
+
+    override fun getMany(sort: String, order: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMany(options: Map<String, String>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun save(model: Post) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getOne(id: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun remove(id: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun edit(id: String, newModel: Post) {
+        TODO("Not yet implemented")
     }
 }

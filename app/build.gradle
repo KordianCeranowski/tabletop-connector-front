@@ -69,6 +69,9 @@ dependencies {
     // Google Location
     implementation 'com.google.android.gms:play-services-location:17.1.0'
 
-    //View Binding boiler-plate reducer
+    //View Binding delegation
     implementation 'com.github.yogacp:android-viewbinding:1.0.1'
+
+    //View Model delegation
+    implementation 'dev.ajkueterman:lazyviewmodels:0.1.0'
 }

@@ -2,7 +2,6 @@ package com.example.tabletop.activity
 
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import androidx.viewbinding.ViewBinding
 import com.example.tabletop.databinding.ActivityEventBinding
 import com.example.tabletop.model.Event
 

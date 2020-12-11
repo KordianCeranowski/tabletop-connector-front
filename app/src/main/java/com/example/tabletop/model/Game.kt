@@ -1,5 +1,7 @@
 package com.example.tabletop.model
 
+import com.example.tabletop.model.helpers.Genre
+
 data class Game(
     val name: String,
     val genres: List<Genre>,
