@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.EditText
 import androidx.activity.ComponentActivity
-import com.example.tabletop.model.Address
 import com.example.tabletop.model.Event
+import com.example.tabletop.model.Game
 import com.example.tabletop.model.User
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -49,16 +49,25 @@ object Helpers {
             "name",
             "creator",
             "date",
-            Address(
-                "country",
-                "city",
-                "street",
-                "postal_code",
-                "number",
-                1.0,
-                1.0
-            ),
-            null
+            // Address(
+            //     "country",
+            //     "city",
+            //     "street",
+            //     "postal_code",
+            //     "number",
+            //     1.0,
+            //     1.0
+            // )
+        )
+    }
+
+    fun getMockGame(): Game {
+        return Game(
+            "name",
+            "URL",
+            2,
+            8,
+            30
         )
     }
 
@@ -69,23 +78,26 @@ object Helpers {
             "password",
         )
     }
-    //todo delete
-    // fun ViewModelDelegate.viewModelOf(activity: BaseActivity, repository: Repository): ViewModel {
-    //     val viewModel = when (repository) {
-    //         is UserRepository -> UserViewModel(repository)
-    //         is EventRepository -> EventViewModel(repository)
-    //         is MockRepository -> MockViewModel(repository)
-    //     }
-    //
-    //     val myViewModel = ViewModelProvider(activity, ViewModelFactory(repository))
-    //         .get(viewModel::class.java)
-    //
-    //     return when (repository) {
-    //         is UserRepository -> myViewModel as UserViewModel
-    //         is EventRepository -> myViewModel as EventViewModel
-    //         is MockRepository -> myViewModel as MockViewModel
-    //     }
-    // }
+
+    /*
+    todo delete
+    fun ViewModelDelegate.viewModelOf(activity: BaseActivity, repository: Repository): ViewModel {
+        val viewModel = when (repository) {
+            is UserRepository -> UserViewModel(repository)
+            is EventRepository -> EventViewModel(repository)
+            is MockRepository -> MockViewModel(repository)
+        }
+
+        val myViewModel = ViewModelProvider(activity, ViewModelFactory(repository))
+            .get(viewModel::class.java)
+
+        return when (repository) {
+            is UserRepository -> myViewModel as UserViewModel
+            is EventRepository -> myViewModel as EventViewModel
+            is MockRepository -> myViewModel as MockViewModel
+        }
+    }
+    */
 
     fun getEditTextString(vararg editTexts: EditText): List<String> {
         return editTexts.map { it.text.toString().trim() }
@@ -115,7 +127,6 @@ object Helpers {
             }
         }
     }
-
 
     /*
     todo to use in Activity

@@ -1,7 +1,6 @@
 package com.example.tabletop.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.tabletop.activity.sample.BaseViewModel
 import com.example.tabletop.model.Event
 import com.example.tabletop.repository.*
 import kotlinx.coroutines.launch

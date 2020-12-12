@@ -2,16 +2,14 @@ package com.example.tabletop.activity
 
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import androidx.appcompat.app.AppCompatActivity
 import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.model.User
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Constants.ValidationPattern
-import com.example.tabletop.util.Form
+import com.example.tabletop.model.helpers.Form
 import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.getMockUser
 import com.example.tabletop.util.Helpers.logIt
-import com.example.tabletop.util.RegisterRequest
 import com.example.tabletop.viewmodel.UserViewModel
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import net.alexandroid.utils.mylogkt.*
@@ -56,9 +54,9 @@ class RegisterActivity : BaseActivity() {
             areFieldsValid = false
             logW("email: ${form.email}")
         }
-        if (!(isFieldValid(form.nickname, ValidationPattern.NICKNAME))) {
+        if (!(isFieldValid(form.username, ValidationPattern.NICKNAME))) {
             areFieldsValid = false
-            logW("nickname: ${form.nickname}")
+            logW("nickname: ${form.username}")
         }
         if (!(isFieldValid(form.password, ValidationPattern.PASSWORD))) {
             areFieldsValid = false

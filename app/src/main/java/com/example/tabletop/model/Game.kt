@@ -1,14 +1,10 @@
 package com.example.tabletop.model
 
-import com.example.tabletop.model.helpers.Genre
-
 data class Game(
     val name: String,
-    val genres: List<Genre>,
+    val image: String,
     val minPlayers: Int,
     val maxPlayers: Int,
-    val minPlaytime: Int,
-    val maxPlaytime: Int,
-    val vendor: String,
+    val playTime: Int,
     val id: String = ""
-)
+) : Model()

@@ -6,7 +6,7 @@ import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.logIt
-import com.example.tabletop.util.LoginRequest
+import com.example.tabletop.model.helpers.LoginRequest
 import com.example.tabletop.viewmodel.UserViewModel
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import net.alexandroid.utils.mylogkt.logD

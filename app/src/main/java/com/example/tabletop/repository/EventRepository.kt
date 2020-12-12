@@ -2,14 +2,15 @@ package com.example.tabletop.repository
 
 import com.example.tabletop.api.RetrofitInstance.eventApi
 import com.example.tabletop.model.Event
+import com.example.tabletop.model.helpers.Many
 import retrofit2.Response
 
 object EventRepository : Repository<Event>() {
-    override suspend fun getMany(sort: String, order: String): Response<List<Event>> {
+    override suspend fun getMany(sort: String, order: String): Response<Many<Event>> {
         return eventApi.getMany(sort, order)
     }
 
-    override suspend fun getMany(options: Map<String, String>): Response<List<Event>> {
+    override suspend fun getMany(options: Map<String, String>): Response<Many<Event>> {
         return eventApi.getMany(options)
     }
 

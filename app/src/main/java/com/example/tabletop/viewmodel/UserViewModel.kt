@@ -1,10 +1,9 @@
 package com.example.tabletop.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.tabletop.activity.sample.BaseViewModel
 import com.example.tabletop.model.User
 import com.example.tabletop.repository.*
-import com.example.tabletop.util.LoginRequest
+import com.example.tabletop.model.helpers.LoginRequest
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val repository: UserRepository) : BaseViewModel<User>() {
@@ -12,12 +11,6 @@ class UserViewModel(private val repository: UserRepository) : BaseViewModel<User
     override fun save(model: User) {
         viewModelScope.launch {
             responseOne.value = repository.save(model)
-        }
-    }
-
-    fun login(loginRequest: LoginRequest) {
-        viewModelScope.launch {
-            responseOne.value = repository.login(loginRequest)
         }
     }
 
@@ -48,6 +41,12 @@ class UserViewModel(private val repository: UserRepository) : BaseViewModel<User
     override fun edit(id: String, newModel: User) {
         viewModelScope.launch {
             responseOne.value = repository.edit(id, newModel)
+        }
+    }
+
+    fun login(loginRequest: LoginRequest) {
+        viewModelScope.launch {
+            responseOne.value = repository.login(loginRequest)
         }
     }
 }

@@ -2,17 +2,17 @@ package com.example.tabletop.repository
 
 import com.example.tabletop.api.RetrofitInstance.userApi
 import com.example.tabletop.model.User
-import com.example.tabletop.util.LoginRequest
-import com.example.tabletop.util.RegisterRequest
+import com.example.tabletop.model.helpers.LoginRequest
+import com.example.tabletop.model.helpers.Many
 import retrofit2.Response
 
 object UserRepository : Repository<User>() {
 
-    override suspend fun getMany(sort: String, order: String): Response<List<User>> {
+    override suspend fun getMany(sort: String, order: String): Response<Many<User>> {
         return userApi.getMany(sort, order)
     }
 
-    override suspend fun getMany(options: Map<String, String>): Response<List<User>> {
+    override suspend fun getMany(options: Map<String, String>): Response<Many<User>> {
         return userApi.getMany(options)
     }
 

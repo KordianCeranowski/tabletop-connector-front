@@ -5,14 +5,10 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.adapter.EventAdapter
 import com.example.tabletop.databinding.ActivityMainBinding
-import com.example.tabletop.model.Address
-import com.example.tabletop.model.Event
 import com.example.tabletop.repository.EventRepository
-import com.example.tabletop.repository.MockRepository
-import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.getFullResponse
+import com.example.tabletop.util.Helpers.getMockEvent
 import com.example.tabletop.viewmodel.EventViewModel
-import com.example.tabletop.viewmodel.UserViewModel
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.android.synthetic.main.activity_main.*
 import net.alexandroid.utils.mylogkt.logD
@@ -53,23 +49,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        val newEvent = Event(
-            "TEST 1",
-            "c7e5510a-ff73-4a7a-adf6-d82239acdf0f",
-            "2020-12-10T16:01:00+0000",
-            Address(
-                "xd",
-                "xd",
-                "xd",
-                "xd",
-                "xd",
-                21.37,
-                12.35
-            ),
-            null
-        )
-
-        eventViewModel.save(newEvent)
+        eventViewModel.save(getMockEvent())
 
         eventViewModel.responseOne.observe(this, { response ->
             if (response.isSuccessful) {

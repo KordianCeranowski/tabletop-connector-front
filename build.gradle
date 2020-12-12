@@ -17,13 +17,20 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {url = uri('https://jitpack.io') }
+        maven { url = uri('https://jitpack.io') }
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/robotsquidward/lazyviewmodels")
+
+            Properties properties = new Properties()
+            def propertiesFile = project.rootProject.file("local.properties")
+            if (propertiesFile.exists()) {
+                properties.load(propertiesFile.newDataInputStream())
+            }
+
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                username = properties.getProperty("ghp.user") ?: System.getenv("USERNAME")
+                password = properties.getProperty("ghp.key") ?: System.getenv("TOKEN")
             }
         }
     }

@@ -16,6 +16,9 @@ object Constants {
 
     const val USER_API_LOGIN_ENDPOINT = "BLANK"//todo
 
+    // GAME API
+    const val GAME_API_ENDPOINT = "games/"
+
     // EVENT API
     const val EVENT_API_ENDPOINT = "events/"
 

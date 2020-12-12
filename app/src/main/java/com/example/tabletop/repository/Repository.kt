@@ -1,12 +1,13 @@
 package com.example.tabletop.repository
 
 import com.example.tabletop.model.Model
+import com.example.tabletop.model.helpers.Many
 import retrofit2.Response
 
 abstract class Repository<T : Model> {
-    abstract suspend fun getMany(sort: String, order: String): Response<List<T>>
+    abstract suspend fun getMany(sort: String, order: String): Response<Many<T>>
 
-    abstract suspend fun getMany(options: Map<String, String>): Response<List<T>>
+    abstract suspend fun getMany(options: Map<String, String>): Response<Many<T>>
 
     abstract suspend fun save(model: T): Response<T>
 

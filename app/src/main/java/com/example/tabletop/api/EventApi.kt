@@ -1,24 +1,22 @@
 package com.example.tabletop.api
 
 import com.example.tabletop.model.Event
+import com.example.tabletop.model.helpers.Many
 import com.example.tabletop.util.Constants.EVENT_API_ENDPOINT
 import retrofit2.Response
 import retrofit2.http.*
 
 interface EventApi {
     @GET(EVENT_API_ENDPOINT)
-    suspend fun getAll(): Response<List<Event>>
-
-    @GET(EVENT_API_ENDPOINT)
     suspend fun getMany(
         @Query("_sort") sort: String,
         @Query("_order") order: String
-    ): Response<List<Event>>
+    ): Response<Many<Event>>
 
     @GET(EVENT_API_ENDPOINT)
     suspend fun getMany(
         @QueryMap options: Map<String, String>
-    ): Response<List<Event>>
+    ): Response<Many<Event>>
 
     @POST(EVENT_API_ENDPOINT)
     suspend fun save(
