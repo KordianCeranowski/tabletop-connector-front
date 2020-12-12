@@ -4,7 +4,7 @@ import com.example.tabletop.model.User
 import com.example.tabletop.util.Constants.USER_API_ENDPOINT
 import com.example.tabletop.util.Constants.USER_API_LOGIN_ENDPOINT
 import com.example.tabletop.util.Constants.USER_API_REGISTER_ENDPOINT
-import com.example.tabletop.model.helpers.LoginRequest
+import com.example.tabletop.model.helpers.LoginForm
 import com.example.tabletop.model.helpers.Many
 import retrofit2.Response
 import retrofit2.http.*
@@ -45,6 +45,6 @@ interface UserApi {
     @Headers("Authorization: test")
     @POST(USER_API_LOGIN_ENDPOINT)
     suspend fun login(
-        @Body loginRequest: LoginRequest
+        @Body loginForm: LoginForm
     ): Response<User>
 }

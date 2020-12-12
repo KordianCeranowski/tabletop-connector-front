@@ -2,7 +2,7 @@ package com.example.tabletop.repository
 
 import com.example.tabletop.api.RetrofitInstance.userApi
 import com.example.tabletop.model.User
-import com.example.tabletop.model.helpers.LoginRequest
+import com.example.tabletop.model.helpers.LoginForm
 import com.example.tabletop.model.helpers.Many
 import retrofit2.Response
 
@@ -32,7 +32,7 @@ object UserRepository : Repository<User>() {
         return userApi.edit(id, model)
     }
 
-    suspend fun login(loginRequest: LoginRequest): Response<User> {
-        return userApi.login(loginRequest)
+    suspend fun login(loginForm: LoginForm): Response<User> {
+        return userApi.login(loginForm)
     }
 }

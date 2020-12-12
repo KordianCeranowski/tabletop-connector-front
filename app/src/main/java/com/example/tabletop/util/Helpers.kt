@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import com.example.tabletop.model.Event
 import com.example.tabletop.model.Game
 import com.example.tabletop.model.User
+import com.example.tabletop.model.helpers.Address
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.alexandroid.utils.mylogkt.logD
@@ -44,6 +45,17 @@ object Helpers {
         }
     }
 
+    fun getMockEvent(): Event {
+        return Event(
+            "mock name",
+            "mock creator",
+            getRandomDate(),
+            getMockAddress(),
+            emptyList(),
+            emptyList()
+        )
+    }
+
     fun getRandomDate() : String {
         val day = object {
             val firstDigit = (0..3).random()
@@ -62,21 +74,15 @@ object Helpers {
             .toString()
     }
 
-    fun getMockEvent(): Event {
-        return Event(
-            "mock name",
-            "mock creator",
-            getRandomDate(),
-            // Address(
-            //     "country",
-            //     "city",
-            //     "street",
-            //     "postal_code",
-            //     "number",
-            //     1.0,
-            //     1.0
-            // )
-            emptyList()
+    fun getMockAddress(): Address {
+        return Address(
+            "BLANK",
+            "BLANK",
+            "BLANK",
+            "BLANK",
+            "BLANK",
+            0.0,
+            0.0
         )
     }
 
@@ -98,35 +104,18 @@ object Helpers {
         )
     }
 
-    /*
-    todo delete
-    fun ViewModelDelegate.viewModelOf(activity: BaseActivity, repository: Repository): ViewModel {
-        val viewModel = when (repository) {
-            is UserRepository -> UserViewModel(repository)
-            is EventRepository -> EventViewModel(repository)
-            is MockRepository -> MockViewModel(repository)
-        }
-
-        val myViewModel = ViewModelProvider(activity, ViewModelFactory(repository))
-            .get(viewModel::class.java)
-
-        return when (repository) {
-            is UserRepository -> myViewModel as UserViewModel
-            is EventRepository -> myViewModel as EventViewModel
-            is MockRepository -> myViewModel as MockViewModel
-        }
-    }
-    */
-
     fun getEditTextString(vararg editTexts: EditText): List<String> {
         return editTexts.map { it.text.toString().trim() }
     }
 
-    fun Any.getClassName(): String = this::class.simpleName as String
+    fun Any.getClassName2(): String = this::class.simpleName as String
+
+    val Any.className: String
+        get() = this::class.simpleName as String
 
     fun <T> Response<T>.getFullResponse(): String {
         @Suppress("IMPLICIT_CAST_TO_ANY")
-        val body = if (body() == null) errorBody() else body()
+        val body = if (body() == null) errorBody() else body()// elvis
         return """
             |
             |Headers:
@@ -142,7 +131,7 @@ object Helpers {
     fun logIt(vararg msgs: Any?) {
         msgs.forEach { msg ->
             Timer().schedule(1) {
-                logD(msg.toString())
+                msg?.let { logD(it.toString()) } ?: logD("[ERROR]: Object is null")
             }
         }
     }

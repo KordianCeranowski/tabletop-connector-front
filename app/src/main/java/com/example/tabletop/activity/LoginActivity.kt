@@ -2,14 +2,18 @@ package com.example.tabletop.activity
 
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
+import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.repository.UserRepository
 import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.logIt
-import com.example.tabletop.model.helpers.LoginRequest
+import com.example.tabletop.model.helpers.LoginForm
+import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.viewmodel.UserViewModel
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
+import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
+import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
@@ -20,8 +24,10 @@ class LoginActivity : BaseActivity() {
 
     private val userViewModel: UserViewModel by lazyViewModels { UserViewModel(UserRepository) }
 
-    override fun setup() {
+    private lateinit var settingsManager: SettingsManager
 
+    override fun setup() {
+        settingsManager = SettingsManager(applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,8 +62,9 @@ class LoginActivity : BaseActivity() {
         return areFieldsValid
     }
 
-    private fun loginUser(loginRequest: LoginRequest) {
-        userViewModel.login(loginRequest)
+    private fun loginUser(loginForm: LoginForm) {
+        userViewModel.login(loginForm)
+
         userViewModel.responseOne.observe(this, { response ->
             if (response.isSuccessful) {
                 response.run {
@@ -67,7 +74,8 @@ class LoginActivity : BaseActivity() {
                         message()
                     )
                 }
-                //start<MainActivity>()
+                lifecycleScope.launch { settingsManager.setIsUserLoggedIn(true) }
+                start<MainActivity>()
             } else {
                 toast(response.code())
             }

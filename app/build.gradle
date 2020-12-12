@@ -85,4 +85,7 @@ dependencies {
 
     // K4Kotlin androidx extension functions (Uses appcompat version of androidx)
     implementation 'com.github.kirtan403.k4kotlin:k4kotlin-androidx:1.0.0-beta1'
+
+    // Data Store
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
 }

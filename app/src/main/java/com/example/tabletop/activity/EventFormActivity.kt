@@ -2,21 +2,16 @@ package com.example.tabletop.activity
 
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import android.widget.EditText
-import android.widget.TextView
 import com.example.tabletop.databinding.ActivityEventFormBinding
-import com.example.tabletop.util.Helpers.getClassName
-import com.livinglifetechway.k4kotlin.core.value
-import net.alexandroid.utils.mylogkt.logI
 
 class EventFormActivity : BaseActivity() {
 
     override val binding: ActivityEventFormBinding by viewBinding()
 
-    //todo:
-    // weird behavior: layout wont show up if some element is not mentioned?
+    //todo
+    //  weird behavior:
+    //    layout will show up only if binding or it's members are mentioned (i.e. binding)?
     override fun setup() {
-        logI("Starting ${getClassName()}")
         binding
     }
 

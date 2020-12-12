@@ -3,7 +3,7 @@ package com.example.tabletop.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.model.User
 import com.example.tabletop.repository.*
-import com.example.tabletop.model.helpers.LoginRequest
+import com.example.tabletop.model.helpers.LoginForm
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val repository: UserRepository) : BaseViewModel<User>() {
@@ -44,9 +44,9 @@ class UserViewModel(private val repository: UserRepository) : BaseViewModel<User
         }
     }
 
-    fun login(loginRequest: LoginRequest) {
+    fun login(loginForm: LoginForm) {
         viewModelScope.launch {
-            responseOne.value = repository.login(loginRequest)
+            responseOne.value = repository.login(loginForm)
         }
     }
 }
