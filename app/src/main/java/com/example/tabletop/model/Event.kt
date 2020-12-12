@@ -7,7 +7,7 @@ data class Event(
     val creator: String,
     val date: String?, // todo DateTime format
     //val address: Address,
-    //val participants: List<User>,
+    val participants: List<String>,
     //val games: List<Game>,
     val chat: List<Message>? = null,
     val id: String = ""

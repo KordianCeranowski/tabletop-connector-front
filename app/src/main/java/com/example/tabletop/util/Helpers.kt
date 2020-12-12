@@ -44,11 +44,29 @@ object Helpers {
         }
     }
 
+    fun getRandomDate() : String {
+        val day = object {
+            val firstDigit = (0..3).random()
+            val secondDigit = (if (firstDigit == 0) (1..9) else (0..9)).random()
+        }
+        val month = object {
+            val firstDigit = (0..1).random()
+            val secondDigit = (if (firstDigit == 0) (1..9) else (0..2)).random()
+        }
+        return StringBuilder()
+            .append(day.firstDigit)
+            .append(day.secondDigit)
+            .append(".")
+            .append(month.firstDigit)
+            .append(month.secondDigit)
+            .toString()
+    }
+
     fun getMockEvent(): Event {
         return Event(
-            "name",
-            "creator",
-            "date",
+            "mock name",
+            "mock creator",
+            getRandomDate(),
             // Address(
             //     "country",
             //     "city",
@@ -58,6 +76,7 @@ object Helpers {
             //     1.0,
             //     1.0
             // )
+            emptyList()
         )
     }
 
