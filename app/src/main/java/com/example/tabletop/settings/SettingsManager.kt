@@ -1,6 +1,7 @@
 package com.example.tabletop.settings
 
 import android.content.Context
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
@@ -11,62 +12,84 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 class SettingsManager(context: Context) {
+
     private val dataStore = context.createDataStore(name = "settings")
 
-    companion object {
-        val IS_USER_LOGGED_IN = preferencesKey<Boolean>("isUserLoggedIn")
-        val USER_LONGITUDE = preferencesKey<Int>("userLongitude")
-        val USER_LATITUDE = preferencesKey<Int>("userLatitude")
+    val userId: Flow<String> = getFlow { it[USER_ID] ?: ""  }
+
+    val isUserLoggedInFlow: Flow<Boolean> = getFlow { it[IS_USER_LOGGED_IN] ?: false }
+
+    val userLongitudeFlow: Flow<Int> = getFlow { it[USER_LONGITUDE] ?: 0  }
+
+    val userLatitudeFlow: Flow<Int>  = getFlow { it[USER_LATITUDE] ?: 0  }
+
+
+    suspend fun setUserId(userId: String) {
+        dataStore.edit { it[USER_ID] = userId }
     }
 
     suspend fun setIsUserLoggedIn(isUserLoggedIn: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[IS_USER_LOGGED_IN] = isUserLoggedIn
-        }
+        dataStore.edit { it[IS_USER_LOGGED_IN] = isUserLoggedIn }
     }
 
     suspend fun setUserLongitude(userLongitude: Int) {
-        dataStore.edit { preferences ->
-            preferences[USER_LONGITUDE] = userLongitude
-        }
+        dataStore.edit { it[USER_LONGITUDE] = userLongitude }
     }
 
     suspend fun setUserLatitude(userLatitude: Int) {
-        dataStore.edit { preferences ->
-            preferences[USER_LATITUDE] = userLatitude
-        }
+        dataStore.edit { it[USER_LATITUDE] = userLatitude }
     }
 
-    val isUserLoggedInFlow: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                it.printStackTrace()
-                emit(emptyPreferences())
-            } else {
-                throw it
+    private fun <T> getFlow(action: (Preferences) -> T): Flow<T> {
+        return dataStore.data
+            .catch {
+                if (it is IOException) {
+                    it.printStackTrace()
+                    emit(emptyPreferences())
+                } else {
+                    throw it
+                }
             }
-        }
-        .map { preference -> preference[IS_USER_LOGGED_IN] ?: false }
+            .map { action(it) }
+    }
 
-    val userLongitudeFlow: Flow<Int> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                it.printStackTrace()
-                emit(emptyPreferences())
-            } else {
-                throw it
-            }
-        }
-        .map { preference -> preference[USER_LONGITUDE] ?: 0 }
+    companion object {
+        private val USER_ID = preferencesKey<String>("userId")
+        private val IS_USER_LOGGED_IN = preferencesKey<Boolean>("isUserLoggedIn")
+        private val USER_LONGITUDE = preferencesKey<Int>("userLongitude")
+        private val USER_LATITUDE = preferencesKey<Int>("userLatitude")
+    }
 
-    val userLatitudeFlow: Flow<Int> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                it.printStackTrace()
-                emit(emptyPreferences())
-            } else {
-                throw it
-            }
-        }
-        .map { preference -> preference[USER_LATITUDE] ?: 0 }
+    // val isUserLoggedInFlow: Flow<Boolean> = dataStore.data
+    //     .catch {
+    //         if (it is IOException) {
+    //             it.printStackTrace()
+    //             emit(emptyPreferences())
+    //         } else {
+    //             throw it
+    //         }
+    //     }
+    //     .map { it[IS_USER_LOGGED_IN] ?: false }
+    //
+    // val userLongitudeFlow: Flow<Int> = dataStore.data
+    //     .catch {
+    //         if (it is IOException) {
+    //             it.printStackTrace()
+    //             emit(emptyPreferences())
+    //         } else {
+    //             throw it
+    //         }
+    //     }
+    //     .map { it[USER_LONGITUDE] ?: 0 }
+    //
+    // val userLatitudeFlow: Flow<Int> = dataStore.data
+    //     .catch {
+    //         if (it is IOException) {
+    //             it.printStackTrace()
+    //             emit(emptyPreferences())
+    //         } else {
+    //             throw it
+    //         }
+    //     }
+    //     .map { it[USER_LATITUDE] ?: 0 }
 }

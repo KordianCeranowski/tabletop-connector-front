@@ -66,7 +66,7 @@ class UserLoggedOutActivity : BaseActivity() {
 
         logI("Created ${this.className}")
 
-        //lifecycleScope.launch { settingsManager.setIsUserLoggedIn(false) }
+        //lifecycleScope.launch { settingsManager.setIsUserLoggedIn(true) }
 
         settingsManager.isUserLoggedInFlow.asLiveData().observe(this) { isUserLoggedIn ->
             if (isUserLoggedIn) {

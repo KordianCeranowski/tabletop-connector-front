@@ -19,6 +19,8 @@ class EventActivity : BaseActivity() {
 
         val passedEvent = intent.getSerializableExtra("EVENT") as Event
         binding.tvEventName.text = passedEvent.name
+        binding.tvEventGames.text = passedEvent.creator
+        binding.tvEventAddress.text = passedEvent.date
     }
 
 

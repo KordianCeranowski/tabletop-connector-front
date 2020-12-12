@@ -11,6 +11,7 @@ import com.example.tabletop.databinding.ActivityLocationBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import net.alexandroid.utils.mylogkt.logW
+import splitties.resources.txt
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
@@ -55,9 +56,11 @@ class LocationActivity : BaseActivity() {
             .addOnSuccessListener { location ->
                 // getting the last known or current location
                 latitude = location.latitude
-                longitude = location.latitude
+                longitude = location.longitude
                 logW("Latitude: ${location.latitude}")
                 logW("Longitude: ${location.longitude}")
+                binding.tvLatitude.text = "Latitude: ${latitude}"
+                binding.tvLongitude.text = "Longitude: ${longitude}"
             }
             .addOnFailureListener {
                 toast("Failed on getting current location")

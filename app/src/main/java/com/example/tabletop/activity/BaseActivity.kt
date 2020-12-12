@@ -6,6 +6,10 @@ import com.example.tabletop.util.runLoggingConfig
 
 abstract class BaseActivity: AppCompatActivity() {
 
+    protected abstract val binding: ViewBinding
+
+    protected abstract fun setup()
+
     companion object {
         private var isLoggingConfigured = false
         init {
@@ -15,7 +19,4 @@ abstract class BaseActivity: AppCompatActivity() {
             }
         }
     }
-    protected abstract val binding: ViewBinding
-
-    protected abstract fun setup()
 }

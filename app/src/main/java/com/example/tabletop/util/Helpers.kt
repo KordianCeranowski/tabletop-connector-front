@@ -59,7 +59,11 @@ object Helpers {
     fun getRandomDate() : String {
         val day = object {
             val firstDigit = (0..3).random()
-            val secondDigit = (if (firstDigit == 0) (1..9) else (0..9)).random()
+            val secondDigit = when (firstDigit) {
+                0 -> (1..9)
+                3 -> (0..1)
+                else -> (0..9)
+            }.random()
         }
         val month = object {
             val firstDigit = (0..1).random()
@@ -107,8 +111,6 @@ object Helpers {
     fun getEditTextString(vararg editTexts: EditText): List<String> {
         return editTexts.map { it.text.toString().trim() }
     }
-
-    fun Any.getClassName2(): String = this::class.simpleName as String
 
     val Any.className: String
         get() = this::class.simpleName as String
