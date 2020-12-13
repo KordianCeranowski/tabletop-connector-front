@@ -6,16 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.adapter.EventAdapter
 import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.model.Event
-import com.example.tabletop.model.helpers.Address
 import com.example.tabletop.repository.EventRepository
-import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.Helpers.className
 import com.example.tabletop.util.Helpers.getMockAddress
 import com.example.tabletop.util.Helpers.getRandomDate
 import com.example.tabletop.viewmodel.EventViewModel
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.android.synthetic.main.activity_main.*
-import net.alexandroid.utils.mylogkt.logI
 import splitties.toast.UnreliableToastApi
 import java.util.*
 
@@ -39,9 +35,9 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        val events = List(10) { idx ->
-            Event("Name $idx",
-                "Creator $idx",
+        val events = List(10) {
+            Event("Event ${it + 1}",
+                "Creator ${it + 1}",
                 getRandomDate(),
                 getMockAddress(),
                 emptyList(),

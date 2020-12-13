@@ -1,6 +1,7 @@
  package com.example.tabletop.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.widget.EditText
 import androidx.activity.ComponentActivity
@@ -24,6 +25,28 @@ object Helpers {
     inline fun <reified T : Activity> ComponentActivity.startWithExtra(
         vararg pairs: Pair<String, Any>
     ) {
+        Intent(this, T::class.java).also { intent ->
+            pairs.forEach {
+                val pairValue = when (it.second) {
+                    is Boolean -> it.second as Boolean
+                    is Char -> it.second as Char
+                    is String -> it.second as String
+                    is Byte -> it.second as Byte
+                    is Short -> it.second as Short
+                    is Int -> it.second as Int
+                    is Long -> it.second as Long
+                    is Float -> it.second as Float
+                    is Double -> it.second as Double
+                    is Serializable -> it.second as Serializable
+                    else -> throw Exception("Invalid value type")
+                }
+                intent.putExtra(it.first, pairValue)
+            }
+            startActivity(intent)
+        }
+    }
+
+    inline fun <reified T : Activity> Context.startWithExtra(vararg pairs: Pair<String, Any>) {
         Intent(this, T::class.java).also { intent ->
             pairs.forEach {
                 val pairValue = when (it.second) {
