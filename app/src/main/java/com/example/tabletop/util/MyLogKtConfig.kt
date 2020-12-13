@@ -10,6 +10,7 @@ fun runLoggingConfig() {
         isSpacingEnabled = true
         isMethodNameVisible = true
         isLengthShouldWrap = false
+        isTimeVisible = false
     }
 }
 

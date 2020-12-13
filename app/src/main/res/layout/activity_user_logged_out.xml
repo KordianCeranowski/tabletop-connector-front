@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".activity.UserLoggedOutActivity">
+    tools:context=".main.activity.UserLoggedOutActivity">
 
     <Button
         android:id="@+id/btn_start_login_activity"

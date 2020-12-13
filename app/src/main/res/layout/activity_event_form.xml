@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.EventFormActivity">
+    tools:context=".main.activity.EventFormActivity">
 
     <TextView
         android:id="@+id/tv_event_form_title"
@@ -37,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Date"
         android:inputType="datetime"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/et_event_name"
@@ -58,6 +59,7 @@
         app:layout_constraintStart_toStartOf="@+id/et_event_address"
         app:layout_constraintTop_toBottomOf="@+id/et_event_address"
         app:layout_constraintVertical_bias="0.279" />
+
     <!--  todo fragment with address selection  -->
     <EditText
         android:id="@+id/et_event_address"

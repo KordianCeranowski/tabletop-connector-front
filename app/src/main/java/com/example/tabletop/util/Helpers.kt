@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.widget.EditText
 import androidx.activity.ComponentActivity
-import com.example.tabletop.model.Event
-import com.example.tabletop.model.Game
-import com.example.tabletop.model.User
-import com.example.tabletop.model.helpers.Address
+import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.mvvm.model.Game
+import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.mvvm.model.helpers.Address
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.alexandroid.utils.mylogkt.logD

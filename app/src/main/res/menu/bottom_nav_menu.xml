@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mi_info"
+        android:title="About"
+        android:icon="@drawable/ic_info"/>
+
+    <item
+        android:id="@+id/mi_games"
+        android:title="Games"
+        android:icon="@drawable/ic_dice"/>
+
+    <item
+        android:id="@+id/mi_location"
+        android:title="Place"
+        android:icon="@drawable/ic_location"/>
+
+    <item
+        android:id="@+id/mi_participants"
+        android:title="Participants"
+        android:icon="@drawable/ic_people"/>
+
+    <item
+        android:id="@+id/mi_chat"
+        android:title="Chat"
+        android:icon="@drawable/ic_messages"/>
+</menu>

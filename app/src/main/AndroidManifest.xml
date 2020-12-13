@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tabletop">
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,11 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.sample.LocationActivity"/>
-        <activity android:name=".activity.EventFormActivity" />
-        <activity android:name=".activity.sample.SidebarActivity" />
-        <activity android:name=".activity.EventActivity" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".main.activity.EventEditActivity"/>
+        <activity android:name=".main.activity.sample.LocationActivity" />
+        <activity android:name=".main.activity.EventFormActivity" />
+        <activity android:name=".main.activity.sample.SidebarActivity" />
+        <activity android:name=".main.activity.EventActivity" />
+        <activity android:name=".main.activity.MainActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -27,9 +28,17 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.UserLoggedOutActivity">
+
+        <activity android:name=".main.activity.RegisterActivity" />
+        <activity android:name=".main.activity.LoginActivity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--                &lt;!&ndash; <category android:name="android.intent.category.DEFAULT"/> &ndash;&gt;-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity android:name=".main.activity.UserLoggedOutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
