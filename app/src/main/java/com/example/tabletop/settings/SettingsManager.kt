@@ -59,37 +59,4 @@ class SettingsManager(context: Context) {
         private val USER_LONGITUDE = preferencesKey<Int>("userLongitude")
         private val USER_LATITUDE = preferencesKey<Int>("userLatitude")
     }
-
-    // val isUserLoggedInFlow: Flow<Boolean> = dataStore.data
-    //     .catch {
-    //         if (it is IOException) {
-    //             it.printStackTrace()
-    //             emit(emptyPreferences())
-    //         } else {
-    //             throw it
-    //         }
-    //     }
-    //     .map { it[IS_USER_LOGGED_IN] ?: false }
-    //
-    // val userLongitudeFlow: Flow<Int> = dataStore.data
-    //     .catch {
-    //         if (it is IOException) {
-    //             it.printStackTrace()
-    //             emit(emptyPreferences())
-    //         } else {
-    //             throw it
-    //         }
-    //     }
-    //     .map { it[USER_LONGITUDE] ?: 0 }
-    //
-    // val userLatitudeFlow: Flow<Int> = dataStore.data
-    //     .catch {
-    //         if (it is IOException) {
-    //             it.printStackTrace()
-    //             emit(emptyPreferences())
-    //         } else {
-    //             throw it
-    //         }
-    //     }
-    //     .map { it[USER_LATITUDE] ?: 0 }
 }

@@ -13,6 +13,7 @@ import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.util.Helpers.getMockUser
 import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
+import com.example.tabletop.util.Helpers.getFullResponse
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.*
@@ -47,7 +48,7 @@ class RegisterActivity : BaseActivity() {
             )
             if (isFormValid(RegisterForm(email, nickname, password, confirmPassword))) {
                 logD("Form is valid")
-                //registerUser(RegisterRequest(email, nickname, password))
+                registerUser(User(email, nickname, password))
             } else {
                 toast("Please correct invalid fields")
             }
@@ -100,7 +101,6 @@ class RegisterActivity : BaseActivity() {
                     ValidationPattern.PASSWORD.value
                 )
         }
-        // logIt("Checking $fieldName...")
 
         return if (field.isEmpty()) {
             editText.error = "Field cannot be empty"
@@ -115,20 +115,16 @@ class RegisterActivity : BaseActivity() {
     }
 
     private fun registerUser(user: User) {
-        val newUser = getMockUser()
-        userViewModel.save(newUser)
+        userViewModel.save(user)
         userViewModel.responseOne.observe(this, { response ->
             if (response.isSuccessful) {
-                response.run {
-                    logIt(
-                        body(),
-                        code(),
-                        message()
-                    )
-                }
-                lifecycleScope.launch {
-                    settingsManager.setIsUserLoggedIn(true)
-                }
+                logD(response.getFullResponse())
+                // lifecycleScope.launch {
+                //     settingsManager.apply {
+                //         setIsUserLoggedIn(true)
+                //         response.body()?.let { setUserId(it.id) }
+                //     }
+                // }
                 start<MainActivity>()
             } else {
                 toast(response.code())

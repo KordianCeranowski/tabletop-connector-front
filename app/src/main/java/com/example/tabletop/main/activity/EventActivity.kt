@@ -7,9 +7,8 @@ import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityEventBinding
 import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
-import kotlinx.android.synthetic.main.activity_event.*
-import kotlinx.android.synthetic.main.activity_event.view.*
-import net.alexandroid.utils.mylogkt.logI
+import com.example.tabletop.mvvm.model.User
+import java.io.Serializable
 
 class EventActivity : BaseActivity() {
 
@@ -23,29 +22,30 @@ class EventActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        //todo
-        //  if user is organiser of an event show EDIT icon on about screen in top right corner
         val passedEvent = intent.getSerializableExtra("EVENT") as Event
 
-        //todo
-        //  bottom navigation view bug: after changing a tab back and forth 2 times the next time
-        //  the tab is accessed the layout won't be evaluated
+        val bundle = Bundle().apply { putSerializable("EVENT", passedEvent as Serializable) }
 
-        val eventInfoFragment = EventInfoFragment(passedEvent)
-        val eventGamesFragment = EventGamesFragment(passedEvent.games)
-        val eventLocationFragment = EventLocationFragment(passedEvent.address)
-        val eventParticipantsFragment = EventParticipantsFragment(passedEvent.participants)
-        val eventChatFragment = passedEvent.chat?.let { EventChatFragment(it) }
-
+        val eventInfoFragment = EventInfoFragment().apply { arguments = bundle }
         setCurrentFragment(eventInfoFragment)
 
-        bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when(menuItem.itemId) {
-                R.id.mi_info -> setCurrentFragment(eventInfoFragment)
-                R.id.mi_games -> setCurrentFragment(eventGamesFragment)
-                R.id.mi_location -> setCurrentFragment(eventLocationFragment)
-                R.id.mi_participants -> setCurrentFragment(eventParticipantsFragment)
-                R.id.mi_chat -> eventChatFragment?.let { setCurrentFragment(it) }
+                R.id.mi_info -> setCurrentFragment(
+                    EventInfoFragment().apply { arguments = bundle }
+                )
+                R.id.mi_games -> setCurrentFragment(
+                    EventGamesFragment().apply { arguments = bundle }
+                )
+                R.id.mi_location -> setCurrentFragment(
+                    EventLocationFragment().apply { arguments = bundle }
+                )
+                R.id.mi_participants -> setCurrentFragment(
+                    EventParticipantsFragment().apply { arguments = bundle }
+                )
+                R.id.mi_chat -> passedEvent.chat?.let {
+                    EventChatFragment().apply { arguments = bundle }
+                }?.let { setCurrentFragment(it) }
             }
             true
         }
@@ -57,7 +57,7 @@ class EventActivity : BaseActivity() {
 
     private fun setCurrentFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fl_fragment, fragment)
+            replace(binding.flFragmentEvent.id, fragment)
             commit()
         }
     }

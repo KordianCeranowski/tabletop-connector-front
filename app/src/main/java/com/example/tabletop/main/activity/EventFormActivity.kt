@@ -18,5 +18,23 @@ class EventFormActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
+
+
+        /*
+           eventViewModel.save(getMockEvent())
+
+           eventViewModel.responseOne.observe(this, { response ->
+               if (response.isSuccessful) {
+                   logD(response.getFullResponse())
+                   if (response.code() == 201){
+                       //działa
+                   } else {
+                       //nie działa
+                   }
+               } else {
+                   logE(response.getFullResponse())
+               }
+           })
+           */
     }
 }

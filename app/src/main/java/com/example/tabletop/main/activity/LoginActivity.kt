@@ -10,6 +10,7 @@ import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
+import com.example.tabletop.util.Helpers.getFullResponse
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
@@ -41,8 +42,8 @@ class LoginActivity : BaseActivity() {
             )
             if (isFormValid(nickname, password)) {
                 logD("All fields are valid")
-                // val loginRequest = LoginRequest(nickname, password)
-                // loginUser(loginRequest)
+                val loginRequest = LoginForm(nickname, password)
+                loginUser(loginRequest)
             } else {
                 toast("Please correct invalid fields")
             }
@@ -67,14 +68,13 @@ class LoginActivity : BaseActivity() {
 
         userViewModel.responseOne.observe(this, { response ->
             if (response.isSuccessful) {
-                response.run {
-                    logIt(
-                        body(),
-                        code(),
-                        message()
-                    )
-                }
-                lifecycleScope.launch { settingsManager.setIsUserLoggedIn(true) }
+                logD(response.getFullResponse())
+                // lifecycleScope.launch {
+                //     settingsManager.apply {
+                //         setIsUserLoggedIn(true)
+                //         response.body()?.let { setUserId(it.id) }
+                //     }
+                // }
                 start<MainActivity>()
             } else {
                 toast(response.code())

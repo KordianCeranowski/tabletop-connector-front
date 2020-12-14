@@ -3,14 +3,11 @@ package com.example.tabletop.main.activity
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.main.activity.sample.LocationActivity
-import com.example.tabletop.main.activity.sample.SidebarActivity
 import com.example.tabletop.databinding.ActivityUserLoggedOutBinding
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.Helpers.className
-import com.example.tabletop.util.Helpers.getMockEvent
-import com.example.tabletop.util.Helpers.startWithExtra
-import net.alexandroid.utils.mylogkt.logI
+import kotlinx.coroutines.launch
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 
@@ -30,21 +27,12 @@ class UserLoggedOutActivity : BaseActivity() {
             start<MainActivity>()
         }
 
-        binding.btnStartTestActivity.setOnClickListener {
-            start<SidebarActivity>()
-        }
-
         binding.btnStartLoginActivity.setOnClickListener {
             start<LoginActivity>()
         }
 
         binding.btnStartRegisterActivity.setOnClickListener {
             start<RegisterActivity>()
-        }
-
-        binding.btnStartEventActivity.setOnClickListener {
-            val event = getMockEvent()
-            startWithExtra<EventActivity>("EVENT" to event)
         }
 
         binding.btnStartEventFormActivity.setOnClickListener {
@@ -59,10 +47,6 @@ class UserLoggedOutActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
-
-        logI("Created ${this.className}")
-
-        //lifecycleScope.launch { settingsManager.setIsUserLoggedIn(true) }
 
         settingsManager.isUserLoggedInFlow.asLiveData().observe(this) { isUserLoggedIn ->
             if (isUserLoggedIn) {

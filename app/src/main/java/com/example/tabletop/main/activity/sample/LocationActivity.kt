@@ -22,9 +22,6 @@ class LocationActivity : BaseActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private var latitude = 0.0
-    private var longitude = 0.0
-
     override fun setup() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }

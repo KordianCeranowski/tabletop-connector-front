@@ -21,7 +21,7 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
                 row_event_name.text = event.name
                 row_event_date.text = event.date
                 row_event_participants.text = event.participants.size.toString()
-                //row_event_distance.text =
+                //row_event_distance.text = TODO()
             }
 
             itemView.setOnClickListener {

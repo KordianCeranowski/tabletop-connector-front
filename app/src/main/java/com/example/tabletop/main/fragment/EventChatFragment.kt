@@ -6,11 +6,7 @@ import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventChatBinding
 import com.example.tabletop.mvvm.model.helpers.Message
 
-class EventChatFragment(private val chat: List<Message>) : BaseFragment(R.layout.fragment_event_chat) {
+class EventChatFragment : BaseFragment(R.layout.fragment_event_chat) {
 
     override val binding: FragmentEventChatBinding by viewBinding()
-
-    // private val eventViewModel: EventViewModel by lazyActivityViewModels {
-    //     EventViewModel(EventRepository)
-    // }
 }

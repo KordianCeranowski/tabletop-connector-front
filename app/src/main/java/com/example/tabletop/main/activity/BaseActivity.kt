@@ -11,12 +11,8 @@ abstract class BaseActivity: AppCompatActivity() {
     protected abstract fun setup()
 
     companion object {
-        private var isLoggingConfigured = false
         init {
-            if (!(isLoggingConfigured)) {
-                runLoggingConfig()
-                isLoggingConfigured = false
-            }
+            runLoggingConfig()
         }
     }
 }

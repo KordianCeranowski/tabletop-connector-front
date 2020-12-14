@@ -9,16 +9,19 @@ import androidx.viewbinding.ViewBinding
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventInfoBinding
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.util.Helpers.className
 import net.alexandroid.utils.mylogkt.logI
 
-class EventInfoFragment(private val event: Event) : BaseFragment(R.layout.fragment_event_info) {
+class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     override val binding: FragmentEventInfoBinding by viewBinding()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        logI("Created $event")
+        logI("Created ${this.className}")
+
+        val event = arguments?.getSerializable("EVENT") as Event
 
         binding.tvEventName.text = event.name
         binding.tvEventCreator.text = event.creator
