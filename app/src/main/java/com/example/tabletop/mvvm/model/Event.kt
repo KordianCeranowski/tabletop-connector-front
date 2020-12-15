@@ -5,7 +5,7 @@ import com.example.tabletop.mvvm.model.helpers.Message
 
 data class Event(
     val name: String,
-    val creator: String,
+    val creator: String = "",
     val date: String?, // todo [2020-12-25T19:27]
     val address: Address,
     val participants: List<String>,

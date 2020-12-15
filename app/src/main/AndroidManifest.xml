@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".main.activity.MainEmptyActivity"
+            android:name=".main.activity.StarterActivity"
             android:theme="@style/NoUiAppCompatTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -30,7 +30,6 @@
         <activity android:name=".main.activity.MainActivity"/>
         <activity android:name=".main.activity.RegisterActivity" />
         <activity android:name=".main.activity.LoginActivity"/>
-        <activity android:name=".main.activity.UserLoggedOutActivity"/>
     </application>
 
 </manifest>

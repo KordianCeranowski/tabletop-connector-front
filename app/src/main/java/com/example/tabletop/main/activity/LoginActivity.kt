@@ -35,7 +35,7 @@ class LoginActivity : BaseActivity() {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.loginEtNickname.value = "newTest"
+        binding.loginEtNickname.value = "test13"
         binding.loginEtPassword.value = "qwqwqwqW4$"
     }
 
@@ -43,7 +43,7 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        fillForm()
+        //fillForm()
 
         binding.btnLogin.setOnClickListener {
             val (nickname, password) = getEditTextString(

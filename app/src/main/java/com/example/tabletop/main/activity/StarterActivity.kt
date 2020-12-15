@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import splitties.toast.UnreliableToastApi
 
 @UnreliableToastApi
-class MainEmptyActivity : AppCompatActivity() {
+class StarterActivity : AppCompatActivity() {
 
     private lateinit var settingsManager: SettingsManager
 
@@ -22,14 +22,16 @@ class MainEmptyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
+        //resetSettings()
+
         lifecycleScope.launch {
             settingsManager.let {
                 it.isUserLoggedInFlow
                     .asLiveData()
-                    .observe(this@MainEmptyActivity) { isUserLoggedIn ->
+                    .observe(this@StarterActivity) { isUserLoggedIn ->
                         it.isFirstRunFlow
                             .asLiveData()
-                            .observe(this@MainEmptyActivity) { isFirstRun ->
+                            .observe(this@StarterActivity) { isFirstRun ->
                                 startProperActivity(isUserLoggedIn, isFirstRun)
                                 finish()
                             }
@@ -41,6 +43,14 @@ class MainEmptyActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         setVisible(true)
+    }
+
+    // DEVELOPMENT ONLY
+    private fun resetSettings() {
+        lifecycleScope.launch {
+            settingsManager.setIsUserLoggedIn(false)
+            settingsManager.setIsFirstRun(true)
+        }
     }
 
     private fun startProperActivity(isUserLoggedIn: Boolean, isFirstRun: Boolean) {

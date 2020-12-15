@@ -37,8 +37,8 @@ class RegisterActivity : BaseActivity() {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.registerEtEmail.value = "test11@test1.test"
-        binding.registerEtNickname.value = "test11"
+        binding.registerEtEmail.value = "test13@test.test"
+        binding.registerEtNickname.value = "test13"
         binding.registerEtPassword.value = "qwqwqwqW4$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
@@ -47,7 +47,7 @@ class RegisterActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        fillForm()
+        //fillForm()
 
         binding.btnRegister.setOnClickListener {
             val (email, nickname, password, confirmPassword) = getEditTextString(
