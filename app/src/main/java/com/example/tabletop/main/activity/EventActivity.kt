@@ -16,6 +16,11 @@ class EventActivity : BaseActivity() {
 
     override fun setup() {
         binding
+        setActionBarTitle("Event")
+    }
+
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

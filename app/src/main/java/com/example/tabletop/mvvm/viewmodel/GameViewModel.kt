@@ -5,7 +5,8 @@ import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.repository.GameRepository
 import kotlinx.coroutines.launch
 
-class GameViewModel(private val repository: GameRepository) : BaseViewModel<Game>() {
+class GameViewModel(private val repository: GameRepository)
+    : BaseViewModel<Game>(), IViewModelSave<Game> {
 
     override fun getMany(sort: String, order: String) {
         viewModelScope.launch {

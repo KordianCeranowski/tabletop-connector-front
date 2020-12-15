@@ -9,9 +9,7 @@
 
     android:paddingTop="26dp"
     android:paddingBottom="26dp"
-    android:background="@drawable/border"
-
-    >
+    android:background="@drawable/border">
 
     <TextView
         android:id="@+id/row_event_name"

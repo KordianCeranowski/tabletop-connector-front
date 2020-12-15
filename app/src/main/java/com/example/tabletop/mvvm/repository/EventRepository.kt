@@ -5,7 +5,7 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import retrofit2.Response
 
-object EventRepository : Repository<Event>() {
+object EventRepository : Repository<Event>(), IRepositorySave<Event> {
     override suspend fun getMany(sort: String, order: String): Response<Many<Event>> {
         return eventApi.getMany(sort, order)
     }

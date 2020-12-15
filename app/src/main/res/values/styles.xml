@@ -1,11 +1,19 @@
 <resources>
     <!-- Base application theme. -->
-<!-- <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"> -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
     </style>
-
+    <!-- No ui for appcompat -->
+    <style name="NoUiAppCompatTheme"
+        parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoDisplay">true</item>
+    </style>
 </resources>

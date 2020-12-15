@@ -15,7 +15,11 @@ class SettingsManager(context: Context) {
 
     private val dataStore = context.createDataStore(name = "settings")
 
-    val userId: Flow<String> = getFlow { it[USER_ID] ?: ""  }
+    val isFirstRunFlow: Flow<Boolean> = getFlow { it[IS_FIRST_RUN] ?: true }
+
+    val userAccessTokenFlow: Flow<String> = getFlow { it[USER_ACCESS_TOKEN] ?: ""  }
+
+    val usernameFlow: Flow<String> = getFlow { it[USERNAME] ?: "" }
 
     val isUserLoggedInFlow: Flow<Boolean> = getFlow { it[IS_USER_LOGGED_IN] ?: false }
 
@@ -23,13 +27,20 @@ class SettingsManager(context: Context) {
 
     val userLatitudeFlow: Flow<Int>  = getFlow { it[USER_LATITUDE] ?: 0  }
 
+    suspend fun setIsFirstRun(isFirstRun: Boolean) {
+        dataStore.edit { it[IS_FIRST_RUN] = isFirstRun }
+    }
 
-    suspend fun setUserId(userId: String) {
-        dataStore.edit { it[USER_ID] = userId }
+    suspend fun setUserAccessToken(userAccessToken: String) {
+        dataStore.edit { it[USER_ACCESS_TOKEN] = userAccessToken }
     }
 
     suspend fun setIsUserLoggedIn(isUserLoggedIn: Boolean) {
         dataStore.edit { it[IS_USER_LOGGED_IN] = isUserLoggedIn }
+    }
+
+    suspend fun setUsername(username: String) {
+        dataStore.edit { it[USERNAME] = username }
     }
 
     suspend fun setUserLongitude(userLongitude: Int) {
@@ -54,8 +65,10 @@ class SettingsManager(context: Context) {
     }
 
     companion object {
-        private val USER_ID = preferencesKey<String>("userId")
+        private val IS_FIRST_RUN = preferencesKey<Boolean>("isFirstRun")
         private val IS_USER_LOGGED_IN = preferencesKey<Boolean>("isUserLoggedIn")
+        private val USER_ACCESS_TOKEN = preferencesKey<String>("userAccessToken")
+        private val USERNAME = preferencesKey<String>("username")
         private val USER_LONGITUDE = preferencesKey<Int>("userLongitude")
         private val USER_LATITUDE = preferencesKey<Int>("userLatitude")
     }

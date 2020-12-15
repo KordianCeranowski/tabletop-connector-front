@@ -2,6 +2,7 @@ package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
+import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.Constants.EVENT_API_ENDPOINT
 import retrofit2.Response
 import retrofit2.http.*
@@ -18,6 +19,8 @@ interface EventApi {
         @QueryMap options: Map<String, String>
     ): Response<Many<Event>>
 
+    // todo access
+    // @Headers("Authorization: ")
     @POST(EVENT_API_ENDPOINT)
     suspend fun save(
         @Body event: Event

@@ -2,10 +2,12 @@ package com.example.tabletop.mvvm.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.repository.*
 import kotlinx.coroutines.launch
 
-class EventViewModel(private val repository: EventRepository) : BaseViewModel<Event>() {
+class EventViewModel(private val repository: EventRepository)
+    : BaseViewModel<Event>(), IViewModelSave<Event> {
 
     override fun getMany(sort: String, order: String) {
         viewModelScope.launch {

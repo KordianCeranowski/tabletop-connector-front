@@ -140,26 +140,25 @@ object Helpers {
 
     fun <T> Response<T>.getFullResponse(): String {
         @Suppress("IMPLICIT_CAST_TO_ANY")
-        val body = if (body() == null) errorBody() else body()// elvis
+        val body = if (body() == null) errorBody() else body()
         return """
             |
             |Headers:
             |${headers()}
             |Status: ${message()}
             |Code: ${code()}
-            |Body: ${gson.toJson(body)}
+            |Body: ${gson.toJson(body() ?: "NONE")}
+            |ErrorBody: ${gson.toJson(errorBody() ?: "NONE")}
             """.trimMargin()
     }
 
-    //todo
-    //MY_LOG_KT EXTENSION FUNCTIONS
-    fun logIt(vararg msgs: Any?) {
-        msgs.forEach { msg ->
-            Timer().schedule(1) {
-                msg?.let { logD(it.toString()) } ?: logD("[ERROR]: Object is null")
-            }
-        }
-    }
+    // fun logIt(vararg msgs: String?) {
+    //     msgs.forEach { msg ->
+    //         Timer().schedule(1) {
+    //             msg?.let { logD(it.toString()) } ?: logD("[ERROR]: Object is null")
+    //         }
+    //     }
+    // }
 
     /*
     todo to use in Activity

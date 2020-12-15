@@ -1,15 +1,24 @@
 package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.util.Constants.USER_API_ENDPOINT
 import com.example.tabletop.util.Constants.USER_API_LOGIN_ENDPOINT
 import com.example.tabletop.util.Constants.USER_API_REGISTER_ENDPOINT
-import com.example.tabletop.mvvm.model.helpers.LoginForm
-import com.example.tabletop.mvvm.model.helpers.Many
 import retrofit2.Response
 import retrofit2.http.*
 
 interface UserApi {
+    @POST(USER_API_LOGIN_ENDPOINT)
+    suspend fun login(
+        @Body loginForm: LoginForm
+    ): Response<LoginResponse>
+
+    @POST(USER_API_REGISTER_ENDPOINT)
+    suspend fun register(
+        @Body user: RegisterRequest
+    ): Response<RegisterResponse>
+
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
         @Query("_sort") sort: String,
@@ -21,7 +30,7 @@ interface UserApi {
         @QueryMap options: Map<String, String>
     ): Response<Many<User>>
 
-    @POST(USER_API_REGISTER_ENDPOINT)
+    @POST(USER_API_ENDPOINT)
     suspend fun save(
         @Body user: User
     ): Response<User>
@@ -40,11 +49,5 @@ interface UserApi {
     suspend fun edit(
         @Path("id") id: String,
         @Body user: User
-    ): Response<User>
-
-    @Headers("Authorization: test")
-    @POST(USER_API_LOGIN_ENDPOINT)
-    suspend fun login(
-        @Body loginForm: LoginForm
     ): Response<User>
 }

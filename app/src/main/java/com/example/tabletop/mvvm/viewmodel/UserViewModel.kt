@@ -1,16 +1,28 @@
 package com.example.tabletop.mvvm.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.repository.*
-import com.example.tabletop.mvvm.model.helpers.LoginForm
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class UserViewModel(private val repository: UserRepository) : BaseViewModel<User>() {
 
-    override fun save(model: User) {
+    val responseLogin = MutableLiveData<Response<LoginResponse>>()
+
+    val responseRegister = MutableLiveData<Response<RegisterResponse>>()
+
+    fun login(loginForm: LoginForm) {
         viewModelScope.launch {
-            responseOne.value = repository.save(model)
+            responseLogin.value = repository.login(loginForm)
+        }
+    }
+
+    fun register(user: RegisterRequest) {
+        viewModelScope.launch {
+            responseRegister.value = repository.register(user)
         }
     }
 
@@ -41,12 +53,6 @@ class UserViewModel(private val repository: UserRepository) : BaseViewModel<User
     override fun edit(id: String, newModel: User) {
         viewModelScope.launch {
             responseOne.value = repository.edit(id, newModel)
-        }
-    }
-
-    fun login(loginForm: LoginForm) {
-        viewModelScope.launch {
-            responseOne.value = repository.login(loginForm)
         }
     }
 }

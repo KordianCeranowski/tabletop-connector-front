@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
 import com.example.tabletop.main.adapter.EventAdapter
@@ -16,12 +17,15 @@ import com.example.tabletop.mvvm.repository.EventRepository
 import com.example.tabletop.util.Helpers.getMockAddress
 import com.example.tabletop.util.Helpers.getRandomDate
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
+import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.Helpers.getFullResponse
 import com.example.tabletop.util.random
+import com.livinglifetechway.k4kotlin.core.shortToast
 import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.android.synthetic.main.activity_event.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
@@ -34,6 +38,8 @@ class MainActivity : BaseActivity() {
 
     override val binding: ActivityMainBinding by viewBinding()
 
+    private lateinit var settingsManager: SettingsManager
+
     private lateinit var toggle: ActionBarDrawerToggle
 
     private val eventViewModel: EventViewModel by lazyViewModels {
@@ -41,7 +47,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setup() {
-
+        settingsManager = SettingsManager(applicationContext)
     }
 
     private fun setupSidebar() {
@@ -50,8 +56,6 @@ class MainActivity : BaseActivity() {
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
-        //setSupportActionBar(binding.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
     }
@@ -102,20 +106,29 @@ class MainActivity : BaseActivity() {
         val bundle = Bundle().apply { putSerializable("EVENTS", eventsMock as Serializable) }
 
         setCurrentFragment(ListOfEventsFragment().apply { arguments = bundle })
+        setActionBarTitle("Dashboard")
 
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.mi_profile -> setCurrentFragment(ProfileFragment())
-                R.id.mi_all_events -> setCurrentFragment(
-                    ListOfEventsFragment().apply { arguments = bundle }
-                )
-                R.id.mi_my_events -> toast("Clicked My Events")
-                R.id.mi_events_history -> toast("Clicked Events History")
-                R.id.mi_settings -> setCurrentFragment(SettingsFragment())
-                R.id.mi_about -> setCurrentFragment(AboutFragment())
+                R.id.mi_profile -> setFragmentAndTitle(ProfileFragment(),"Profile")
+                R.id.mi_all_events ->
+                    setFragmentAndTitle(
+                        ListOfEventsFragment().apply { arguments = bundle },
+                        "Dashboard"
+                    )
+                R.id.mi_my_events -> shortToast("Clicked My Events")
+                R.id.mi_events_history -> shortToast("Clicked Events History")
+                R.id.mi_settings -> setFragmentAndTitle(SettingsFragment(), "Settings")
+                R.id.mi_about -> setFragmentAndTitle(AboutFragment(), "About")
+                R.id.mi_logout -> logout()
             }
             true
         }
+    }
+
+    private fun setFragmentAndTitle(fragment: Fragment, title: String) {
+        setCurrentFragment(fragment)
+        setActionBarTitle(title)
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
@@ -123,5 +136,17 @@ class MainActivity : BaseActivity() {
             replace(binding.flFragmentMain.id, fragment)
             commit()
         }
+    }
+
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
+    private fun logout() {
+        lifecycleScope.launch {
+            settingsManager.setIsUserLoggedIn(false)
+        }
+        start<LoginActivity>()
+        finish()
     }
 }

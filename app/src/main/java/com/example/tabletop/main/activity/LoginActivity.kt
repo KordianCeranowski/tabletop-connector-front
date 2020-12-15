@@ -6,14 +6,15 @@ import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.Helpers.getEditTextString
-import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.Helpers.getFullResponse
+import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
+import net.alexandroid.utils.mylogkt.logE
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
@@ -29,11 +30,20 @@ class LoginActivity : BaseActivity() {
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
+        supportActionBar?.title = "Login"
+    }
+
+    // DEVELOPMENT ONLY
+    private fun fillForm() {
+        binding.loginEtNickname.value = "newTest"
+        binding.loginEtPassword.value = "qwqwqwqW4$"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
+
+        fillForm()
 
         binding.btnLogin.setOnClickListener {
             val (nickname, password) = getEditTextString(
@@ -42,8 +52,8 @@ class LoginActivity : BaseActivity() {
             )
             if (isFormValid(nickname, password)) {
                 logD("All fields are valid")
-                val loginRequest = LoginForm(nickname, password)
-                loginUser(loginRequest)
+                val loginForm = LoginForm(nickname, password)
+                loginUser(loginForm)
             } else {
                 toast("Please correct invalid fields")
             }
@@ -66,18 +76,22 @@ class LoginActivity : BaseActivity() {
     private fun loginUser(loginForm: LoginForm) {
         userViewModel.login(loginForm)
 
-        userViewModel.responseOne.observe(this, { response ->
+        userViewModel.responseLogin.observe(this, { response ->
             if (response.isSuccessful) {
                 logD(response.getFullResponse())
-                // lifecycleScope.launch {
-                //     settingsManager.apply {
-                //         setIsUserLoggedIn(true)
-                //         response.body()?.let { setUserId(it.id) }
-                //     }
-                // }
+                lifecycleScope.launch {
+                    settingsManager.apply {
+                        setIsUserLoggedIn(true)
+                        response.body()?.let {
+                            //setUserAccessToken(it.access)
+                            //setUsername(it.username)
+                        }
+                    }
+                }
                 start<MainActivity>()
+                finish()
             } else {
-                toast(response.code())
+                logE(response.getFullResponse())
             }
         })
     }

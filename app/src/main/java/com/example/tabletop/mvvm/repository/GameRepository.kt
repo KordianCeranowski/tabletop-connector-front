@@ -5,7 +5,7 @@ import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.helpers.Many
 import retrofit2.Response
 
-object GameRepository : Repository<Game>() {
+object GameRepository : Repository<Game>(), IRepositorySave<Game> {
     override suspend fun getMany(sort: String, order: String): Response<Many<Game>> {
         return gameApi.getMany(sort, order)
     }

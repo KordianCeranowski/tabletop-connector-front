@@ -3,28 +3,37 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="100dp"
+
     android:paddingTop="26dp"
-    android:paddingBottom="26dp">
+    android:paddingBottom="26dp"
+
+    android:background="@drawable/border">
 
     <TextView
         android:id="@+id/row_game_name"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="A very long name of a game"
         android:textSize="16sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.075"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.207" />
+        app:layout_constraintVertical_bias="0.506" />
 
     <ImageView
         android:id="@+id/row_game_image"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -34,28 +43,34 @@
 
     <TextView
         android:id="@+id/row_game_players"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Players: "
         android:textSize="16sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.688"
+        app:layout_constraintHorizontal_bias="0.675"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.207" />
+        app:layout_constraintVertical_bias="0.506" />
 
     <TextView
         android:id="@+id/row_game_play_time"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Play time: "
         android:textSize="16sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintHorizontal_bias="0.952"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.207" />
+        app:layout_constraintVertical_bias="0.506" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,8 +16,6 @@ abstract class BaseViewModel<T : Model> : ViewModel() {
 
     abstract fun getMany(options: Map<String, String>)
 
-    abstract fun save(model: T)
-
     abstract fun getOne(id: String)
 
     abstract fun remove(id: String)

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".main.activity.RegisterActivity">
 
-    <EditText
+    .text = <EditText
         android:id="@+id/register_et_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,5 +75,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.279" />
+
+    <TextView
+        android:id="@+id/register_tv_title"
+        android:layout_width="112dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="Register"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.08" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

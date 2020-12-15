@@ -8,10 +8,13 @@
 
     <TextView
         android:id="@+id/tv_event_label_name"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Name: "
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.189"
@@ -20,23 +23,14 @@
         app:layout_constraintVertical_bias="0.336" />
 
     <TextView
-        android:id="@+id/tv_event_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Info"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.043" />
-
-    <TextView
         android:id="@+id/tv_event_name"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="PLACEHOLDER"
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.614"
@@ -46,10 +40,13 @@
 
     <TextView
         android:id="@+id/tv_event_label_creator"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Creator:"
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.194"
@@ -59,10 +56,13 @@
 
     <TextView
         android:id="@+id/tv_event_creator"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="PLACEHOLDER"
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.614"
@@ -72,10 +72,13 @@
 
     <TextView
         android:id="@+id/tv_event_label_date"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Date:"
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.18"
@@ -85,10 +88,13 @@
 
     <TextView
         android:id="@+id/tv_event_date"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="PLACEHOLDER"
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.614"

@@ -48,12 +48,6 @@ class UserLoggedOutActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        settingsManager.isUserLoggedInFlow.asLiveData().observe(this) { isUserLoggedIn ->
-            if (isUserLoggedIn) {
-                start<MainActivity>()
-            }
-        }
-
         setOnClickListeners()
     }
 }

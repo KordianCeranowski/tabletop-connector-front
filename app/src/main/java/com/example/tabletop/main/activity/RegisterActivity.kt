@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.databinding.ActivityRegisterBinding
-import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.Constants.ValidationPattern
 import com.example.tabletop.mvvm.model.helpers.RegisterForm
+import com.example.tabletop.mvvm.model.helpers.RegisterRequest
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.Helpers.getEditTextString
-import com.example.tabletop.util.Helpers.getMockUser
-import com.example.tabletop.util.Helpers.logIt
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.Helpers.getFullResponse
+import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.*
@@ -33,11 +32,22 @@ class RegisterActivity : BaseActivity() {
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
+        supportActionBar?.title = "Register"
+    }
+
+    // DEVELOPMENT ONLY
+    private fun fillForm() {
+        binding.registerEtEmail.value = "test11@test1.test"
+        binding.registerEtNickname.value = "test11"
+        binding.registerEtPassword.value = "qwqwqwqW4$"
+        binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
+
+        fillForm()
 
         binding.btnRegister.setOnClickListener {
             val (email, nickname, password, confirmPassword) = getEditTextString(
@@ -48,7 +58,7 @@ class RegisterActivity : BaseActivity() {
             )
             if (isFormValid(RegisterForm(email, nickname, password, confirmPassword))) {
                 logD("Form is valid")
-                registerUser(User(email, nickname, password))
+                registerUser(RegisterRequest(email, nickname, password))
             } else {
                 toast("Please correct invalid fields")
             }
@@ -74,9 +84,6 @@ class RegisterActivity : BaseActivity() {
             logW("confirmPassword: ${registerForm.confirmPassword}")
             binding.registerEtConfirmPassword.error = "Passwords do not match"
         }
-        // else {
-        //     binding.registerEtConfirmPassword.error = null
-        // }
         return areFieldsValid
     }
 
@@ -114,20 +121,26 @@ class RegisterActivity : BaseActivity() {
         }
     }
 
-    private fun registerUser(user: User) {
-        userViewModel.save(user)
-        userViewModel.responseOne.observe(this, { response ->
+    private fun registerUser(user: RegisterRequest) {
+        userViewModel.register(user)
+
+        userViewModel.responseRegister.observe(this, { response ->
             if (response.isSuccessful) {
                 logD(response.getFullResponse())
-                // lifecycleScope.launch {
-                //     settingsManager.apply {
-                //         setIsUserLoggedIn(true)
-                //         response.body()?.let { setUserId(it.id) }
-                //     }
-                // }
+                lifecycleScope.launch {
+                    settingsManager.apply {
+                        setIsUserLoggedIn(true)
+                        setIsFirstRun(false)
+                        response.body()?.let {
+                            setUserAccessToken(it.id)
+                            setUsername(it.username)
+                        }
+                    }
+                }
                 start<MainActivity>()
+                finish()
             } else {
-                toast(response.code())
+                logE(response.getFullResponse())
                 /*
                 if (!isEmailTaken()) {
                     etRegisterEmail.error = "Email is already taken"
