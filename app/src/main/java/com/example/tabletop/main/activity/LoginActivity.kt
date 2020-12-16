@@ -3,6 +3,7 @@ package com.example.tabletop.main.activity
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.Helpers.getEditTextString
@@ -76,7 +77,7 @@ class LoginActivity : BaseActivity() {
     private fun loginUser(loginForm: LoginForm) {
         userViewModel.login(loginForm)
 
-        userViewModel.responseLogin.observe(this, { response ->
+        userViewModel.responseLogin.observe(this) { response ->
             if (response.isSuccessful) {
                 logD(response.getFullResponse())
                 lifecycleScope.launch {
@@ -93,6 +94,6 @@ class LoginActivity : BaseActivity() {
             } else {
                 logE(response.getFullResponse())
             }
-        })
+        }
     }
 }

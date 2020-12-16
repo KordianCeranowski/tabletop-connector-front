@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import com.example.tabletop.settings.SettingsManager
 import kotlinx.coroutines.launch
 import splitties.toast.UnreliableToastApi
