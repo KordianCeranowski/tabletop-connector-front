@@ -91,22 +91,24 @@ class MainActivity : BaseActivity() {
             )
         }
 
-        // eventViewModel.getMany("id","desc")
-        //
-        // lateinit var events: List<Event>
-        // eventViewModel.responseMany.observe(this) { response ->
-        //     if (response.isSuccessful) {
-        //         logD(response.getFullResponse())
-        //         response.body()?.let { events = it.results }
-        //     } else {
-        //         toast(response.code())
-        //     }
-        // }
+/*
+        eventViewModel.getMany("id","desc")
+
+        lateinit var events: List<Event>
+
+        eventViewModel.responseMany.observe(this) { response ->
+            if (response.isSuccessful) {
+                logD(response.getFullResponse())
+                response.body()?.let { events = it.results }
+            } else {
+                toast(response.code())
+            }
+        }
+*/
 
         val bundle = Bundle().apply { putSerializable("EVENTS", eventsMock as Serializable) }
 
-        setCurrentFragment(ListOfEventsFragment().apply { arguments = bundle })
-        setActionBarTitle("Dashboard")
+        setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "Dashboard")
 
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {

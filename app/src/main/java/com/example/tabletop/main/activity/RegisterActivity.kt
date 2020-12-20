@@ -11,6 +11,7 @@ import com.example.tabletop.mvvm.model.helpers.RegisterRequest
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
+import com.example.tabletop.util.Helpers.getErrorBodyProperties
 import com.example.tabletop.util.Helpers.getFullResponse
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
@@ -22,11 +23,13 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
 @UnreliableToastApi
-class RegisterActivity : BaseActivity() {
+class RegisterActivity : ViewModelActivity() {
 
     override val binding: ActivityRegisterBinding by viewBinding()
 
     private val userViewModel: UserViewModel by lazyViewModels { UserViewModel(UserRepository) }
+
+    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -37,8 +40,8 @@ class RegisterActivity : BaseActivity() {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.registerEtEmail.value = "test13@test.test"
-        binding.registerEtNickname.value = "test13"
+        binding.registerEtEmail.value = "test15@test.test"
+        binding.registerEtNickname.value = "test15"
         binding.registerEtPassword.value = "qwqwqwqW4$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
@@ -47,7 +50,7 @@ class RegisterActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        //fillForm()
+        fillForm()
 
         binding.btnRegister.setOnClickListener {
             val (email, nickname, password, confirmPassword) = getEditTextString(
@@ -140,20 +143,24 @@ class RegisterActivity : BaseActivity() {
                 start<MainActivity>()
                 finish()
             } else {
-                logE(response.getFullResponse())
-                /*
-                if (!isEmailTaken()) {
-                    etRegisterEmail.error = "Email is already taken"
-                } else {
-                    etRegisterEmail.error = null
+                if (!(this::errorBodyProperties.isInitialized)) {
+                    errorBodyProperties = response.getErrorBodyProperties()
                 }
 
-                if (!isNicknameTaken()) {
-                    etRegisterNickname.error = "Nickname is already taken"
-                } else {
-                    etRegisterNickname.error = null
+                logW(response.getFullResponse())
+                toast("Please correct invalid fields")
+
+                logD(errorBodyProperties.toString())
+
+                val key = "username"
+                val value = "[A user with that username already exists.]"
+
+                if (errorBodyProperties[key] == value) {
+                    binding.registerEtNickname.error = "Username is already taken"
                 }
-                 */
+                // if (errorBodyProperties[key] == value) {
+                //     binding.registerEtEmail.error = "Email is already taken"
+                // }
             }
         })
     }

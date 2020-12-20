@@ -10,22 +10,28 @@ import com.example.tabletop.util.Helpers.getEditTextString
 import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
+import com.example.tabletop.util.Helpers.getErrorBodyProperties
 import com.example.tabletop.util.Helpers.getFullResponse
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
+import net.alexandroid.utils.mylogkt.logI
+import net.alexandroid.utils.mylogkt.logW
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
+@Suppress("COMPATIBILITY_WARNING")
 @UnreliableToastApi
-class LoginActivity : BaseActivity() {
+class LoginActivity : ViewModelActivity() {
 
     override val binding: ActivityLoginBinding by viewBinding()
 
     private val userViewModel: UserViewModel by lazyViewModels { UserViewModel(UserRepository) }
+
+    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -35,16 +41,19 @@ class LoginActivity : BaseActivity() {
     }
 
     // DEVELOPMENT ONLY
-    private fun fillForm() {
-        binding.loginEtNickname.value = "test13"
-        binding.loginEtPassword.value = "qwqwqwqW4$"
+    private fun fillForm(isError: Boolean = false) {
+        val nickname = if (isError) "xd" else "test13"
+        val password = if (isError) "xd" else "qwqwqwqW4\$"
+
+        binding.loginEtNickname.value = nickname
+        binding.loginEtPassword.value = password
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
 
-        //fillForm()
+        fillForm(true)
 
         binding.btnLogin.setOnClickListener {
             val (nickname, password) = getEditTextString(
@@ -92,7 +101,23 @@ class LoginActivity : BaseActivity() {
                 start<MainActivity>()
                 finish()
             } else {
+                if (!(this::errorBodyProperties.isInitialized)) {
+                    errorBodyProperties = response.getErrorBodyProperties()
+                }
+
                 logE(response.getFullResponse())
+                toast("Please correct invalid fields")
+
+                logD(errorBodyProperties.toString())
+
+                val key = "detail"
+                val value = "No active account found with the given credentials"
+
+                if (errorBodyProperties[key] == value) {
+                    binding.loginEtNickname.error = "Username is not registered"
+                } else {
+                    errorBodyProperties[key]
+                }
             }
         }
     }

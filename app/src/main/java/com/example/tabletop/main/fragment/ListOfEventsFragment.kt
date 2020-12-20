@@ -15,8 +15,7 @@ import splitties.fragments.start
 import splitties.toast.UnreliableToastApi
 
 @UnreliableToastApi
-class ListOfEventsFragment
-    : BaseFragment(R.layout.fragment_list_of_events) {
+class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
 
     override val binding: FragmentListOfEventsBinding by viewBinding()
 

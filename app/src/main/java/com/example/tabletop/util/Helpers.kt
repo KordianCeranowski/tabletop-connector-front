@@ -1,4 +1,4 @@
- package com.example.tabletop.util
+package com.example.tabletop.util
 
 import android.app.Activity
 import android.content.Context
@@ -11,11 +11,11 @@ import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.Address
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import net.alexandroid.utils.mylogkt.logD
 import retrofit2.Response
 import java.io.Serializable
-import java.util.*
-import kotlin.concurrent.schedule
 
 object Helpers {
 
@@ -138,55 +138,23 @@ object Helpers {
     val Any.className: String
         get() = this::class.simpleName as String
 
+    // Serializer
     fun <T> Response<T>.getFullResponse(): String {
-        @Suppress("IMPLICIT_CAST_TO_ANY")
-        val body = if (body() == null) errorBody() else body()
+        val body = body()?.let { gson.toJson(body()) }
         return """
             |
             |Headers:
             |${headers()}
             |Status: ${message()}
             |Code: ${code()}
-            |Body: ${gson.toJson(body() ?: "NONE")}
-            |ErrorBody: ${gson.toJson(errorBody() ?: "NONE")}
+            |Body: $body
             """.trimMargin()
     }
 
-    // fun logIt(vararg msgs: String?) {
-    //     msgs.forEach { msg ->
-    //         Timer().schedule(1) {
-    //             msg?.let { logD(it.toString()) } ?: logD("[ERROR]: Object is null")
-    //         }
-    //     }
-    // }
-
-    /*
-    todo to use in Activity
-    saveEventAndExecute(eventViewModel::save, newEvent) {
-            args -> args.forEach { logD(it.toString()) }
+    fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
+        val json = gson.fromJson(this.errorBody()?.string(), JsonObject::class.java)
+        val keys = json.keySet().map { it.toString() }
+        val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
+        return keys.zip(entries).map { it.first to it.second }.toMap()
     }
-    */
-
-    /*
-    private fun <T> saveEventAndExecute(
-        request: KFunction<Unit>,
-        event: T,
-        args: List<Any> = emptyList(),
-        action: (List<Any>) -> Unit
-    ) {
-        //request.invoke
-
-        eventViewModel.responseOne.observe(this, { response ->
-            if (response.isSuccessful) {
-                val body = response.body()
-                body?.let {
-                    action(listOf(it))
-                }
-            } else {
-                logIt(response.errorBody())
-                // testTextView.text = response.code().toString()
-            }
-        })
-    }
-    */
 }

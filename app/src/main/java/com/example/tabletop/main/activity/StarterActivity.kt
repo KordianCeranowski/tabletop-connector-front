@@ -2,14 +2,17 @@ package com.example.tabletop.main.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Layout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.settings.SettingsManager
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import splitties.toast.UnreliableToastApi
 
+@Suppress("COMPATIBILITY_WARNING")
 @UnreliableToastApi
 class StarterActivity : AppCompatActivity() {
 
@@ -26,19 +29,17 @@ class StarterActivity : AppCompatActivity() {
         //resetSettings()
 
         lifecycleScope.launch {
-            settingsManager.let {
-                it.isUserLoggedInFlow
-                    .asLiveData()
-                    .observe(this@StarterActivity) { isUserLoggedIn ->
-                        it.isFirstRunFlow
-                            .asLiveData()
-                            .observe(this@StarterActivity) { isFirstRun ->
-                                startProperActivity(isUserLoggedIn, isFirstRun)
-                                finish()
-                            }
-                    }
+            settingsManager.isUserLoggedInFlow
+                .asLiveData()
+                .observe(this@StarterActivity) { isUserLoggedIn ->
+                    settingsManager.isFirstRunFlow
+                        .asLiveData()
+                        .observe(this@StarterActivity) { isFirstRun ->
+                            startProperActivity(isUserLoggedIn, isFirstRun)
+                            finish()
+                        }
+                }
             }
-        }
     }
 
     override fun onStart() {
