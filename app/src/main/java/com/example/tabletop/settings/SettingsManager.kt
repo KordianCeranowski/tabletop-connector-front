@@ -9,6 +9,7 @@ import androidx.datastore.preferences.createDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import net.alexandroid.utils.mylogkt.logD
 import java.io.IOException
 
 class SettingsManager(context: Context) {
@@ -32,7 +33,10 @@ class SettingsManager(context: Context) {
     }
 
     suspend fun setUserAccessToken(userAccessToken: String) {
-        dataStore.edit { it[USER_ACCESS_TOKEN] = userAccessToken }
+        dataStore.edit {
+            logD("Access token set: $userAccessToken")
+            it[USER_ACCESS_TOKEN] = userAccessToken
+        }
     }
 
     suspend fun setIsUserLoggedIn(isUserLoggedIn: Boolean) {

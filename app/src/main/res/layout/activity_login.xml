@@ -5,11 +5,11 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/login_et_nickname"
+        android:id="@+id/login_et_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/hint_nickname"
+        android:hint="@string/hint_username"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,10 +37,10 @@
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/login_et_nickname"
+        app:layout_constraintEnd_toEndOf="@+id/login_et_username"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/login_et_nickname"
-        app:layout_constraintTop_toBottomOf="@+id/login_et_nickname"
+        app:layout_constraintStart_toStartOf="@+id/login_et_username"
+        app:layout_constraintTop_toBottomOf="@+id/login_et_username"
         app:layout_constraintVertical_bias="0.039" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

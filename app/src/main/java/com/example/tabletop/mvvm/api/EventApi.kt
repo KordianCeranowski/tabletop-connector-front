@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface EventApi {
+
     @GET(EVENT_API_ENDPOINT)
     suspend fun getMany(
         @Query("_sort") sort: String,
@@ -19,10 +20,9 @@ interface EventApi {
         @QueryMap options: Map<String, String>
     ): Response<Many<Event>>
 
-    // todo access
-    // @Headers("Authorization: ")
     @POST(EVENT_API_ENDPOINT)
     suspend fun save(
+        @Header("Authorization") auth: String,
         @Body event: Event
     ): Response<Event>
 

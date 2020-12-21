@@ -14,8 +14,8 @@ object EventRepository : Repository<Event>(), IRepositorySave<Event> {
         return eventApi.getMany(options)
     }
 
-    override suspend fun save(model: Event): Response<Event> {
-        return eventApi.save(model)
+    override suspend fun save(auth: String, model: Event): Response<Event> {
+        return eventApi.save(auth, model)
     }
 
     override suspend fun getOne(id: String): Response<Event> {

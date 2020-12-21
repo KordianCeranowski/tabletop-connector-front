@@ -20,9 +20,9 @@ class GameViewModel(private val repository: GameRepository)
         }
     }
 
-    override fun save(model: Game) {
+    override fun save(auth: String, model: Game) {
         viewModelScope.launch {
-            responseOne.value = repository.save(model)
+            responseOne.value = repository.save(auth, model)
         }
     }
 

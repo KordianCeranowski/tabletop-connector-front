@@ -20,6 +20,7 @@ interface GameApi {
 
     @POST(GAME_API_ENDPOINT)
     suspend fun save(
+        @Header("Authorization") auth: String,
         @Body event: Game
     ): Response<Game>
 

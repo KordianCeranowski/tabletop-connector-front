@@ -3,7 +3,7 @@
 
     <!-- Validation -->
     <string name="hint_email">Email</string>
-    <string name="hint_nickname">Nickname</string>
+    <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
 

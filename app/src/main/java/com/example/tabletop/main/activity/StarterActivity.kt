@@ -50,8 +50,12 @@ class StarterActivity : AppCompatActivity() {
     // DEVELOPMENT ONLY
     private fun resetSettings() {
         lifecycleScope.launch {
-            settingsManager.setIsUserLoggedIn(false)
-            settingsManager.setIsFirstRun(true)
+            settingsManager.run {
+                setIsUserLoggedIn(false)
+                setIsFirstRun(true)
+                setUserAccessToken("")
+                setUsername("")
+            }
         }
     }
 

@@ -146,7 +146,11 @@ class MainActivity : BaseActivity() {
 
     private fun logout() {
         lifecycleScope.launch {
-            settingsManager.setIsUserLoggedIn(false)
+            settingsManager.run {
+                setIsUserLoggedIn(false)
+                setUserAccessToken("")
+                setUsername("")
+            }
         }
         start<LoginActivity>()
         finish()

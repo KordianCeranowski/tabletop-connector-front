@@ -6,8 +6,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.mvvm.repository.UserRepository
-import com.example.tabletop.util.Helpers.getEditTextString
+import com.example.tabletop.util.Helpers.getEditTextValue
 import com.example.tabletop.mvvm.model.helpers.LoginForm
+import com.example.tabletop.mvvm.model.helpers.LoginResponse
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.Helpers.getErrorBodyProperties
@@ -17,15 +18,14 @@ import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
-import net.alexandroid.utils.mylogkt.logI
-import net.alexandroid.utils.mylogkt.logW
+import retrofit2.Response
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
 @Suppress("COMPATIBILITY_WARNING")
 @UnreliableToastApi
-class LoginActivity : ViewModelActivity() {
+class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityLoginBinding by viewBinding()
 
@@ -36,16 +36,17 @@ class LoginActivity : ViewModelActivity() {
     private lateinit var settingsManager: SettingsManager
 
     override fun setup() {
+        binding
         settingsManager = SettingsManager(applicationContext)
         supportActionBar?.title = "Login"
     }
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val nickname = if (isError) "xd" else "test13"
+        val username = if (isError) "test5" else "test13"
         val password = if (isError) "xd" else "qwqwqwqW4\$"
 
-        binding.loginEtNickname.value = nickname
+        binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
 
@@ -55,14 +56,15 @@ class LoginActivity : ViewModelActivity() {
 
         fillForm(true)
 
+        // loginUser(LoginForm("xd", "xd"))
         binding.btnLogin.setOnClickListener {
-            val (nickname, password) = getEditTextString(
-                binding.loginEtNickname,
+            val (username, password) = getEditTextValue(
+                binding.loginEtUsername,
                 binding.loginEtPassword
             )
-            if (isFormValid(nickname, password)) {
+            val loginForm = LoginForm(username, password)
+            if (isFormValid(loginForm)) {
                 logD("All fields are valid")
-                val loginForm = LoginForm(nickname, password)
                 loginUser(loginForm)
             } else {
                 toast("Please correct invalid fields")
@@ -70,13 +72,13 @@ class LoginActivity : ViewModelActivity() {
         }
     }
 
-    private fun isFormValid(nickname: String, password: String): Boolean {
+    private fun isFormValid(loginForm: LoginForm): Boolean {
         var areFieldsValid = true
-        if (nickname.isEmpty()) {
-            binding.loginEtNickname.error = "Field cannot be empty"
+        if (loginForm.username.isEmpty()) {
+            binding.loginEtUsername.error = "Field cannot be empty"
             areFieldsValid = false
         }
-        if (password.isEmpty()) {
+        if (loginForm.password.isEmpty()) {
             binding.loginEtPassword.error = "Field cannot be empty"
             areFieldsValid = false
         }
@@ -84,41 +86,49 @@ class LoginActivity : ViewModelActivity() {
     }
 
     private fun loginUser(loginForm: LoginForm) {
-        userViewModel.login(loginForm)
-
-        userViewModel.responseLogin.observe(this) { response ->
-            if (response.isSuccessful) {
-                logD(response.getFullResponse())
-                lifecycleScope.launch {
-                    settingsManager.apply {
-                        setIsUserLoggedIn(true)
-                        response.body()?.let {
-                            //setUserAccessToken(it.access)
-                            //setUsername(it.username)
-                        }
-                    }
-                }
-                start<MainActivity>()
-                finish()
-            } else {
-                if (!(this::errorBodyProperties.isInitialized)) {
-                    errorBodyProperties = response.getErrorBodyProperties()
-                }
-
-                logE(response.getFullResponse())
-                toast("Please correct invalid fields")
-
-                logD(errorBodyProperties.toString())
-
-                val key = "detail"
-                val value = "No active account found with the given credentials"
-
-                if (errorBodyProperties[key] == value) {
-                    binding.loginEtNickname.error = "Username is not registered"
+        userViewModel.run {
+            login(loginForm)
+            responseLogin.observe(this@LoginActivity) { response ->
+                if (response.isSuccessful) {
+                    handleSuccessfulResponse(response)
                 } else {
-                    errorBodyProperties[key]
+                    handleErrorResponse(response)
                 }
             }
+        }
+    }
+
+    private fun handleSuccessfulResponse(response: Response<LoginResponse>) {
+        logD(response.getFullResponse())
+
+        lifecycleScope.launch {
+            settingsManager.run {
+                setIsUserLoggedIn(true)
+                response.body()?.let {
+                    setUserAccessToken(it.access)
+                    // setUsername(it.username)
+                }
+            }
+        }
+        start<MainActivity>()
+        finish()
+    }
+
+    private fun handleErrorResponse(response: Response<LoginResponse>) {
+        if (!(this::errorBodyProperties.isInitialized)) {
+            errorBodyProperties = response.getErrorBodyProperties()
+        }
+
+        logE(response.getFullResponse())
+        logD(errorBodyProperties.toString())
+
+        val key = "detail"
+        val value = "No active account found with the given credentials"
+
+        if (errorBodyProperties[key] == value) {
+            toast("Invalid credentials")
+        } else {
+            toast("Something went wrong")
         }
     }
 }

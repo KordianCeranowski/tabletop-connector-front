@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.livinglifetechway.k4kotlin.core.value
 import net.alexandroid.utils.mylogkt.logD
 import retrofit2.Response
 import java.io.Serializable
@@ -92,12 +93,23 @@ object Helpers {
             val firstDigit = (0..1).random()
             val secondDigit = (if (firstDigit == 0) (1..9) else (0..2)).random()
         }
+        val year = "2020"
+
+        val hours = "12"
+        val minutes = "00"
+
         return StringBuilder()
-            .append(day.firstDigit)
-            .append(day.secondDigit)
-            .append(".")
+            .append(year)
+            .append('-')
             .append(month.firstDigit)
             .append(month.secondDigit)
+            .append('-')
+            .append(day.firstDigit)
+            .append(day.secondDigit)
+            .append('T')
+            .append(hours)
+            .append(':')
+            .append(minutes)
             .toString()
     }
 
@@ -131,8 +143,8 @@ object Helpers {
         )
     }
 
-    fun getEditTextString(vararg editTexts: EditText): List<String> {
-        return editTexts.map { it.text.toString().trim() }
+    fun getEditTextValue(vararg editTexts: EditText): List<String> {
+        return editTexts.map { it.value.trim() }
     }
 
     val Any.className: String
@@ -152,9 +164,14 @@ object Helpers {
     }
 
     fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
-        val json = gson.fromJson(this.errorBody()?.string(), JsonObject::class.java)
+        val errorBodyString = this.errorBody()?.string().also { logD(it.toString()) }
+
+        val json = gson.fromJson(errorBodyString, JsonObject::class.java)
+
         val keys = json.keySet().map { it.toString() }
+
         val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
+
         return keys.zip(entries).map { it.first to it.second }.toMap()
     }
 }

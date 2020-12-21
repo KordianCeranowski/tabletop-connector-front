@@ -14,8 +14,8 @@ object GameRepository : Repository<Game>(), IRepositorySave<Game> {
         return gameApi.getMany(options)
     }
 
-    override suspend fun save(model: Game): Response<Game> {
-        return gameApi.save(model)
+    override suspend fun save(auth: String, model: Game): Response<Game> {
+        return gameApi.save(auth, model)
     }
 
     override suspend fun getOne(id: String): Response<Game> {

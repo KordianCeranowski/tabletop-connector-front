@@ -1,5 +1,5 @@
 package com.example.tabletop.mvvm.viewmodel
 
 interface IViewModelSave<T> {
-     fun save(model: T)
+     fun save(auth: String, model: T)
 }

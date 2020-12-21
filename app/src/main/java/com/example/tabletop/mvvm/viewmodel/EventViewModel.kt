@@ -21,9 +21,9 @@ class EventViewModel(private val repository: EventRepository)
         }
     }
 
-    override fun save(model: Event) {
+    override fun save(auth: String, model: Event) {
         viewModelScope.launch {
-            responseOne.value = repository.save(model)
+            responseOne.value = repository.save(auth, model)
         }
     }
 
