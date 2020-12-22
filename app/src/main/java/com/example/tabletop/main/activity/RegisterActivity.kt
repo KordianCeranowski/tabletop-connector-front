@@ -5,17 +5,14 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityRegisterBinding
-import com.example.tabletop.mvvm.model.helpers.LoginForm
+import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.repository.UserRepository
-import com.example.tabletop.util.Constants.ValidationPattern
-import com.example.tabletop.mvvm.model.helpers.RegisterForm
-import com.example.tabletop.mvvm.model.helpers.RegisterRequest
-import com.example.tabletop.mvvm.model.helpers.RegisterResponse
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.Helpers.getEditTextValue
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
-import com.example.tabletop.util.Helpers.getErrorBodyProperties
-import com.example.tabletop.util.Helpers.getFullResponse
+import com.example.tabletop.util.ValidationPattern
+import com.example.tabletop.util.getEditTextValue
+import com.example.tabletop.util.getErrorBodyProperties
+import com.example.tabletop.util.getFullResponse
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
@@ -132,54 +129,31 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun registerUser(user: RegisterRequest) {
         userViewModel.run {
             register(user)
-            responseRegister.observe(this@RegisterActivity, { response ->
-                if (response.isSuccessful) {
-                    handleSuccessfulResponse(response, LoginForm(user.username, user.password))
-                } else {
-                    handleErrorResponse(response)
-                }
-            })
-        }
-    }
-
-    private fun handleSuccessfulResponse(
-        response: Response<RegisterResponse>,
-        loginForm: LoginForm
-    ) {
-        logD(response.getFullResponse())
-        lifecycleScope.launch { loginUser(loginForm) }
-    }
-
-    private fun loginUser(loginForm: LoginForm) {
-        userViewModel.run {
-            login(loginForm)
-            responseLogin.observe(this@RegisterActivity) { response ->
-                if (response.isSuccessful) {
-                    lifecycleScope.launch {
-                        settingsManager.run {
-                            setIsUserLoggedIn(true)
-                            setIsFirstRun(false)
-                            response.body()?.let {
-                                setUsername(loginForm.username)
-                                setUserAccessToken((it.access))
-                            }
-                        }
-                    }
-                    start<MainActivity>()
-                    finish()
-                } else {
-                    toast("Something went wrong")
-                }
+            responseRegister.observe(this@RegisterActivity) {
+                it.handleResponse(LoginForm(user.username, user.password))
             }
         }
     }
 
-    private fun handleErrorResponse(response: Response<RegisterResponse>) {
-        if (!(this::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = response.getErrorBodyProperties()
+    private fun Response<RegisterResponse>.handleResponse(loginForm: LoginForm) {
+        if (isSuccessful) {
+            handleSuccess(loginForm)
+        } else {
+            handleError()
+        }
+    }
+
+    private fun Response<RegisterResponse>.handleSuccess(loginForm: LoginForm) {
+        logD(getFullResponse())
+        lifecycleScope.launch { loginUser(loginForm) }
+    }
+
+    private fun Response<RegisterResponse>.handleError() {
+        if (!(this@RegisterActivity::errorBodyProperties.isInitialized)) {
+            errorBodyProperties = getErrorBodyProperties()
         }
 
-        logW(response.getFullResponse())
+        logW(getFullResponse())
         toast("Please correct invalid fields")
 
         logD(errorBodyProperties.toString())
@@ -193,6 +167,41 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         // if (errorBodyProperties[key] == value) {
         //     binding.registerEtEmail.error = "Email is already taken"
         // }
+    }
+
+    private fun loginUser(loginForm: LoginForm) {
+        userViewModel.run {
+            login(loginForm)
+            responseLogin.observe(this@RegisterActivity) { it.handleResponse() }
+        }
+    }
+
+    private fun Response<LoginResponse>.handleResponse() {
+        if (isSuccessful) {
+            handleSuccess()
+        } else {
+            handleError()
+        }
+    }
+
+    private fun Response<LoginResponse>.handleSuccess() {
+        lifecycleScope.launch {
+            settingsManager.run {
+                body()?.let {
+                    setIsUserLoggedIn(true)
+                    setIsFirstRun(false)
+                    setUserAccessToken((it.access))
+                    setUserRefreshToken(it.refresh)
+                }
+            }
+        }
+        start<MainActivity>()
+        finish()
+    }
+
+    @JvmName("handleErrorLoginResponse")
+    private fun Response<LoginResponse>.handleError() {
+        toast("Something went wrong")
     }
 }
 

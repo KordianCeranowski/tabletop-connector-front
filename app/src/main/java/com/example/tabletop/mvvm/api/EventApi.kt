@@ -3,7 +3,7 @@ package com.example.tabletop.mvvm.api
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.Constants.EVENT_API_ENDPOINT
+import com.example.tabletop.util.EVENT_API_ENDPOINT
 import retrofit2.Response
 import retrofit2.http.*
 

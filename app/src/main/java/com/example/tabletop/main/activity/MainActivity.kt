@@ -6,32 +6,24 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
-import com.example.tabletop.main.adapter.EventAdapter
 import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.repository.EventRepository
-import com.example.tabletop.util.Helpers.getMockAddress
-import com.example.tabletop.util.Helpers.getRandomDate
+import com.example.tabletop.util.getMockAddress
+import com.example.tabletop.util.getRandomDate
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.Helpers.getFullResponse
+import com.example.tabletop.util.getFullResponse
 import com.example.tabletop.util.random
 import com.livinglifetechway.k4kotlin.core.shortToast
-import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.android.synthetic.main.activity_event.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
-import net.alexandroid.utils.mylogkt.logD
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
-import splitties.toast.toast
 import java.io.Serializable
-import java.util.*
 
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
@@ -149,7 +141,7 @@ class MainActivity : BaseActivity() {
             settingsManager.run {
                 setIsUserLoggedIn(false)
                 setUserAccessToken("")
-                setUsername("")
+                setUserRefreshToken("")
             }
         }
         start<LoginActivity>()

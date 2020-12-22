@@ -2,7 +2,7 @@ package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.helpers.Many
-import com.example.tabletop.util.Constants.GAME_API_ENDPOINT
+import com.example.tabletop.util.GAME_API_ENDPOINT
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -21,7 +21,7 @@ interface GameApi {
     @POST(GAME_API_ENDPOINT)
     suspend fun save(
         @Header("Authorization") auth: String,
-        @Body event: Game
+        @Body game: Game
     ): Response<Game>
 
     @GET("$GAME_API_ENDPOINT{id}")

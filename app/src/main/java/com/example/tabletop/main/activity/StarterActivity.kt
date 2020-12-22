@@ -54,7 +54,7 @@ class StarterActivity : AppCompatActivity() {
                 setIsUserLoggedIn(false)
                 setIsFirstRun(true)
                 setUserAccessToken("")
-                setUsername("")
+                setUserRefreshToken("")
             }
         }
     }

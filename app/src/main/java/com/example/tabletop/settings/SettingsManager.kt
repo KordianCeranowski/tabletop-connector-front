@@ -20,7 +20,7 @@ class SettingsManager(context: Context) {
 
     val userAccessTokenFlow: Flow<String> = getFlow { it[USER_ACCESS_TOKEN] ?: ""  }
 
-    val usernameFlow: Flow<String> = getFlow { it[USERNAME] ?: "" }
+    val userRefreshTokenFlow: Flow<String> = getFlow { it[USER_REFRESH_TOKEN] ?: ""  }
 
     val isUserLoggedInFlow: Flow<Boolean> = getFlow { it[IS_USER_LOGGED_IN] ?: false }
 
@@ -29,22 +29,37 @@ class SettingsManager(context: Context) {
     val userLatitudeFlow: Flow<Int>  = getFlow { it[USER_LATITUDE] ?: 0  }
 
     suspend fun setIsFirstRun(isFirstRun: Boolean) {
-        dataStore.edit { it[IS_FIRST_RUN] = isFirstRun }
+        dataStore.edit { preferences ->
+            preferences[IS_FIRST_RUN] = isFirstRun.also {
+                logD("Is first run set to: \"$it\"")
+            }
+        }
     }
 
     suspend fun setUserAccessToken(userAccessToken: String) {
-        dataStore.edit {
-            logD("Access token set: $userAccessToken")
-            it[USER_ACCESS_TOKEN] = userAccessToken
+        dataStore.edit { preferences ->
+            val accessToken = "JWT $userAccessToken"
+            preferences[USER_ACCESS_TOKEN] = accessToken.also {
+                logD("Access token set to: \"$it\"")
+            }
+        }
+    }
+
+    suspend fun setUserRefreshToken(userRefreshToken: String) {
+        dataStore.edit { preferences ->
+            val refreshToken = "JWT $userRefreshToken"
+            preferences[USER_REFRESH_TOKEN] = refreshToken.also {
+                logD("Refresh token set to: \"$it\"")
+            }
         }
     }
 
     suspend fun setIsUserLoggedIn(isUserLoggedIn: Boolean) {
-        dataStore.edit { it[IS_USER_LOGGED_IN] = isUserLoggedIn }
-    }
-
-    suspend fun setUsername(username: String) {
-        dataStore.edit { it[USERNAME] = username }
+        dataStore.edit { preferences ->
+            preferences[IS_USER_LOGGED_IN] = isUserLoggedIn.also {
+                logD("Is user logged in set to: \"$it\"")
+            }
+        }
     }
 
     suspend fun setUserLongitude(userLongitude: Int) {
@@ -72,7 +87,7 @@ class SettingsManager(context: Context) {
         private val IS_FIRST_RUN = preferencesKey<Boolean>("isFirstRun")
         private val IS_USER_LOGGED_IN = preferencesKey<Boolean>("isUserLoggedIn")
         private val USER_ACCESS_TOKEN = preferencesKey<String>("userAccessToken")
-        private val USERNAME = preferencesKey<String>("username")
+        private val USER_REFRESH_TOKEN = preferencesKey<String>("userRefreshToken")
         private val USER_LONGITUDE = preferencesKey<Int>("userLongitude")
         private val USER_LATITUDE = preferencesKey<Int>("userLatitude")
     }

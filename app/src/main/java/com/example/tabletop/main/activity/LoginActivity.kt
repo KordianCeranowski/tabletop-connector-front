@@ -6,13 +6,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.mvvm.repository.UserRepository
-import com.example.tabletop.util.Helpers.getEditTextValue
+import com.example.tabletop.util.getEditTextValue
 import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.mvvm.model.helpers.LoginResponse
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
-import com.example.tabletop.util.Helpers.getErrorBodyProperties
-import com.example.tabletop.util.Helpers.getFullResponse
+import com.example.tabletop.util.getErrorBodyProperties
+import com.example.tabletop.util.getFullResponse
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
@@ -43,8 +43,8 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val username = if (isError) "test5" else "test13"
-        val password = if (isError) "xd" else "qwqwqwqW4\$"
+        val username = if (isError) "test5" else "test1"
+        val password = if (isError) "xd" else "qwqwqwqW1$"
 
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
@@ -54,7 +54,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         super.onCreate(savedInstanceState)
         setup()
 
-        fillForm(true)
+        fillForm()
 
         // loginUser(LoginForm("xd", "xd"))
         binding.btnLogin.setOnClickListener {
@@ -88,25 +88,27 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     private fun loginUser(loginForm: LoginForm) {
         userViewModel.run {
             login(loginForm)
-            responseLogin.observe(this@LoginActivity) { response ->
-                if (response.isSuccessful) {
-                    handleSuccessfulResponse(response)
-                } else {
-                    handleErrorResponse(response)
-                }
-            }
+            responseLogin.observe(this@LoginActivity) { it.handleResponse() }
         }
     }
 
-    private fun handleSuccessfulResponse(response: Response<LoginResponse>) {
-        logD(response.getFullResponse())
+    private fun Response<LoginResponse>.handleResponse() {
+        if (isSuccessful) {
+            handleSuccess()
+        } else {
+            handleError()
+        }
+    }
+
+    private fun Response<LoginResponse>.handleSuccess() {
+        logD(getFullResponse())
 
         lifecycleScope.launch {
             settingsManager.run {
-                setIsUserLoggedIn(true)
-                response.body()?.let {
+                body()?.let {
+                    setIsUserLoggedIn(true)
                     setUserAccessToken(it.access)
-                    // setUsername(it.username)
+                    setUserRefreshToken(it.refresh)
                 }
             }
         }
@@ -114,12 +116,12 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         finish()
     }
 
-    private fun handleErrorResponse(response: Response<LoginResponse>) {
-        if (!(this::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = response.getErrorBodyProperties()
+    private fun Response<LoginResponse>.handleError() {
+        if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
+            errorBodyProperties = getErrorBodyProperties()
         }
 
-        logE(response.getFullResponse())
+        logE(getFullResponse())
         logD(errorBodyProperties.toString())
 
         val key = "detail"

@@ -11,8 +11,8 @@ object UserRepository : Repository<User>() {
         return userApi.login(loginForm)
     }
 
-    suspend fun register(user: RegisterRequest): Response<RegisterResponse> {
-        return userApi.register(user)
+    suspend fun register(registerRequest: RegisterRequest): Response<RegisterResponse> {
+        return userApi.register(registerRequest)
     }
 
     override suspend fun getMany(sort: String, order: String): Response<Many<User>> {

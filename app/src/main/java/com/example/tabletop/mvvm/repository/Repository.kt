@@ -5,6 +5,7 @@ import com.example.tabletop.mvvm.model.helpers.Many
 import retrofit2.Response
 
 abstract class Repository<T : Model> {
+
     abstract suspend fun getMany(sort: String, order: String): Response<Many<T>>
 
     abstract suspend fun getMany(options: Map<String, String>): Response<Many<T>>

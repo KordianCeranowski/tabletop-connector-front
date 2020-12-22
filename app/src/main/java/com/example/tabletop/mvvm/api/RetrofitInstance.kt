@@ -1,6 +1,6 @@
 package com.example.tabletop.mvvm.api
 
-import com.example.tabletop.util.Constants.BASE_URL
+import com.example.tabletop.util.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

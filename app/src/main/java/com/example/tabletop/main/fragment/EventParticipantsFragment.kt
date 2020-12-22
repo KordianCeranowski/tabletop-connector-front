@@ -4,21 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewbinding.ViewBinding
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventParticipantsBinding
-import com.example.tabletop.main.adapter.GameAdapter
 import com.example.tabletop.main.adapter.ParticipantAdapter
-import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.User
-import com.example.tabletop.mvvm.repository.UserRepository
-import com.example.tabletop.mvvm.viewmodel.UserViewModel
-import com.example.tabletop.util.Helpers.className
-import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
+import com.example.tabletop.util.className
+import com.example.tabletop.util.getMockProfile
 import net.alexandroid.utils.mylogkt.logI
 
-class EventParticipantsFragment//(private val participants: List<User>)
-    : BaseFragment(R.layout.fragment_event_participants) {
+class EventParticipantsFragment : BaseFragment(R.layout.fragment_event_participants) {
 
     override val binding: FragmentEventParticipantsBinding by viewBinding()
 
@@ -38,7 +32,11 @@ class EventParticipantsFragment//(private val participants: List<User>)
         logI("Created ${this.className}")
 
         val sampleParticipants = List(6) {
-            User ("Email ${it + 1}", "User ${it + 1}", "Password")
+            User ("Email ${it + 1}",
+                "User ${it + 1}",
+                "Password",
+                getMockProfile()
+            )
         }
 
         //val participants = (arguments?.getSerializable("EVENT") as Event).participants

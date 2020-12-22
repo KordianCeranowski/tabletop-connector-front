@@ -21,9 +21,9 @@ class UserViewModel(private val repository: UserRepository) : BaseViewModel<User
         }
     }
 
-    fun register(user: RegisterRequest) {
+    fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            responseRegister.value = repository.register(user)
+            responseRegister.value = repository.register(registerRequest)
         }
     }
 

@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
 import com.example.tabletop.main.activity.EventActivity
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.util.Helpers.startWithExtra
+import com.example.tabletop.util.startWithExtra
 import kotlinx.android.synthetic.main.row_event.view.*
-import splitties.toast.UnreliableToastApi
 
 class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
 

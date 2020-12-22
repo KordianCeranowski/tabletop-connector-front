@@ -9,7 +9,6 @@ import com.example.tabletop.databinding.FragmentListOfEventsBinding
 import com.example.tabletop.main.activity.EventFormActivity
 import com.example.tabletop.main.adapter.EventAdapter
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.util.Helpers.className
 import net.alexandroid.utils.mylogkt.logI
 import splitties.fragments.start
 import splitties.toast.UnreliableToastApi

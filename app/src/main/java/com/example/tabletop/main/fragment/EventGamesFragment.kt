@@ -5,17 +5,12 @@ import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import android.widget.Adapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventGamesBinding
-import com.example.tabletop.main.adapter.EventAdapter
 import com.example.tabletop.main.adapter.GameAdapter
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.util.Helpers.className
-import com.example.tabletop.util.Helpers.getMockGame
-import com.example.tabletop.util.random
+import com.example.tabletop.util.className
+import com.example.tabletop.util.getMockGame
 import net.alexandroid.utils.mylogkt.logI
 
 class EventGamesFragment

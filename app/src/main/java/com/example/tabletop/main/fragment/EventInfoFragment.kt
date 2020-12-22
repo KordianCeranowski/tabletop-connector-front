@@ -1,15 +1,12 @@
 package com.example.tabletop.main.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.viewbinding.library.fragment.viewBinding
-import androidx.viewbinding.ViewBinding
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventInfoBinding
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.util.Helpers.className
+import com.example.tabletop.util.className
 import net.alexandroid.utils.mylogkt.logI
 
 class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
