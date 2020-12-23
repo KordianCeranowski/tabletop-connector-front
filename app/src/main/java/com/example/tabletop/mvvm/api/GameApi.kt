@@ -15,6 +15,7 @@ interface GameApi {
 
     @GET(GAME_API_ENDPOINT)
     suspend fun getMany(
+        @Header("Authorization") auth: String,
         @QueryMap options: Map<String, String>
     ): Response<Many<Game>>
 

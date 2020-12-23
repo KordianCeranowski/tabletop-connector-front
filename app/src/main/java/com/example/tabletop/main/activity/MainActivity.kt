@@ -12,12 +12,9 @@ import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.repository.EventRepository
-import com.example.tabletop.util.getMockAddress
-import com.example.tabletop.util.getRandomDate
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.getFullResponse
-import com.example.tabletop.util.random
+import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.shortToast
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
@@ -65,7 +62,7 @@ class MainActivity : BaseActivity() {
 
         val eventsMock = List(10) { idx ->
             Event("Event ${idx + 1}",
-                "Creator ${idx + 1}",
+                getMockUser(),
                 getRandomDate(),
                 getMockAddress(),
                 emptyList(),
@@ -81,30 +78,12 @@ class MainActivity : BaseActivity() {
             )
         }
 
-        //lateinit var events: List<Event>
-
-        // eventViewModel.getMany("id", "desc")
-        // eventViewModel.responseMany.observe(this) { response ->
-        //     if (response.isSuccessful) {
-        //         logD(response.getFullResponse())
-        //         response.body()?.let { events = it.results }
-        //     } else {
-        //         toast(response.code())
-        //     }
-        // }
-
-        val bundle = Bundle().apply { putSerializable("EVENTS", eventsMock as Serializable) }
-
-        setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "Dashboard")
+        setFragmentAndTitle(ListOfEventsFragment(), "Dashboard")
 
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.mi_profile -> setFragmentAndTitle(ProfileFragment(),"Profile")
-                R.id.mi_all_events ->
-                    setFragmentAndTitle(
-                        ListOfEventsFragment().apply { arguments = bundle },
-                        "Dashboard"
-                    )
+                R.id.mi_all_events -> setFragmentAndTitle(ListOfEventsFragment(), "Dashboard")
                 R.id.mi_my_events -> shortToast("Clicked My Events")
                 R.id.mi_events_history -> shortToast("Clicked Events History")
                 R.id.mi_settings -> setFragmentAndTitle(SettingsFragment(), "Settings")

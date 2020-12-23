@@ -34,7 +34,6 @@ class EventParticipantsFragment : BaseFragment(R.layout.fragment_event_participa
         val sampleParticipants = List(6) {
             User ("Email ${it + 1}",
                 "User ${it + 1}",
-                "Password",
                 getMockProfile()
             )
         }

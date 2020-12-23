@@ -33,9 +33,9 @@ object UserViewModel : BaseViewModel<User>() {
         }
     }
 
-    override fun getMany(options: Map<String, String>) {
+    override fun getMany(auth: String, options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = UserRepository.getMany(options)
+            responseMany.value = UserRepository.getMany(auth, options)
         }
     }
 

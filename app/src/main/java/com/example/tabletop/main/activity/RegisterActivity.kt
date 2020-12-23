@@ -128,30 +128,32 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         UserViewModel.run {
             register(user)
             responseRegister.observe(this@RegisterActivity) {
-                it.handleResponse(LoginForm(user.username, user.password))
+                handleResponse(it, LoginForm(user.username, user.password))
             }
         }
     }
 
-    private fun Response<RegisterResponse>.handleResponse(loginForm: LoginForm) {
-        if (isSuccessful) {
-            handleSuccess(loginForm)
-        } else {
-            handleError()
+    private fun handleResponse(response: Response<RegisterResponse>, loginForm: LoginForm) {
+        response.let {
+            if (it.isSuccessful) {
+                handleSuccess(it, loginForm)
+            } else {
+                handleError(it)
+            }
         }
     }
 
-    private fun Response<RegisterResponse>.handleSuccess(loginForm: LoginForm) {
-        logD(getFullResponse())
+    private fun handleSuccess(response: Response<RegisterResponse>, loginForm: LoginForm) {
+        logD(response.getFullResponse())
         lifecycleScope.launch { loginUser(loginForm) }
     }
 
-    private fun Response<RegisterResponse>.handleError() {
+    private fun handleError(response: Response<RegisterResponse>) {
         if (!(this@RegisterActivity::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = getErrorBodyProperties()
+            errorBodyProperties = response.getErrorBodyProperties()
         }
 
-        logW(getFullResponse())
+        logW(response.getFullResponse())
         toast("Please correct invalid fields")
 
         logD(errorBodyProperties.toString())
@@ -170,22 +172,24 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun loginUser(loginForm: LoginForm) {
         UserViewModel.run {
             login(loginForm)
-            responseLogin.observe(this@RegisterActivity) { it.handleResponse() }
+            responseLogin.observe(this@RegisterActivity) { handleResponse(it) }
         }
     }
 
-    private fun Response<LoginResponse>.handleResponse() {
-        if (isSuccessful) {
-            handleSuccess()
-        } else {
-            handleError()
+    private fun handleResponse(response: Response<LoginResponse>) {
+        response.let {
+            if (it.isSuccessful) {
+                handleSuccess(it)
+            } else {
+                handleError(it)
+            }
         }
     }
 
-    private fun Response<LoginResponse>.handleSuccess() {
+    private fun handleSuccess(response: Response<LoginResponse>) {
         lifecycleScope.launch {
             settingsManager.run {
-                body()?.let {
+                response.body()?.let {
                     setIsUserLoggedIn(true)
                     setIsFirstRun(false)
                     setUserAccessToken((it.access))
@@ -198,7 +202,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     @JvmName("handleErrorLoginResponse")
-    private fun Response<LoginResponse>.handleError() {
+    private fun handleError(response: Response<LoginResponse>) {
         toast("Something went wrong")
     }
 }

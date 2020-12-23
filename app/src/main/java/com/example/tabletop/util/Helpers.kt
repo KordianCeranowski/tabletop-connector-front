@@ -13,9 +13,8 @@ import com.example.tabletop.mvvm.model.helpers.Profile
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.livinglifetechway.k4kotlin.core.value
-import net.alexandroid.utils.mylogkt.logD
+import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
 import java.io.Serializable
 
@@ -71,7 +70,7 @@ inline fun <reified T : Activity> Context.startWithExtra(vararg pairs: Pair<Stri
 fun getMockEvent(): Event {
     return Event(
         "mock name",
-        "mock creator",
+        getMockUser(),
         getRandomDate(),
         getMockAddress(),
         emptyList(),
@@ -138,7 +137,6 @@ fun getMockUser(): User {
     return User(
         "email",
         "username",
-        "password",
         getMockProfile()
     )
 }
@@ -159,27 +157,32 @@ val Any.className: String
     get() = this::class.simpleName as String
 
 // Serializer
-fun <T> Response<T>.getFullResponse(): String {
+fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
     val body = body()?.let { gson.toJson(body()) }
+    val bodyString =  if (showBody) "|Body: $body" else ""
     return """
         |
         |Headers:
         |${headers()}
         |Status: ${message()}
         |Code: ${code()}
-        |Body: $body
+        $bodyString
         """.trimMargin()
 }
 
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
-    val errorBodyString = this.errorBody()?.string().also { logD(it.toString()) }
+    val errorBodyString = this.errorBody()?.string().also {
+        logI("Error body: ${it.toString()}")
+    }
 
     val json = gson.fromJson(errorBodyString, JsonObject::class.java)
 
-    val keys = json.keySet().map { it.toString() }
-
-    val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
-
-    return keys.zip(entries).map { it.first to it.second }.toMap()
+    return if (json != null) {
+        val keys = json.keySet().map { it.toString() }
+        val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
+        keys.zip(entries).map { it.first to it.second }.toMap()
+    } else {
+        emptyMap()
+    }
 }
 

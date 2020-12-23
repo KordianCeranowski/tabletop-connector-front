@@ -13,8 +13,7 @@ import com.example.tabletop.util.className
 import com.example.tabletop.util.getMockGame
 import net.alexandroid.utils.mylogkt.logI
 
-class EventGamesFragment
-    : BaseFragment(R.layout.fragment_event_games) {
+class EventGamesFragment : BaseFragment(R.layout.fragment_event_games) {
 
     override val binding: FragmentEventGamesBinding by viewBinding()
 

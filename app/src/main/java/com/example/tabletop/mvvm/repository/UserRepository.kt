@@ -19,8 +19,8 @@ object UserRepository : Repository<User>() {
         return userApi.getMany(sort, order)
     }
 
-    override suspend fun getMany(options: Map<String, String>): Response<Many<User>> {
-        return userApi.getMany(options)
+    override suspend fun getMany(auth: String, options: Map<String, String>): Response<Many<User>> {
+        return userApi.getMany(auth, options)
     }
 
     override suspend fun getOne(id: String): Response<User> {

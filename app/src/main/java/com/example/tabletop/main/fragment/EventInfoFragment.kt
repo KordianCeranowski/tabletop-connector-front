@@ -21,7 +21,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         val event = arguments?.getSerializable("EVENT") as Event
 
         binding.tvEventName.text = event.name
-        binding.tvEventCreator.text = event.creator
+        binding.tvEventCreator.text = event.creator.username
         binding.tvEventDate.text = event.date
     }
 }

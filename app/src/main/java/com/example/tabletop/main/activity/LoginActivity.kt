@@ -86,24 +86,25 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     private fun loginUser(loginForm: LoginForm) {
         UserViewModel.run {
             login(loginForm)
-            responseLogin.observe(this@LoginActivity) { it.handleResponse() }
+            responseLogin.observe(this@LoginActivity) { handleResponse(it) }
         }
     }
 
-    private fun Response<LoginResponse>.handleResponse() {
-        if (isSuccessful) {
-            handleSuccess()
-        } else {
-            handleError()
+    private fun handleResponse(response: Response<LoginResponse>) {
+        response.let {
+            if (it.isSuccessful) {
+                handleSuccess(it)
+            } else {
+                handleError(it)
+            }
         }
     }
 
-    private fun Response<LoginResponse>.handleSuccess() {
-        logD(getFullResponse())
-
+    private fun handleSuccess(response: Response<LoginResponse>) {
+        logD(response.getFullResponse())
         lifecycleScope.launch {
             settingsManager.run {
-                body()?.let {
+                response.body()?.let {
                     setIsUserLoggedIn(true)
                     setUserAccessToken(it.access)
                     setUserRefreshToken(it.refresh)
@@ -114,12 +115,12 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         finish()
     }
 
-    private fun Response<LoginResponse>.handleError() {
+    private fun handleError(response: Response<LoginResponse>) {
         if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = getErrorBodyProperties()
+            errorBodyProperties = response.getErrorBodyProperties()
         }
 
-        logE(getFullResponse())
+        logE(response.getFullResponse())
         logD(errorBodyProperties.toString())
 
         val key = "detail"

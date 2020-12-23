@@ -27,6 +27,7 @@ interface UserApi {
 
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
+        @Header("Authorization") auth: String,
         @QueryMap options: Map<String, String>
     ): Response<Many<User>>
 

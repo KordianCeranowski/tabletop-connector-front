@@ -10,8 +10,11 @@ object EventRepository : Repository<Event>(), IRepositorySave<Event> {
         return eventApi.getMany(sort, order)
     }
 
-    override suspend fun getMany(options: Map<String, String>): Response<Many<Event>> {
-        return eventApi.getMany(options)
+    override suspend fun getMany(
+        auth: String,
+        options: Map<String, String>)
+    : Response<Many<Event>> {
+        return eventApi.getMany(auth, options)
     }
 
     override suspend fun save(auth: String, model: Event): Response<Event> {

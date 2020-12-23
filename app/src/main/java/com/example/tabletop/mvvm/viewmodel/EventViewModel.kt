@@ -14,9 +14,9 @@ object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
         }
     }
 
-    override fun getMany(options: Map<String, String>) {
+    override fun getMany(auth: String, options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = EventRepository.getMany(options)
+            responseMany.value = EventRepository.getMany(auth, options)
         }
     }
 
