@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
-import com.example.tabletop.mvvm.repository.*
+import com.example.tabletop.mvvm.repository.UserRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class UserViewModel(private val repository: UserRepository) : BaseViewModel<User>() {
+object UserViewModel : BaseViewModel<User>() {
 
     val responseLogin = MutableLiveData<Response<LoginResponse>>()
 
@@ -17,43 +17,43 @@ class UserViewModel(private val repository: UserRepository) : BaseViewModel<User
 
     fun login(loginForm: LoginForm) {
         viewModelScope.launch {
-            responseLogin.value = repository.login(loginForm)
+            responseLogin.value = UserRepository.login(loginForm)
         }
     }
 
     fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            responseRegister.value = repository.register(registerRequest)
+            responseRegister.value = UserRepository.register(registerRequest)
         }
     }
 
     override fun getMany(sort: String, order: String) {
         viewModelScope.launch {
-            responseMany.value = repository.getMany(sort, order)
+            responseMany.value = UserRepository.getMany(sort, order)
         }
     }
 
     override fun getMany(options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = repository.getMany(options)
+            responseMany.value = UserRepository.getMany(options)
         }
     }
 
     override fun getOne(id: String) {
         viewModelScope.launch {
-            responseOne.value = repository.getOne(id)
+            responseOne.value = UserRepository.getOne(id)
         }
     }
 
     override fun remove(id: String) {
         viewModelScope.launch {
-            responseOne.value = repository.remove(id)
+            responseOne.value = UserRepository.remove(id)
         }
     }
 
     override fun edit(id: String, newModel: User) {
         viewModelScope.launch {
-            responseOne.value = repository.edit(id, newModel)
+            responseOne.value = UserRepository.edit(id, newModel)
         }
     }
 }

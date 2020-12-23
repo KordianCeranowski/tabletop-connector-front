@@ -29,8 +29,6 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityRegisterBinding by viewBinding()
 
-    private val userViewModel: UserViewModel by lazyViewModels { UserViewModel(UserRepository) }
-
     override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
@@ -127,7 +125,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun registerUser(user: RegisterRequest) {
-        userViewModel.run {
+        UserViewModel.run {
             register(user)
             responseRegister.observe(this@RegisterActivity) {
                 it.handleResponse(LoginForm(user.username, user.password))
@@ -170,7 +168,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun loginUser(loginForm: LoginForm) {
-        userViewModel.run {
+        UserViewModel.run {
             login(loginForm)
             responseLogin.observe(this@RegisterActivity) { it.handleResponse() }
         }

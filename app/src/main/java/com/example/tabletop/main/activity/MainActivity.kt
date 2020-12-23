@@ -21,8 +21,10 @@ import com.example.tabletop.util.random
 import com.livinglifetechway.k4kotlin.core.shortToast
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
+import net.alexandroid.utils.mylogkt.logD
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
+import splitties.toast.toast
 import java.io.Serializable
 
 @UnreliableToastApi
@@ -33,10 +35,6 @@ class MainActivity : BaseActivity() {
     private lateinit var settingsManager: SettingsManager
 
     private lateinit var toggle: ActionBarDrawerToggle
-
-    private val eventViewModel: EventViewModel by lazyViewModels {
-        EventViewModel(EventRepository)
-    }
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
@@ -83,20 +81,17 @@ class MainActivity : BaseActivity() {
             )
         }
 
-/*
-        eventViewModel.getMany("id","desc")
+        //lateinit var events: List<Event>
 
-        lateinit var events: List<Event>
-
-        eventViewModel.responseMany.observe(this) { response ->
-            if (response.isSuccessful) {
-                logD(response.getFullResponse())
-                response.body()?.let { events = it.results }
-            } else {
-                toast(response.code())
-            }
-        }
-*/
+        // eventViewModel.getMany("id", "desc")
+        // eventViewModel.responseMany.observe(this) { response ->
+        //     if (response.isSuccessful) {
+        //         logD(response.getFullResponse())
+        //         response.body()?.let { events = it.results }
+        //     } else {
+        //         toast(response.code())
+        //     }
+        // }
 
         val bundle = Bundle().apply { putSerializable("EVENTS", eventsMock as Serializable) }
 

@@ -29,8 +29,6 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityLoginBinding by viewBinding()
 
-    private val userViewModel: UserViewModel by lazyViewModels { UserViewModel(UserRepository) }
-
     override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
@@ -86,7 +84,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun loginUser(loginForm: LoginForm) {
-        userViewModel.run {
+        UserViewModel.run {
             login(loginForm)
             responseLogin.observe(this@LoginActivity) { it.handleResponse() }
         }

@@ -30,8 +30,6 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
     override lateinit var errorBodyProperties: Map<String, String>
 
-    private val eventViewModel: EventViewModel by lazyViewModels { EventViewModel(EventRepository) }
-
     private lateinit var settingsManager: SettingsManager
 
     override fun setup() {
@@ -52,7 +50,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
             .asLiveData()
             .observe(this@EventFormActivity) { authToken ->
 
-                eventViewModel.run {
+                EventViewModel.run {
                     save(authToken, event)
                     responseOne.observe(this@EventFormActivity) { response ->
                         if (response.isSuccessful) {

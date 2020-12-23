@@ -11,8 +11,6 @@ class EventEditActivity : BaseActivity() {
 
     override val binding: ActivityEventEditBinding by viewBinding()
 
-    private val eventViewModel: EventViewModel by lazyViewModels { EventViewModel(EventRepository) }
-
     override fun setup() {
         TODO("Not yet implemented")
     }
