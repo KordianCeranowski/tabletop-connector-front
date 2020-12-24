@@ -15,6 +15,10 @@ object UserRepository : Repository<User>() {
         return userApi.register(registerRequest)
     }
 
+    suspend fun getProfile(auth: String): Response<Profile> {
+        return userApi.getProfile(auth)
+    }
+
     override suspend fun getMany(sort: String, order: String): Response<Many<User>> {
         return userApi.getMany(sort, order)
     }

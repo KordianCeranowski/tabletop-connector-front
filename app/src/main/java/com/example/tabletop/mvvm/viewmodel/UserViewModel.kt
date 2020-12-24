@@ -15,6 +15,8 @@ object UserViewModel : BaseViewModel<User>() {
 
     val responseRegister = MutableLiveData<Response<RegisterResponse>>()
 
+    val responseGetProfile = MutableLiveData<Response<Profile>>()
+
     fun login(loginForm: LoginForm) {
         viewModelScope.launch {
             responseLogin.value = UserRepository.login(loginForm)
@@ -24,6 +26,12 @@ object UserViewModel : BaseViewModel<User>() {
     fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
             responseRegister.value = UserRepository.register(registerRequest)
+        }
+    }
+
+    fun getProfile(auth: String) {
+        viewModelScope.launch {
+            responseGetProfile.value = UserRepository.getProfile(auth)
         }
     }
 

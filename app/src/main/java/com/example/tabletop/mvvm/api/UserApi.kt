@@ -3,6 +3,7 @@ package com.example.tabletop.mvvm.api
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.util.USER_API_ENDPOINT
+import com.example.tabletop.util.USER_API_GET_PROFILE_ENDPOINT
 import com.example.tabletop.util.USER_API_LOGIN_ENDPOINT
 import com.example.tabletop.util.USER_API_REGISTER_ENDPOINT
 import retrofit2.Response
@@ -18,6 +19,11 @@ interface UserApi {
     suspend fun register(
         @Body registerRequest: RegisterRequest
     ): Response<RegisterResponse>
+
+    @POST(USER_API_GET_PROFILE_ENDPOINT)
+    suspend fun getProfile(
+        @Header("Authorization") auth: String
+    ): Response<Profile>
 
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
