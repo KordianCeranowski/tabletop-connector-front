@@ -6,7 +6,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.mvvm.model.helpers.*
-import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.ValidationPattern
@@ -14,7 +13,6 @@ import com.example.tabletop.util.getEditTextValue
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
 import com.livinglifetechway.k4kotlin.core.value
-import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.*
 import net.alexandroid.utils.mylogkt.logD

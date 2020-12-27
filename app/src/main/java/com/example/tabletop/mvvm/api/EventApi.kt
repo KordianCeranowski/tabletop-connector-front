@@ -4,6 +4,7 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.EVENT_API_ENDPOINT
+import com.example.tabletop.util.USER_EVENT_PARTICIPATION_ENDPOINT
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -27,19 +28,25 @@ interface EventApi {
         @Body event: Event
     ): Response<Event>
 
-    @GET("$EVENT_API_ENDPOINT{id}")
+    @GET("$EVENT_API_ENDPOINT{id}/")
     suspend fun getOne(
         @Path("id") id: String
     ): Response<Event>
 
-    @DELETE("$EVENT_API_ENDPOINT{id}")
+    @DELETE("$EVENT_API_ENDPOINT{id}/")
     suspend fun remove(
         @Path("id") id: String
     ): Response<Event>
 
-    @PUT("$EVENT_API_ENDPOINT{id}")
+    @PUT("$EVENT_API_ENDPOINT{id}/")
     suspend fun edit(
         @Path("id") id: String,
         @Body event: Event
     ): Response<Event>
+
+    @PATCH("$USER_EVENT_PARTICIPATION_ENDPOINT{id}/")
+    suspend fun joinOrLeaveEvent(
+        @Header("Authorization") auth: String,
+        @Path("id") id: String
+    ): Response<Unit>
 }

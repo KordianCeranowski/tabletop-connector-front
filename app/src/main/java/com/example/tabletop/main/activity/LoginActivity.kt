@@ -5,7 +5,6 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityLoginBinding
-import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.getEditTextValue
 import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.mvvm.model.helpers.LoginResponse
@@ -14,7 +13,6 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
 import com.livinglifetechway.k4kotlin.core.value
-import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
@@ -41,9 +39,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val username = if (isError) "test5" else "test1"
-        val password = if (isError) "xd" else "qwqwqwqW1$"
-
+        val (username, password) = if (isError) "test5" to "xd" else "test1" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
@@ -54,7 +50,6 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
         fillForm()
 
-        // loginUser(LoginForm("xd", "xd"))
         binding.btnLogin.setOnClickListener {
             val (username, password) = getEditTextValue(
                 binding.loginEtUsername,
