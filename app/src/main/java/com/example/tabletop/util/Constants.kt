@@ -13,7 +13,7 @@ const val USER_API_REGISTER_ENDPOINT = "auth/users/"
 
 const val USER_API_LOGIN_ENDPOINT = "auth/jwt/create/"
 
-const val USER_API_GET_PROFILE_ENDPOINT = "foo" // TODO
+const val USER_API_GET_PROFILE_ENDPOINT = "auth/profiles/me/"
 
 // GAME API
 const val GAME_API_ENDPOINT = "games/"
