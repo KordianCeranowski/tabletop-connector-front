@@ -20,7 +20,7 @@ interface UserApi {
         @Body registerRequest: RegisterRequest
     ): Response<RegisterResponse>
 
-    @POST(USER_API_GET_PROFILE_ENDPOINT)
+    @GET(USER_API_GET_PROFILE_ENDPOINT)
     suspend fun getProfile(
         @Header("Authorization") auth: String
     ): Response<Profile>

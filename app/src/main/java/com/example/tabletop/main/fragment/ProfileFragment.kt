@@ -1,5 +1,6 @@
 package com.example.tabletop.main.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.util.Log.ERROR
@@ -16,10 +17,13 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.mvvm.viewmodel.UserViewModel.getProfile
 import com.example.tabletop.settings.SettingsManager
+import com.example.tabletop.util.getErrorBodyProperties
+import com.example.tabletop.util.getFullResponse
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
+import splitties.views.InputType.Companion.text
 
 class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
@@ -59,14 +63,21 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun handleSuccessfulResponse(response: Response<Profile>) {
-        // val profile = response.body()
-        // val name = arguments?.getSerializable("NAME") as String
-        logE("XD Pobieranko działa")
+        val profile = response.body()
+        logI(profile.toString())
+        binding.tvProfileFirstname.text = profile?.firstName
+        binding.tvProfileLastname.text = profile?.lastName
+        binding.tvProfileId.text = profile?.id
+
+        logI("Pobrano dane profilu")
     }
 
     private fun handleErrorResponse(response: Response<Profile>){
-        logE("XD Pobieranko niedziała")
+        logE("Pobieranie profilu nie działa, najpewniej nie jestes zalogowany")
+        // logE(response.getErrorBodyProperties().toString())
+        // logE(response.getFullResponse())
     }
 
 }
