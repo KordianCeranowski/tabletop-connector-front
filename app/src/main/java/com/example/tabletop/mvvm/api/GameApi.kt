@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface GameApi {
+
     @GET(GAME_API_ENDPOINT)
     suspend fun getMany(
         @Query("_sort") sort: String,

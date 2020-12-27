@@ -9,23 +9,30 @@ import com.example.tabletop.mvvm.repository.UserRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
+@Suppress("ObjectPropertyName")
 object UserViewModel : BaseViewModel<User>() {
 
-    val responseLogin = MutableLiveData<Response<LoginResponse>>()
+    private val _responseLogin = MutableLiveData<Response<LoginResponse>>()
 
-    val responseRegister = MutableLiveData<Response<RegisterResponse>>()
+    private val _responseRegister = MutableLiveData<Response<RegisterResponse>>()
+
+    val responseLogin: LiveData<Response<LoginResponse>>
+        get() = _responseLogin
+
+    val responseRegister: LiveData<Response<RegisterResponse>>
+        get() = _responseRegister
 
     val responseGetProfile = MutableLiveData<Response<Profile>>()
 
     fun login(loginForm: LoginForm) {
         viewModelScope.launch {
-            responseLogin.value = UserRepository.login(loginForm)
+            _responseLogin.value = UserRepository.login(loginForm)
         }
     }
 
     fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            responseRegister.value = UserRepository.register(registerRequest)
+            _responseRegister.value = UserRepository.register(registerRequest)
         }
     }
 

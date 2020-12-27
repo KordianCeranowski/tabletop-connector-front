@@ -9,6 +9,7 @@ import com.example.tabletop.databinding.ActivityEventBinding
 import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.User
+import net.alexandroid.utils.mylogkt.logI
 import java.io.Serializable
 
 class EventActivity : BaseActivity() {
@@ -67,13 +68,4 @@ class EventActivity : BaseActivity() {
             commit()
         }
     }
-
-
-
-
-
-
-
-
-
 }

@@ -21,6 +21,7 @@ import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
 
+@Suppress("COMPATIBILITY_WARNING")
 class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
     override val binding: FragmentProfileBinding by viewBinding()
@@ -29,7 +30,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
     fun setup() {
         binding
-        settingsManager = context?.let { SettingsManager(it) }!!
+        settingsManager = SettingsManager(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

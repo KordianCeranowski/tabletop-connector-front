@@ -17,6 +17,7 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
@@ -91,7 +92,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     private fun handleError(response: Response<Many<Event>>) {
         logW(response.getFullResponse())
         logW(response.getErrorBodyProperties().toString())
-        toast("Something went wrong")
+        toast("Could not retrieve events")
 
         // if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
         //     errorBodyProperties = response.getErrorBodyProperties()

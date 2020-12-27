@@ -12,8 +12,8 @@ object EventRepository : Repository<Event>(), IRepositorySave<Event> {
 
     override suspend fun getMany(
         auth: String,
-        options: Map<String, String>)
-    : Response<Many<Event>> {
+        options: Map<String, String>
+    ): Response<Many<Event>> {
         return eventApi.getMany(auth, options)
     }
 
@@ -31,5 +31,9 @@ object EventRepository : Repository<Event>(), IRepositorySave<Event> {
 
     override suspend fun edit(id: String, model: Event): Response<Event> {
         return eventApi.edit(id, model)
+    }
+
+    suspend fun joinOrLeaveEvent(auth: String, id: String): Response<Unit> {
+        return eventApi.joinOrLeaveEvent(auth, id)
     }
 }
