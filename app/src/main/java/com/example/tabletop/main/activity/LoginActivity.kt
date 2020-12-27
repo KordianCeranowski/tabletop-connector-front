@@ -68,6 +68,11 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
                 toast("Please correct invalid fields")
             }
         }
+
+        binding.btnGotoRegister.setOnClickListener {
+            start<RegisterActivity>()
+            finish()
+        }
     }
 
     private fun isFormValid(loginForm: LoginForm): Boolean {
