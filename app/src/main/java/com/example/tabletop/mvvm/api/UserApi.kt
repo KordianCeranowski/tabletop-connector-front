@@ -2,10 +2,7 @@ package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
-import com.example.tabletop.util.USER_API_ENDPOINT
-import com.example.tabletop.util.USER_API_GET_PROFILE_ENDPOINT
-import com.example.tabletop.util.USER_API_LOGIN_ENDPOINT
-import com.example.tabletop.util.USER_API_REGISTER_ENDPOINT
+import com.example.tabletop.util.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -24,6 +21,13 @@ interface UserApi {
     @GET(USER_API_GET_PROFILE_ENDPOINT)
     suspend fun getProfile(
         @Header("Authorization") auth: String
+    ): Response<Profile>
+
+    @PATCH("$USER_API_CREATE_PROFILE_ENDPOINT{id}")
+    suspend fun editProfile(
+        @Header("Authorization") auth: String,
+        @Path("id") id: String,
+        @Body profile: Profile
     ): Response<Profile>
 
     @GET(USER_API_ENDPOINT)
@@ -53,4 +57,6 @@ interface UserApi {
         @Path("id") id: String,
         @Body user: User
     ): Response<User>
+
+
 }

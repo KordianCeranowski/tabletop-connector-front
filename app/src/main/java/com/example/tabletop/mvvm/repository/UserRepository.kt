@@ -19,6 +19,10 @@ object UserRepository : Repository<User>() {
         return userApi.getProfile(auth)
     }
 
+    suspend fun editProfile(auth: String, id: String, profile: Profile) : Response<Profile>{
+        return userApi.editProfile(auth, id, profile)
+    }
+
     override suspend fun getMany(sort: String, order: String): Response<Many<User>> {
         return userApi.getMany(sort, order)
     }

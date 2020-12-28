@@ -2,6 +2,7 @@ package com.example.tabletop.main.activity
 
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityRegisterBinding
@@ -51,15 +52,44 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         fillForm()
 
         binding.btnRegister.setOnClickListener {
-            val (email, username, password, confirmPassword) = getEditTextValue(
-                binding.registerEtEmail,
-                binding.registerEtUsername,
-                binding.registerEtPassword,
-                binding.registerEtConfirmPassword
-            )
-            if (isFormValid(RegisterForm(email, username, password, confirmPassword))) {
+            val email = getEditTextValue(binding.registerEtEmail)[0]
+            val firstname = getEditTextValue(binding.registerEtFirstname)[0]
+            val lastname = getEditTextValue(binding.registerEtLastname)[0]
+            val username = getEditTextValue(binding.registerEtUsername)[0]
+            val password = getEditTextValue(binding.registerEtPassword)[0]
+            val confirmPassword = getEditTextValue(binding.registerEtConfirmPassword)[0]
+            val form = RegisterForm(email, username, password, confirmPassword)
+
+            logI("Button clicked with: $form")
+
+            if (isFormValid(form)) {
                 logD("Form is valid")
                 registerUser(RegisterRequest(email, username, password))
+
+                lifecycleScope.launch {
+                    settingsManager
+                        .userAccessTokenFlow
+                        .asLiveData()
+                        .observe(this@RegisterActivity) { authToken ->
+                            UserViewModel.run {
+                                getProfile(authToken)
+                                responseGetProfile.observe(this@RegisterActivity) {
+                                    if (it.isSuccessful) {
+                                        logI("Elo")
+                                        val profile = Profile(firstname, lastname, "not_set", it.body()!!.id)
+                                        logI(profile.toString())
+                                        editProfile(authToken, profile)
+                                        responseCreateProfile.observe(this@RegisterActivity) {
+                                            logI(it.getFullResponse())
+                                        }
+                                    } else {
+                                        logE("Pobieranie profilu nie działa, najpewniej nie jestes zalogowany")
+                                    }
+                                }
+                            }
+                        }
+                }
+
             } else {
                 toast("Please correct invalid fields")
             }
@@ -132,12 +162,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponse(response: Response<RegisterResponse>, loginForm: LoginForm) {
-        response.let {
-            if (it.isSuccessful) {
-                handleSuccess(it, loginForm)
-            } else {
-                handleError(it)
-            }
+        if (response.isSuccessful) {
+            handleSuccess(response, loginForm)
+        } else {
+            handleError(response)
         }
     }
 
@@ -175,12 +203,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponse(response: Response<LoginResponse>) {
-        response.let {
-            if (it.isSuccessful) {
-                handleSuccess(it)
-            } else {
-                handleError(it)
-            }
+        if (response.isSuccessful) {
+            handleSuccess(response)
+        } else {
+            handleError(response)
         }
     }
 

@@ -7,6 +7,7 @@ import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.repository.UserRepository
 import kotlinx.coroutines.launch
+import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
 
 @Suppress("ObjectPropertyName")
@@ -23,6 +24,7 @@ object UserViewModel : BaseViewModel<User>() {
         get() = _responseRegister
 
     val responseGetProfile = MutableLiveData<Response<Profile>>()
+    val responseCreateProfile = MutableLiveData<Response<Profile>>()
 
     fun login(loginForm: LoginForm) {
         viewModelScope.launch {
@@ -39,6 +41,14 @@ object UserViewModel : BaseViewModel<User>() {
     fun getProfile(auth: String) {
         viewModelScope.launch {
             responseGetProfile.value = UserRepository.getProfile(auth)
+        }
+    }
+
+    fun editProfile(auth: String, profile: Profile) {
+        logI("Editing")
+        logI(profile.toString())
+        viewModelScope.launch {
+            responseCreateProfile.value = UserRepository.editProfile(auth, profile.id, profile)
         }
     }
 
