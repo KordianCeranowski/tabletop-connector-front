@@ -10,8 +10,10 @@ import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.User
 import net.alexandroid.utils.mylogkt.logI
+import splitties.toast.UnreliableToastApi
 import java.io.Serializable
 
+@UnreliableToastApi
 class EventActivity : BaseActivity() {
 
     override val binding: ActivityEventBinding by viewBinding()

@@ -17,8 +17,10 @@ import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
 import splitties.activities.start
+import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
+@UnreliableToastApi
 class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     override val binding: FragmentEventInfoBinding by viewBinding()
