@@ -38,9 +38,9 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.registerEtEmail.value = "test121@test.test"
-        binding.registerEtUsername.value = "test121"
-        binding.registerEtPassword.value = "qwqwqwqW4$"
+        binding.registerEtEmail.value = "test1@test.test"
+        binding.registerEtUsername.value = "test1"
+        binding.registerEtPassword.value = "qwqwqwqW1$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
 
@@ -194,9 +194,9 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
                     setUserRefreshToken(it.refresh)
                 }
             }
+            start<MainActivity>()
+            finish()
         }
-        start<MainActivity>()
-        finish()
     }
 
     @JvmName("handleErrorLoginResponse")

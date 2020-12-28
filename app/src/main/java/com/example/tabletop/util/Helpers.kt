@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.EditText
 import androidx.activity.ComponentActivity
+import androidx.viewbinding.ViewBinding
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User

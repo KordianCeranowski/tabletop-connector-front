@@ -39,7 +39,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val (username, password) = if (isError) "test5" to "xd" else "test1" to "qwqwqwqW1$"
+        val (username, password) = if (isError) "error" to "error" else "test1" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
