@@ -122,8 +122,12 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun registerUser(user: RegisterRequest) {
         UserViewModel.run {
             register(user)
+            var isAlreadyHandled = false
             responseRegister.observe(this@RegisterActivity) {
-                handleResponse(it, LoginForm(user.username, user.password))
+                if (!(isAlreadyHandled)) {
+                    isAlreadyHandled = true
+                    handleResponse(it, LoginForm(user.username, user.password))
+                }
             }
         }
     }

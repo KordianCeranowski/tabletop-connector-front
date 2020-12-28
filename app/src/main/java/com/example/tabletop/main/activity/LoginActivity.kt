@@ -5,18 +5,20 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityLoginBinding
-import com.example.tabletop.util.getEditTextValue
 import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.mvvm.model.helpers.LoginResponse
-import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
+import com.example.tabletop.settings.SettingsManager
+import com.example.tabletop.util.getEditTextValue
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
 import com.example.tabletop.util.status
 import com.livinglifetechway.k4kotlin.core.value
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
-import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
@@ -60,7 +62,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             )
             val loginForm = LoginForm(username, password)
             if (isFormValid(loginForm)) {
-                logD("All fields are valid")
+                //logD("All fields are valid")
                 loginUser(loginForm)
             } else {
                 toast("Please correct invalid fields")
@@ -88,14 +90,22 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     private fun loginUser(loginForm: LoginForm) {
         UserViewModel.run {
+            //logD("------------- About to log user in -------------")
             login(loginForm)
-            responseLogin.observe(this@LoginActivity) { handleResponse(it) }
+            var isAlreadyHandled = false
+            responseLogin.observe(this@LoginActivity) {
+                if (!(isAlreadyHandled)) {
+                    isAlreadyHandled = true
+                    //logD("------------- About to handle response -------------")
+                    handleResponse(it) }
+                }
         }
     }
 
     private fun handleResponse(response: Response<LoginResponse>) {
         response.let {
             if (it.isSuccessful) {
+                //logI("------------- About to start handleSuccess() -------------")
                 handleSuccess(it)
             } else {
                 handleError(it)
@@ -103,14 +113,17 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         }
     }
 
+
     private fun handleSuccess(response: Response<LoginResponse>) {
         logD(response.status())
         lifecycleScope.launch {
-            settingsManager.run {
-                response.body()?.let {
-                    setIsUserLoggedIn(true)
-                    setUserAccessToken(it.access)
-                    setUserRefreshToken(it.refresh)
+            response.body()?.let {
+                withContext(Dispatchers.Default) {
+                    settingsManager.run {
+                        setIsUserLoggedIn(true)
+                        setUserAccessToken(it.access)
+                        setUserRefreshToken(it.refresh)
+                    }
                 }
             }
             start<MainActivity>()

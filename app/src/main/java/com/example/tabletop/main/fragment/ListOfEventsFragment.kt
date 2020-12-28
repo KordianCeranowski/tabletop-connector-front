@@ -15,6 +15,7 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
+import com.example.tabletop.util.className
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
 import com.example.tabletop.util.status
@@ -44,6 +45,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
             adapter = eventAdapter
         }
         settingsManager = SettingsManager(requireContext())
+        //logI("Starting ${this.className}")
     }
 
     private fun setupOnClickListeners() {
@@ -69,7 +71,13 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
                 .observe(viewLifecycleOwner) { authToken ->
                     EventViewModel.run {
                         getMany(authToken)
-                        responseMany.observe(viewLifecycleOwner) { handleResponse(it) }
+                        var isAlreadyHandled = false
+                        responseMany.observe(viewLifecycleOwner) {
+                            if (!(isAlreadyHandled)) {
+                                isAlreadyHandled = true
+                                handleResponse(it)
+                            }
+                        }
                     }
                 }
         }

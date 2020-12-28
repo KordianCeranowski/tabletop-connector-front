@@ -9,20 +9,13 @@ import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.main.fragment.*
-import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.mvvm.repository.EventRepository
-import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.*
+import com.example.tabletop.util.className
 import com.livinglifetechway.k4kotlin.core.shortToast
-import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
-import net.alexandroid.utils.mylogkt.logD
+import net.alexandroid.utils.mylogkt.logI
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
-import splitties.toast.toast
-import java.io.Serializable
 
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
@@ -35,6 +28,7 @@ class MainActivity : BaseActivity() {
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
+        //logI("Starting ${this.className}")
     }
 
     private fun setupSidebar() {
@@ -59,24 +53,6 @@ class MainActivity : BaseActivity() {
         setup()
 
         setupSidebar()
-
-        val eventsMock = List(10) { idx ->
-            Event("Event ${idx + 1}",
-                getMockUser(),
-                getRandomDate(),
-                getMockAddress(),
-                emptyList(),
-                List(10) {
-                    Game(
-                        "Name ${it + 1}",
-                        "URI",
-                        2,
-                        (3..8).random(),
-                        (15..90 step 5).random()
-                    )
-                }
-            )
-        }
 
         setFragmentAndTitle(ListOfEventsFragment(), "Dashboard")
 

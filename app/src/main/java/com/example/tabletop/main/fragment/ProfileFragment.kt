@@ -48,8 +48,12 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                 .observe(viewLifecycleOwner) { authToken ->
                     UserViewModel.run {
                         getProfile(authToken)
+                        var isAlreadyHandled = false
                         responseGetProfile.observe(viewLifecycleOwner) {
-                            handleResponse(it)
+                            if (!(isAlreadyHandled)) {
+                                isAlreadyHandled = true
+                                handleResponse(it)
+                            }
                         }
                     }
                 }

@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.mvvm.model.helpers.LoginForm
+import com.example.tabletop.mvvm.model.helpers.RegisterResponse
 import com.example.tabletop.mvvm.repository.EventRepository
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
@@ -49,18 +51,27 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
             settingsManager.userAccessTokenFlow
             .asLiveData()
             .observe(this@EventFormActivity) { authToken ->
-
                 EventViewModel.run {
                     save(authToken, event)
-                    responseOne.observe(this@EventFormActivity) { response ->
-                        if (response.isSuccessful) {
-                            handleSuccessfulResponse(response)
-                        } else {
-                            handleErrorResponse(response)
+                    var isAlreadyHandled = false
+                    responseOne.observe(this@EventFormActivity) {
+                        if (!(isAlreadyHandled)) {
+                            isAlreadyHandled = true
+                            handleResponse(it)
                         }
                     }
                 }
 
+            }
+        }
+    }
+
+    private fun handleResponse(response: Response<Event>) {
+        response.let {
+            if (it.isSuccessful) {
+                handleSuccessfulResponse(it)
+            } else {
+                handleErrorResponse(it)
             }
         }
     }

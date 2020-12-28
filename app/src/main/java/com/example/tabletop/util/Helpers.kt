@@ -79,6 +79,26 @@ fun getMockEvent(): Event {
     )
 }
 
+fun getMockListOfEvents(): List<Event> {
+    return List(10) { idx ->
+        Event("Event ${idx + 1}",
+            getMockUser(),
+            getRandomDate(),
+            getMockAddress(),
+            emptyList(),
+            List(10) {
+                Game(
+                    "Name ${it + 1}",
+                    "URI",
+                    2,
+                    (3..8).random(),
+                    (15..90 step 5).random()
+                )
+            }
+        )
+    }
+}
+
 fun getRandomDate() : String {
     val day = object {
         val firstDigit = (0..3).random()
