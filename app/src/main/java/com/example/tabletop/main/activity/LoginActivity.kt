@@ -110,9 +110,9 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
                     setUserRefreshToken(it.refresh)
                 }
             }
+            start<MainActivity>()
+            finish()
         }
-        start<MainActivity>()
-        finish()
     }
 
     private fun handleError(response: Response<LoginResponse>) {
