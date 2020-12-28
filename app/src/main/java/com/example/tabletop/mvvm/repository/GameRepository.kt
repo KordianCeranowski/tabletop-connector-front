@@ -10,12 +10,12 @@ object GameRepository : Repository<Game>(), IRepositorySave<Game> {
         return gameApi.getMany(sort, order)
     }
 
-    override suspend fun getMany(auth: String, options: Map<String, String>): Response<Many<Game>> {
-        return gameApi.getMany(auth, options)
+    override suspend fun getMany(accessToken: String, options: Map<String, String>): Response<Many<Game>> {
+        return gameApi.getMany(accessToken, options)
     }
 
-    override suspend fun save(auth: String, model: Game): Response<Game> {
-        return gameApi.save(auth, model)
+    override suspend fun save(accessToken: String, model: Game): Response<Game> {
+        return gameApi.save(accessToken, model)
     }
 
     override suspend fun getOne(id: String): Response<Game> {

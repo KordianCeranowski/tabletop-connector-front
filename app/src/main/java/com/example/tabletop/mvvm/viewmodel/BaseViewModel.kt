@@ -14,7 +14,7 @@ abstract class BaseViewModel<T : Model> : ViewModel() {
 
     abstract fun getMany(sort: String, order: String)
 
-    abstract fun getMany(auth: String, options: Map<String, String> = emptyMap())
+    abstract fun getMany(accessToken: String, options: Map<String, String> = emptyMap())
 
     abstract fun getOne(id: String)
 

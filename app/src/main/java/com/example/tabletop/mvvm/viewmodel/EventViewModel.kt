@@ -18,15 +18,15 @@ object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
         }
     }
 
-    override fun getMany(auth: String, options: Map<String, String>) {
+    override fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = EventRepository.getMany(auth, options)
+            responseMany.value = EventRepository.getMany(accessToken, options)
         }
     }
 
-    override fun save(auth: String, model: Event) {
+    override fun save(accessToken: String, model: Event) {
         viewModelScope.launch {
-            responseOne.value = EventRepository.save(auth, model)
+            responseOne.value = EventRepository.save(accessToken, model)
         }
     }
 
@@ -48,9 +48,9 @@ object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
         }
     }
 
-    fun joinOrLeaveEvent(auth: String, id: String) {
+    fun joinOrLeaveEvent(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseJoinOrLeaveEvent.value = EventRepository.joinOrLeaveEvent(auth, id)
+            responseJoinOrLeaveEvent.value = EventRepository.joinOrLeaveEvent(accessToken, id)
         }
     }
 }

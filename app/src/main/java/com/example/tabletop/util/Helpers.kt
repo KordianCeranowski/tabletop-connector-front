@@ -170,10 +170,6 @@ fun getMockProfile(): Profile {
     )
 }
 
-fun getEditTextValue(vararg editTexts: EditText): List<String> {
-    return editTexts.map { it.value.trim() }
-}
-
 val Any.className: String
     get() = this::class.simpleName as String
 
@@ -197,15 +193,19 @@ fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string().also {
         logI("Error body: ${it.toString()}")
     }
-
     val json = gson.fromJson(errorBodyString, JsonObject::class.java)
 
-    return if (json != null) {
+    return json?.let {
         val keys = json.keySet().map { it.toString() }
         val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
         keys.zip(entries).map { it.first to it.second }.toMap()
-    } else {
-        emptyMap()
-    }
+    } ?: emptyMap()
 }
 
+fun <T> Response<T>.resolve(onSuccess: () -> Any, onFailure: () -> Any) {
+    if (isSuccessful) {
+        onSuccess()
+    } else {
+        onFailure()
+    }
+}

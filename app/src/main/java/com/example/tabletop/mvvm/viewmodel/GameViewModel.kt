@@ -13,15 +13,15 @@ object GameViewModel : BaseViewModel<Game>(), IViewModelSave<Game> {
         }
     }
 
-    override fun getMany(auth: String, options: Map<String, String>) {
+    override fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = GameRepository.getMany(auth, options)
+            responseMany.value = GameRepository.getMany(accessToken, options)
         }
     }
 
-    override fun save(auth: String, model: Game) {
+    override fun save(accessToken: String, model: Game) {
         viewModelScope.launch {
-            responseOne.value = GameRepository.save(auth, model)
+            responseOne.value = GameRepository.save(accessToken, model)
         }
     }
 

@@ -11,7 +11,9 @@ import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.*
 import net.alexandroid.utils.mylogkt.logD
 import retrofit2.Response
@@ -19,7 +21,7 @@ import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
-@Suppress("COMPATIBILITY_WARNING")
+@Suppress("COMPATIBILITY_WARNING", "SpellCheckingInspection")
 @UnreliableToastApi
 class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
@@ -38,6 +40,8 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun fillForm() {
         binding.registerEtEmail.value = "test1@test.test"
         binding.registerEtUsername.value = "test1"
+        binding.registerEtFirstname.value = "firstname"
+        binding.registerEtLastname.value = "lastname"
         binding.registerEtPassword.value = "qwqwqwqW1$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
@@ -49,12 +53,11 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         fillForm()
 
         binding.btnRegister.setOnClickListener {
-            val email = getEditTextValue(binding.registerEtEmail)[0]
-            val firstname = getEditTextValue(binding.registerEtFirstname)[0]
-            val lastname = getEditTextValue(binding.registerEtLastname)[0]
-            val username = getEditTextValue(binding.registerEtUsername)[0]
-            val password = getEditTextValue(binding.registerEtPassword)[0]
-            val confirmPassword = getEditTextValue(binding.registerEtConfirmPassword)[0]
+            val email = binding.registerEtEmail.value
+            val username = binding.registerEtUsername.value
+            val password =  binding.registerEtPassword.value
+            val confirmPassword = binding.registerEtConfirmPassword.value
+
             val form = RegisterForm(email, username, password, confirmPassword)
 
             logI("Button clicked with: $form")
@@ -62,31 +65,6 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
             if (isFormValid(form)) {
                 logD("Form is valid")
                 registerUser(RegisterRequest(email, username, password))
-
-                lifecycleScope.launch {
-                    settingsManager
-                        .userAccessTokenFlow
-                        .asLiveData()
-                        .observe(this@RegisterActivity) { authToken ->
-                            UserViewModel.run {
-                                getProfile(authToken)
-                                responseGetProfile.observe(this@RegisterActivity) {
-                                    if (it.isSuccessful) {
-                                        logI("Elo")
-                                        val profile = Profile(firstname, lastname, "not_set", it.body()!!.id)
-                                        logI(profile.toString())
-                                        editProfile(authToken, profile)
-                                        responseCreateProfile.observe(this@RegisterActivity) {
-                                            logI(it.getFullResponse())
-                                        }
-                                    } else {
-                                        logE("Pobieranie profilu nie działa, najpewniej nie jestes zalogowany")
-                                    }
-                                }
-                            }
-                        }
-                }
-
             } else {
                 toast("Please correct invalid fields")
             }
@@ -149,87 +127,179 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         }
     }
 
+
+    // ------------------------- REGISTER -----------------------------
+
     private fun registerUser(user: RegisterRequest) {
+        var isAlreadyHandled = false
         UserViewModel.run {
             register(user)
-            var isAlreadyHandled = false
             responseRegister.observe(this@RegisterActivity) {
                 if (!(isAlreadyHandled)) {
                     isAlreadyHandled = true
-                    handleResponse(it, LoginForm(user.username, user.password))
+                    handleResponseRegister(it)
                 }
             }
         }
     }
 
-    private fun handleResponse(response: Response<RegisterResponse>, loginForm: LoginForm) {
-        if (response.isSuccessful) {
-            handleSuccess(response, loginForm)
-        } else {
-            handleError(response)
-        }
-    }
+    private fun handleResponseRegister(response: Response<RegisterResponse>) {
 
-    private fun handleSuccess(response: Response<RegisterResponse>, loginForm: LoginForm) {
-        logD(response.status())
-        lifecycleScope.launch { loginUser(loginForm) }
-    }
-
-    private fun handleError(response: Response<RegisterResponse>) {
-        if (!(this@RegisterActivity::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = response.getErrorBodyProperties()
+        val onSuccess = {
+            logD(response.status())
+            loginUser(
+                LoginForm(
+                    binding.registerEtFirstname.value,
+                    binding.registerEtLastname.value
+                )
+            )
         }
 
-        logW(response.getFullResponse())
-        toast("Please correct invalid fields")
+        val onFailure = {
+            if (!(this@RegisterActivity::errorBodyProperties.isInitialized)) {
+                errorBodyProperties = response.getErrorBodyProperties()
+            }
 
-        logI(errorBodyProperties.toString())
+            logW(response.getFullResponse())
+            toast("Please correct invalid fields")
 
-        val key1 = "username"
-        val value1 = "[A user with that username already exists.]"
+            logI(errorBodyProperties.toString())
 
-        if (errorBodyProperties[key1] == value1) {
-            binding.registerEtUsername.error = "Username is already taken"
+            val key1 = "username"
+            val value1 = "[A user with that username already exists.]"
+
+            if (errorBodyProperties[key1] == value1) {
+                binding.registerEtUsername.error = "Username is already taken"
+            }
+            // if (errorBodyProperties[key] == value) {
+            //     binding.registerEtEmail.error = "Email is already taken"
+            // }
         }
-        // if (errorBodyProperties[key] == value) {
-        //     binding.registerEtEmail.error = "Email is already taken"
-        // }
+
+        response.resolve(onSuccess, onFailure)
     }
+
+    // ------------------------- LOGIN -----------------------------
 
     private fun loginUser(loginForm: LoginForm) {
+        var isAlreadyHandled = false
         UserViewModel.run {
             login(loginForm)
-            responseLogin.observe(this@RegisterActivity) { handleResponse(it) }
+            responseLogin.observe(this@RegisterActivity) {
+                if (!(isAlreadyHandled)) {
+                    isAlreadyHandled = true
+                    handleResponseLogin(it)
+                }
+            }
         }
     }
 
-    private fun handleResponse(response: Response<LoginResponse>) {
-        if (response.isSuccessful) {
-            handleSuccess(response)
-        } else {
-            handleError(response)
-        }
-    }
+    private fun handleResponseLogin(response: Response<LoginResponse>) {
 
-    private fun handleSuccess(response: Response<LoginResponse>) {
-        lifecycleScope.launch {
-            settingsManager.run {
+        val onSuccess = {
+            lifecycleScope.launch {
                 response.body()?.let {
-                    setIsUserLoggedIn(true)
-                    setIsFirstRun(false)
-                    setUserAccessToken((it.access))
-                    setUserRefreshToken(it.refresh)
+                    settingsManager.run {
+                        setIsUserLoggedIn(true)
+                        setIsFirstRun(false)
+                        setUserAccessToken((it.access))
+                        setUserRefreshToken(it.refresh)
+                    }
                 }
             }
             start<MainActivity>()
             finish()
+            //editProfile()
         }
+
+        val onFailure = {
+            toast("Something went wrong")
+        }
+
+        response.resolve(onSuccess, onFailure)
     }
 
-    @JvmName("handleErrorLoginResponse")
-    private fun handleError(response: Response<LoginResponse>) {
-        toast("Something went wrong")
-    }
+    // ------------------------- PROFILE -----------------------------
+
+    // private fun editProfile() {
+    //     lifecycleScope.launch {
+    //         settingsManager
+    //             .userAccessTokenFlow
+    //             .asLiveData()
+    //             .observe(this@RegisterActivity) { getUserProfile(it) }
+    //     }
+    // }
+    //
+    // private fun getUserProfile(accessToken: String) {
+    //     var isAlreadyHandled = false
+    //     UserViewModel.run {
+    //         getProfile(accessToken)
+    //         responseGetProfile.observe(this@RegisterActivity) {
+    //             if (!(isAlreadyHandled)) {
+    //                 isAlreadyHandled = true
+    //                 handleResponseProfile(it, accessToken)
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // private fun handleResponseProfile(response: Response<Profile>, accessToken: String) {
+    //     response.let {
+    //         if (it.isSuccessful) {
+    //             handleSuccessProfile(it, accessToken)
+    //         } else {
+    //             handleErrorProfile(it)
+    //         }
+    //     }
+    // }
+    //
+    // private fun handleSuccessProfile(response: Response<Profile>, accessToken: String) {
+    //     val firstname = getEditTextValue(binding.registerEtFirstname)[0]
+    //     val lastname = getEditTextValue(binding.registerEtLastname)[0]
+    //     val id = response.body()!!.id
+    //
+    //     val profile = Profile(firstname, lastname, null, id)
+    //     logI(profile.toString())
+    //
+    //     var isAlreadyHandled = false
+    //     UserViewModel.run {
+    //         editProfile(accessToken, profile)
+    //         responseCreateProfile.observe(this@RegisterActivity) {
+    //             if (!(isAlreadyHandled)) {
+    //                 isAlreadyHandled = true
+    //                 handleResponseCreateProfile(it, accessToken)
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // private fun handleErrorProfile(response: Response<Profile>) {
+    //     logE("Pobieranie profilu nie działa, najpewniej nie jestes zalogowany")
+    // }
+    //
+    //
+    // // ------------------------- CREATE PROFILE -----------------------------
+    //
+    // private fun handleResponseCreateProfile(response: Response<Profile>, accessToken: String) {
+    //     response.let {
+    //         if (it.isSuccessful) {
+    //             handleSuccessCreateProfile(it, accessToken)
+    //         } else {
+    //             handleErrorCreateProfile(it)
+    //         }
+    //     }
+    // }
+    //
+    // private fun handleSuccessCreateProfile(response: Response<Profile>, accessToken: String) {
+    //     logI("Profile created")
+    //     start<MainActivity>()
+    //     finish()
+    // }
+    //
+    //
+    // private fun handleErrorCreateProfile(response: Response<Profile>) {
+    //     logI("Failed to create profile")
+    // }
 }
 
 

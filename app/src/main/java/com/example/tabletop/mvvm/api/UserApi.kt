@@ -8,22 +8,22 @@ import retrofit2.http.*
 
 interface UserApi {
 
-    @POST(USER_API_LOGIN_ENDPOINT)
+    @POST(USER_API_ENDPOINT_LOGIN)
     suspend fun login(
         @Body loginForm: LoginForm
     ): Response<LoginResponse>
 
-    @POST(USER_API_REGISTER_ENDPOINT)
+    @POST(USER_API_ENDPOINT_REGISTER)
     suspend fun register(
         @Body registerRequest: RegisterRequest
     ): Response<RegisterResponse>
 
-    @GET(USER_API_GET_PROFILE_ENDPOINT)
+    @GET(USER_API_ENDPOINT_MY_PROFILE)
     suspend fun getProfile(
         @Header("Authorization") auth: String
     ): Response<Profile>
 
-    @PATCH("$USER_API_CREATE_PROFILE_ENDPOINT{id}")
+    @PATCH("$USER_API_ENDPOINT_CREATE_PROFILE{id}")
     suspend fun editProfile(
         @Header("Authorization") auth: String,
         @Path("id") id: String,

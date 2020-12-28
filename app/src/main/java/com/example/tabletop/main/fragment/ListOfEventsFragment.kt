@@ -15,10 +15,7 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.className
-import com.example.tabletop.util.getErrorBodyProperties
-import com.example.tabletop.util.getFullResponse
-import com.example.tabletop.util.status
+import com.example.tabletop.util.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
@@ -60,62 +57,54 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
         setup()
         setupOnClickListeners()
 
-        retrieveEvents()
-    }
-
-    private fun retrieveEvents() {
         lifecycleScope.launch {
             settingsManager
                 .userAccessTokenFlow
                 .asLiveData()
-                .observe(viewLifecycleOwner) { authToken ->
-                    EventViewModel.run {
-                        getMany(authToken)
-                        var isAlreadyHandled = false
-                        responseMany.observe(viewLifecycleOwner) {
-                            if (!(isAlreadyHandled)) {
-                                isAlreadyHandled = true
-                                handleResponse(it)
-                            }
-                        }
-                    }
-                }
+                .observe(viewLifecycleOwner) { retrieveEvents(it) }
         }
     }
 
-    private fun handleResponse(response: Response<Many<Event>>) {
-        response.run {
-            if (isSuccessful) {
-                handleSuccess(this)
-            } else {
-                handleError(this)
+    private fun retrieveEvents(accessToken: String) {
+        var isAlreadyHandled = false
+        EventViewModel.run {
+            getMany(accessToken)
+            responseMany.observe(viewLifecycleOwner) {
+                if (!(isAlreadyHandled)) {
+                    isAlreadyHandled = true
+                    handleResponse(it)
+                }
             }
         }
     }
 
-    private fun handleSuccess(response: Response<Many<Event>>) {
-        logD(response.status())
-        response.body()?.let { eventAdapter.setData(it.results) }
-    }
+    private fun handleResponse(response: Response<Many<Event>>) {
 
-    private fun handleError(response: Response<Many<Event>>) {
-        logW(response.getFullResponse())
-        logW(response.getErrorBodyProperties().toString())
-        toast("Could not retrieve events")
+        val onSuccess = {
+            logD(response.status())
+            response.body()?.let { eventAdapter.setData(it.results) } as Unit
+        }
 
-        // if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
-        //     errorBodyProperties = response.getErrorBodyProperties()
-        // }
-        // logE(response.getFullResponse())
-        // logD(errorBodyProperties.toString())
-        //
-        // val key = "detail"
-        // val value = "No active account found with the given credentials"
-        //
-        // if (errorBodyProperties[key] == value) {
-        //     toast("Invalid credentials")
-        // } else {
-        //     toast("Something went wrong")
-        // }
+        val onFailure = {
+            logW(response.getFullResponse())
+            logW(response.getErrorBodyProperties().toString())
+            toast("Could not retrieve events")
+            // if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
+            //     errorBodyProperties = response.getErrorBodyProperties()
+            // }
+            // logE(response.getFullResponse())
+            // logD(errorBodyProperties.toString())
+            //
+            // val key = "detail"
+            // val value = "No active account found with the given credentials"
+            //
+            // if (errorBodyProperties[key] == value) {
+            //     toast("Invalid credentials")
+            // } else {
+            //     toast("Something went wrong")
+            // }
+        }
+
+        response.resolve(onSuccess, onFailure)
     }
 }

@@ -9,17 +9,17 @@ const val BASE_URL = "http://10.0.2.2:8000/api/"
 // USER API
 const val USER_API_ENDPOINT = "users/"
 
-const val USER_API_REGISTER_ENDPOINT = "auth/users/"
+const val USER_API_ENDPOINT_REGISTER = "auth/users/"
 
-const val USER_API_LOGIN_ENDPOINT = "auth/jwt/create/"
+const val USER_API_ENDPOINT_LOGIN = "auth/jwt/create/"
 
-const val USER_API_GET_PROFILE_ENDPOINT = "profiles/me/"
+const val USER_API_ENDPOINT_MY_PROFILE = "profiles/me/"
 
-const val USER_EVENT_PARTICIPATION_ENDPOINT = "participation/"
+const val USER_API_ENDPOINT_EVENT_PARTICIPATION = "participation/"
 
-const val USER_API_CREATE_PROFILE_ENDPOINT = "profiles/"
+const val USER_API_ENDPOINT_CREATE_PROFILE = "profiles/"
 
-const val USER_ACCESS_TOKEN_ENDPOINT = "" //todo
+const val USER_API_ENDPOINT_ACCESS_TOKEN = "" //todo
 
 // GAME API
 const val GAME_API_ENDPOINT = "games/"
@@ -35,20 +35,22 @@ enum class ValidationPattern(val value: Pattern) {
     NICKNAME(
         Pattern.compile(
             "^" +
-                    "(?=.*[A-z])"+      // at least 1 letter
+                    "(?=.*[A-z])" +      // at least 1 letter
                     ".{2,}" +           // at least 2 characters
-                    "$")
+                    "$"
+        )
     ),
     PASSWORD(
         Pattern.compile(
             "^" +
                     "(?=.*[0-9])" +     // at least 1 digit
-                    "(?=.*[a-z])"+      // at least 1 lower case letter
-                    "(?=.*[A-Z])"+      // at least 1 upper case letter
-                    "(?=.*[@#$%^&+=])"+ // at least 1 special character
-                    "(?=\\S+$)"+        // now white spaces
+                    "(?=.*[a-z])" +      // at least 1 lower case letter
+                    "(?=.*[A-Z])" +      // at least 1 upper case letter
+                    "(?=.*[@#$%^&+=])" + // at least 1 special character
+                    "(?=\\S+$)" +        // now white spaces
                     ".{8,}" +           // at least 8 characters
-                    "$")
+                    "$"
+        )
     )
 }
 

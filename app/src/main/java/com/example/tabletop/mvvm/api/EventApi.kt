@@ -2,9 +2,8 @@ package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
-import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.EVENT_API_ENDPOINT
-import com.example.tabletop.util.USER_EVENT_PARTICIPATION_ENDPOINT
+import com.example.tabletop.util.USER_API_ENDPOINT_EVENT_PARTICIPATION
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -44,7 +43,7 @@ interface EventApi {
         @Body event: Event
     ): Response<Event>
 
-    @PATCH("$USER_EVENT_PARTICIPATION_ENDPOINT{id}/")
+    @PATCH("$USER_API_ENDPOINT_EVENT_PARTICIPATION{id}/")
     suspend fun joinOrLeaveEvent(
         @Header("Authorization") auth: String,
         @Path("id") id: String

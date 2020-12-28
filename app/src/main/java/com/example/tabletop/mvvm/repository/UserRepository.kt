@@ -15,20 +15,20 @@ object UserRepository : Repository<User>() {
         return userApi.register(registerRequest)
     }
 
-    suspend fun getProfile(auth: String): Response<Profile> {
-        return userApi.getProfile(auth)
+    suspend fun getProfile(accessToken: String): Response<Profile> {
+        return userApi.getProfile(accessToken)
     }
 
-    suspend fun editProfile(auth: String, id: String, profile: Profile) : Response<Profile>{
-        return userApi.editProfile(auth, id, profile)
+    suspend fun editProfile(accessToken: String, id: String, profile: Profile) : Response<Profile>{
+        return userApi.editProfile(accessToken, id, profile)
     }
 
     override suspend fun getMany(sort: String, order: String): Response<Many<User>> {
         return userApi.getMany(sort, order)
     }
 
-    override suspend fun getMany(auth: String, options: Map<String, String>): Response<Many<User>> {
-        return userApi.getMany(auth, options)
+    override suspend fun getMany(accessToken: String, options: Map<String, String>): Response<Many<User>> {
+        return userApi.getMany(accessToken, options)
     }
 
     override suspend fun getOne(id: String): Response<User> {

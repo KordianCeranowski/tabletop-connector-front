@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.R
@@ -73,6 +74,7 @@ class MainActivity : BaseActivity() {
     private fun setFragmentAndTitle(fragment: Fragment, title: String) {
         setCurrentFragment(fragment)
         setActionBarTitle(title)
+        binding.drawerLayout.closeDrawers();
     }
 
     private fun setCurrentFragment(fragment: Fragment) {

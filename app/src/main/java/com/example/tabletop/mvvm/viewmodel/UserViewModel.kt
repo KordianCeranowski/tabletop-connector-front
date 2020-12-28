@@ -24,6 +24,7 @@ object UserViewModel : BaseViewModel<User>() {
         get() = _responseRegister
 
     val responseGetProfile = MutableLiveData<Response<Profile>>()
+
     val responseCreateProfile = MutableLiveData<Response<Profile>>()
 
     fun login(loginForm: LoginForm) {
@@ -38,17 +39,17 @@ object UserViewModel : BaseViewModel<User>() {
         }
     }
 
-    fun getProfile(auth: String) {
+    fun getProfile(accessToken: String) {
         viewModelScope.launch {
-            responseGetProfile.value = UserRepository.getProfile(auth)
+            responseGetProfile.value = UserRepository.getProfile(accessToken)
         }
     }
 
-    fun editProfile(auth: String, profile: Profile) {
+    fun editProfile(accessToken: String, profile: Profile) {
         logI("Editing")
         logI(profile.toString())
         viewModelScope.launch {
-            responseCreateProfile.value = UserRepository.editProfile(auth, profile.id, profile)
+            responseCreateProfile.value = UserRepository.editProfile(accessToken, profile.id, profile)
         }
     }
 
@@ -58,9 +59,9 @@ object UserViewModel : BaseViewModel<User>() {
         }
     }
 
-    override fun getMany(auth: String, options: Map<String, String>) {
+    override fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {
-            responseMany.value = UserRepository.getMany(auth, options)
+            responseMany.value = UserRepository.getMany(accessToken, options)
         }
     }
 

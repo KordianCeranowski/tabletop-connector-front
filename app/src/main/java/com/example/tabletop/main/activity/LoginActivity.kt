@@ -9,10 +9,7 @@ import com.example.tabletop.mvvm.model.helpers.LoginForm
 import com.example.tabletop.mvvm.model.helpers.LoginResponse
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.getEditTextValue
-import com.example.tabletop.util.getErrorBodyProperties
-import com.example.tabletop.util.getFullResponse
-import com.example.tabletop.util.status
+import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -56,11 +53,11 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         fillForm()
 
         binding.btnLogin.setOnClickListener {
-            val (username, password) = getEditTextValue(
-                binding.loginEtUsername,
-                binding.loginEtPassword
-            )
+            val username = binding.loginEtUsername.value
+            val password = binding.loginEtPassword.value
+
             val loginForm = LoginForm(username, password)
+
             if (isFormValid(loginForm)) {
                 //logD("All fields are valid")
                 loginUser(loginForm)
@@ -89,63 +86,54 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun loginUser(loginForm: LoginForm) {
+        var isAlreadyHandled = false
         UserViewModel.run {
-            //logD("------------- About to log user in -------------")
             login(loginForm)
-            var isAlreadyHandled = false
             responseLogin.observe(this@LoginActivity) {
                 if (!(isAlreadyHandled)) {
                     isAlreadyHandled = true
-                    //logD("------------- About to handle response -------------")
                     handleResponse(it) }
                 }
         }
     }
 
     private fun handleResponse(response: Response<LoginResponse>) {
-        response.let {
-            if (it.isSuccessful) {
-                //logI("------------- About to start handleSuccess() -------------")
-                handleSuccess(it)
-            } else {
-                handleError(it)
-            }
-        }
-    }
 
-
-    private fun handleSuccess(response: Response<LoginResponse>) {
-        logD(response.status())
-        lifecycleScope.launch {
-            response.body()?.let {
-                withContext(Dispatchers.Default) {
-                    settingsManager.run {
-                        setIsUserLoggedIn(true)
-                        setUserAccessToken(it.access)
-                        setUserRefreshToken(it.refresh)
+        val onSuccess = {
+            logD(response.status())
+            lifecycleScope.launch {
+                response.body()?.let {
+                    withContext(Dispatchers.Default) {
+                        settingsManager.run {
+                            setIsUserLoggedIn(true)
+                            setUserAccessToken(it.access)
+                            setUserRefreshToken(it.refresh)
+                        }
                     }
                 }
+                start<MainActivity>()
+                finish()
             }
-            start<MainActivity>()
-            finish()
-        }
-    }
-
-    private fun handleError(response: Response<LoginResponse>) {
-        if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = response.getErrorBodyProperties()
         }
 
-        logW(response.getFullResponse())
-        logI(errorBodyProperties.toString())
+        val onFailure = {
+            if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
+                errorBodyProperties = response.getErrorBodyProperties()
+            }
 
-        val key = "detail"
-        val value = "No active account found with the given credentials"
+            logW(response.getFullResponse())
+            logI(errorBodyProperties.toString())
 
-        if (errorBodyProperties[key] == value) {
-            toast("Invalid credentials")
-        } else {
-            toast("Something went wrong")
+            val key = "detail"
+            val value = "No active account found with the given credentials"
+
+            if (errorBodyProperties[key] == value) {
+                toast("Invalid credentials")
+            } else {
+                toast("Something went wrong")
+            }
         }
+
+        response.resolve(onSuccess, onFailure)
     }
 }

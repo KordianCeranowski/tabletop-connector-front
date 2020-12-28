@@ -12,15 +12,13 @@ import com.example.tabletop.mvvm.model.helpers.RegisterResponse
 import com.example.tabletop.mvvm.repository.EventRepository
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.getErrorBodyProperties
-import com.example.tabletop.util.getFullResponse
-import com.example.tabletop.util.getMockEvent
-import com.example.tabletop.util.startWithExtra
+import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import retrofit2.Response
+import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
@@ -43,68 +41,60 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         super.onCreate(savedInstanceState)
         setup()
 
-        saveEvent(getMockEvent())
-    }
-
-    private fun saveEvent(event: Event) {
         lifecycleScope.launch {
             settingsManager.userAccessTokenFlow
-            .asLiveData()
-            .observe(this@EventFormActivity) { authToken ->
-                EventViewModel.run {
-                    save(authToken, event)
-                    var isAlreadyHandled = false
-                    responseOne.observe(this@EventFormActivity) {
-                        if (!(isAlreadyHandled)) {
-                            isAlreadyHandled = true
-                            handleResponse(it)
-                        }
-                    }
-                }
+                .asLiveData()
+                .observe(this@EventFormActivity) { saveEvent(it, getMockEvent()) }
+        }
+    }
 
+    private fun saveEvent(accessToken: String, event: Event) {
+        var isAlreadyHandled = false
+        EventViewModel.run {
+            save(accessToken, event)
+            responseOne.observe(this@EventFormActivity) {
+                if (!(isAlreadyHandled)) {
+                    isAlreadyHandled = true
+                    handleResponse(it)
+                }
             }
         }
     }
 
     private fun handleResponse(response: Response<Event>) {
-        response.let {
-            if (it.isSuccessful) {
-                handleSuccessfulResponse(it)
+
+        val onSuccess = {
+            logD(response.getFullResponse())
+
+            lifecycleScope.launch {
+                response.body()?.let {
+                    startWithExtra<EventActivity>("EVENT" to it)
+                    // or startActivity<MyEventsActivity>()
+                    finish()
+                }
+            }
+        }
+
+        val onFailure = {
+            logE(response.getFullResponse())
+            if (!(this::errorBodyProperties.isInitialized)) {
+                errorBodyProperties = response.getErrorBodyProperties()
+            }
+            logD(errorBodyProperties.toString())
+
+            val errors = mapOf(
+                "name" to listOf("This field is required."),
+                "date" to listOf("This field is required."),
+                "address" to listOf("This field is required."),
+            )
+
+            if (errorBodyProperties["name"] == errors.getValue("name").first()) {
+                toast("Invalid credentials")
             } else {
-                handleErrorResponse(it)
+                toast("Something went wrong")
             }
         }
-    }
 
-    private fun handleSuccessfulResponse(response: Response<Event>) {
-        logD(response.getFullResponse())
-
-        lifecycleScope.launch {
-            response.body()?.let {
-                startWithExtra<EventActivity>("EVENT" to it)
-                // or startActivity<MyEventsActivity>()
-                finish()
-            }
-        }
-    }
-
-    private fun handleErrorResponse(response: Response<Event>) {
-        logE(response.getFullResponse())
-        if (!(this::errorBodyProperties.isInitialized)) {
-            errorBodyProperties = response.getErrorBodyProperties()
-        }
-        logD(errorBodyProperties.toString())
-
-        val errors = mapOf(
-            "name" to listOf("This field is required."),
-            "date" to listOf("This field is required."),
-            "address" to listOf("This field is required."),
-        )
-
-        if (errorBodyProperties["name"] == errors.getValue("name").first()) {
-            toast("Invalid credentials")
-        } else {
-            toast("Something went wrong")
-        }
+        response.resolve(onSuccess, onFailure)
     }
 }

@@ -13,6 +13,7 @@ import com.example.tabletop.mvvm.model.helpers.LoginResponse
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.className
+import com.example.tabletop.util.resolve
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
@@ -46,9 +47,9 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         binding.btnJoinEvent.setOnClickListener {
             settingsManager
                 .userAccessTokenFlow
-                .asLiveData().observe(viewLifecycleOwner) { authToken ->
+                .asLiveData().observe(viewLifecycleOwner) { accessToken ->
                     EventViewModel.run {
-                        joinOrLeaveEvent(authToken, event.id)
+                        joinOrLeaveEvent(accessToken, event.id)
                         responseJoinOrLeaveEvent.observe(viewLifecycleOwner) { handleResponse(it) }
                     }
                 }
@@ -56,20 +57,15 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
     }
 
     private fun handleResponse(response: Response<Unit>) {
-        response.let {
-            if (it.isSuccessful) {
-                handleSuccess(it)
-            } else {
-                handleError(it)
-            }
+
+        val onSuccess = {
+            toast("Joined/left an event")
         }
-    }
 
-    private fun handleSuccess(response: Response<Unit>) {
-        toast("Joined/left an event")
-    }
+        val onFailure = {
+            toast("Something went wrong")
+        }
 
-    private fun handleError(response: Response<Unit>) {
-        toast("Something went wrong")
+        response.resolve(onSuccess, onFailure)
     }
 }
