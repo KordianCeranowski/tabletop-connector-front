@@ -9,7 +9,8 @@ import androidx.datastore.preferences.createDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import net.alexandroid.utils.mylogkt.logD
+import net.alexandroid.utils.mylogkt.logI
+
 import java.io.IOException
 
 class SettingsManager(context: Context) {
@@ -31,7 +32,7 @@ class SettingsManager(context: Context) {
     suspend fun setIsFirstRun(isFirstRun: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_FIRST_RUN] = isFirstRun.also {
-                logD("Is first run set to: \"$it\"")
+                logI("isFirstRun : \"$it\"")
             }
         }
     }
@@ -40,7 +41,7 @@ class SettingsManager(context: Context) {
         dataStore.edit { preferences ->
             val accessToken = "JWT $userAccessToken"
             preferences[USER_ACCESS_TOKEN] = accessToken.also {
-                logD("Access token set to: \"$it\"")
+                logI("accessToken : \"$it\"")
             }
         }
     }
@@ -49,7 +50,7 @@ class SettingsManager(context: Context) {
         dataStore.edit { preferences ->
             val refreshToken = "JWT $userRefreshToken"
             preferences[USER_REFRESH_TOKEN] = refreshToken.also {
-                logD("Refresh token set to: \"$it\"")
+                logI("refreshToken : \"$it\"")
             }
         }
     }
@@ -57,7 +58,7 @@ class SettingsManager(context: Context) {
     suspend fun setIsUserLoggedIn(isUserLoggedIn: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_USER_LOGGED_IN] = isUserLoggedIn.also {
-                logD("Is user logged in set to: \"$it\"")
+                logI("isUserLoggedIn : \"$it\"")
             }
         }
     }
@@ -69,6 +70,10 @@ class SettingsManager(context: Context) {
     suspend fun setUserLatitude(userLatitude: Int) {
         dataStore.edit { it[USER_LATITUDE] = userLatitude }
     }
+
+    // private fun logPreference() {
+    //    logI()
+    // }
 
     private fun <T> getFlow(action: (Preferences) -> T): Flow<T> {
         return dataStore.data

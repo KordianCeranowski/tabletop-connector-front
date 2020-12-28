@@ -171,6 +171,8 @@ fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
         """.trimMargin()
 }
 
+fun <T> Response<T>.status(): String = "${this.message()}\n"
+
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string().also {
         logI("Error body: ${it.toString()}")
