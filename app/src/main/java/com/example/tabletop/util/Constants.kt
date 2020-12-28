@@ -19,6 +19,8 @@ const val USER_EVENT_PARTICIPATION_ENDPOINT = "participation/"
 
 const val USER_API_CREATE_PROFILE_ENDPOINT = "profiles/"
 
+const val USER_ACCESS_TOKEN_ENDPOINT = "" //todo
+
 // GAME API
 const val GAME_API_ENDPOINT = "games/"
 

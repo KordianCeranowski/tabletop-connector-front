@@ -17,6 +17,7 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
+import com.example.tabletop.util.status
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
@@ -85,7 +86,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     }
 
     private fun handleSuccess(response: Response<Many<Event>>) {
-        logD(response.getFullResponse())
+        logD(response.status())
         response.body()?.let { eventAdapter.setData(it.results) }
     }
 

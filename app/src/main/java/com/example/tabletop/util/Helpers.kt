@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.EditText
 import androidx.activity.ComponentActivity
+import androidx.viewbinding.ViewBinding
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
@@ -169,6 +170,8 @@ fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
         $bodyString
         """.trimMargin()
 }
+
+fun <T> Response<T>.status(): String = "${this.message()}\n"
 
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string().also {

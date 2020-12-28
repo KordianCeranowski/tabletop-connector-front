@@ -9,10 +9,7 @@ import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
-import com.example.tabletop.util.ValidationPattern
-import com.example.tabletop.util.getEditTextValue
-import com.example.tabletop.util.getErrorBodyProperties
-import com.example.tabletop.util.getFullResponse
+import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.*
@@ -39,9 +36,9 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.registerEtEmail.value = "test121@test.test"
-        binding.registerEtUsername.value = "test121"
-        binding.registerEtPassword.value = "qwqwqwqW4$"
+        binding.registerEtEmail.value = "test1@test.test"
+        binding.registerEtUsername.value = "test1"
+        binding.registerEtPassword.value = "qwqwqwqW1$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
 
@@ -170,7 +167,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleSuccess(response: Response<RegisterResponse>, loginForm: LoginForm) {
-        logD(response.getFullResponse())
+        logD(response.status())
         lifecycleScope.launch { loginUser(loginForm) }
     }
 
@@ -182,7 +179,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         logW(response.getFullResponse())
         toast("Please correct invalid fields")
 
-        logD(errorBodyProperties.toString())
+        logI(errorBodyProperties.toString())
 
         val key1 = "username"
         val value1 = "[A user with that username already exists.]"
@@ -220,9 +217,9 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
                     setUserRefreshToken(it.refresh)
                 }
             }
+            start<MainActivity>()
+            finish()
         }
-        start<MainActivity>()
-        finish()
     }
 
     @JvmName("handleErrorLoginResponse")

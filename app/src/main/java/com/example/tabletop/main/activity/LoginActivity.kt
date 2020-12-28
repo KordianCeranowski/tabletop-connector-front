@@ -12,10 +12,13 @@ import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
+import com.example.tabletop.util.status
 import com.livinglifetechway.k4kotlin.core.value
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
+import net.alexandroid.utils.mylogkt.logI
+import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
@@ -39,7 +42,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val (username, password) = if (isError) "test5" to "xd" else "test1" to "qwqwqwqW1$"
+        val (username, password) = if (isError) "error" to "error" else "test1" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
@@ -101,7 +104,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleSuccess(response: Response<LoginResponse>) {
-        logD(response.getFullResponse())
+        logD(response.status())
         lifecycleScope.launch {
             settingsManager.run {
                 response.body()?.let {
@@ -110,9 +113,9 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
                     setUserRefreshToken(it.refresh)
                 }
             }
+            start<MainActivity>()
+            finish()
         }
-        start<MainActivity>()
-        finish()
     }
 
     private fun handleError(response: Response<LoginResponse>) {
@@ -120,8 +123,8 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             errorBodyProperties = response.getErrorBodyProperties()
         }
 
-        logE(response.getFullResponse())
-        logD(errorBodyProperties.toString())
+        logW(response.getFullResponse())
+        logI(errorBodyProperties.toString())
 
         val key = "detail"
         val value = "No active account found with the given credentials"
