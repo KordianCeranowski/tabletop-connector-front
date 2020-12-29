@@ -13,8 +13,9 @@
         android:gravity="center"
         android:text="New Event"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/et_event_name"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.084" />
@@ -26,52 +27,82 @@
         android:ems="10"
         android:hint="Name"
         android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:singleLine="false"
+        app:layout_constraintBottom_toTopOf="@+id/tv_event_date"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_event_form_title"
         app:layout_constraintVertical_bias="0.262" />
 
-    <EditText
-        android:id="@+id/et_event_date"
+    <TextView
+        android:id="@+id/tv_event_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Address"
+        android:text="Address"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_event_games"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_event_date" />
+
+    <TextView
+        android:id="@+id/tv_event_date"
+        android:layout_width="106dp"
+        android:layout_height="27dp"
         android:ems="10"
         android:hint="Date"
-        android:inputType="datetime"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/et_event_name"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/et_event_name"
-        app:layout_constraintTop_toBottomOf="@+id/et_event_name"
-        app:layout_constraintVertical_bias="0.156" />
+        android:text="Date"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_event_address"
+        app:layout_constraintEnd_toStartOf="@+id/tv_event_time"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_event_name" />
 
-<!--  todo fragment with game selection  -->
-    <EditText
-        android:id="@+id/et_event_games"
+    <TextView
+        android:id="@+id/tv_event_time"
+        android:layout_width="107dp"
+        android:layout_height="27dp"
+        android:ems="10"
+        android:text="Time"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_event_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_event_date"
+        app:layout_constraintTop_toBottomOf="@+id/et_event_name" />
+
+    <TextView
+        android:id="@+id/tv_event_games"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
+        android:hint="Games"
+        android:text="Games"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_event_address" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/et_event_address"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/et_event_address"
-        app:layout_constraintTop_toBottomOf="@+id/et_event_address"
-        app:layout_constraintVertical_bias="0.279" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_event_games" />
+
+    <!--  todo fragment with game selection  -->
 
     <!--  todo fragment with address selection  -->
-    <EditText
-        android:id="@+id/et_event_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/et_event_date"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/et_event_date"
-        app:layout_constraintTop_toBottomOf="@+id/et_event_date"
-        app:layout_constraintVertical_bias="0.202" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
