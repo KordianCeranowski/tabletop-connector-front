@@ -90,4 +90,7 @@ dependencies {
 
     // Data Store
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
+
+    // Simple Location
+    implementation 'com.github.delight-im:Android-SimpleLocation:v1.1.0'
 }

@@ -1,5 +1,7 @@
 package com.example.tabletop.main.activity
 
+import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.location.Geocoder
@@ -14,11 +16,14 @@ import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
+import im.delight.android.location.SimpleLocation
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
+import splitties.permissions.hasPermission
+import splitties.permissions.requestPermission
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.text.SimpleDateFormat
@@ -90,21 +95,32 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
     private fun handleAddressClick() {
         logI("Clicked Address")
-        val lat = 54.4908183
-        val long = 18.5116491
 
-        val geocoder = Geocoder(this, Locale.getDefault())
-        val address = geocoder.getFromLocation(lat, long, 1)[0]
+        lifecycleScope.launch {
+            requestPermission(ACCESS_FINE_LOCATION)
+            val location = SimpleLocation(this@EventFormActivity)
+            location.beginUpdates()
+            if (!location.hasLocationEnabled()) {
+                // ask the user to enable location access
+                SimpleLocation.openSettings(this@EventFormActivity)
+            }
+            val latitude = location.latitude
+            val longitude = location.longitude
+            location.endUpdates()
 
-        val country = address.countryName
-        val city = address.locality
-        val street =  address.thoroughfare
-        val postalCode = address.postalCode
-        val number = address.featureName
+            val geocoder = Geocoder(this@EventFormActivity, Locale.getDefault())
+            val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
 
-        val addr = Address(country, city, street, postalCode, number, lat, long)
+            val country = address.countryName
+            val city = address.locality
+            val street =  address.thoroughfare
+            val postalCode = address.postalCode
+            val number = address.featureName
 
-        logI(addr.toString())
+            val addr = Address(country, city, street, postalCode, number, latitude, longitude)
+
+            logI(addr.toString())
+        }
     }
 
     private fun handleGamesClick() {
