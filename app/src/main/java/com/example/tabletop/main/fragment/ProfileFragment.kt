@@ -1,6 +1,7 @@
 package com.example.tabletop.main.fragment
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
@@ -72,19 +73,19 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
     private fun handleResponse(response: Response<Profile>){
 
         val onSuccess = {
-            val profile = response.body()
+            val profile = response.body()!!
             logI(profile.toString())
-            binding.tvProfileFirstname.text = profile?.firstname
-            binding.tvProfileLastname.text = profile?.lastname
-            binding.tvProfileId.text = profile?.id
+            binding.tvProfileFirstname.text = profile.firstname
+            binding.tvProfileLastname.text = profile.lastname
+            binding.tvProfileId.text = profile.id
+            //binding.ivProfileAvatar.setImageURI(Uri.parse(profile.avatar))
 
             logI("Pobrano dane profilu")
         }
 
         val onFailure = {
             logE("Pobieranie profilu nie działa, najpewniej nie jestes zalogowany")
-            // logE(response.getErrorBodyProperties().toString())
-            // logE(response.getFullResponse())
+            logE(response.getErrorBodyProperties().toString())
         }
 
         response.resolve(onSuccess, onFailure)

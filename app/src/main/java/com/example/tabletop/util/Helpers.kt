@@ -90,6 +90,7 @@ fun getMockListOfEvents(): List<Event> {
                 Game(
                     "Name ${it + 1}",
                     "URI",
+                    "URI",
                     2,
                     (3..8).random(),
                     (15..90 step 5).random()
@@ -148,6 +149,7 @@ fun getMockGame(): Game {
     return Game(
         "name",
         "URL",
+        "URI",
         2,
         8,
         30
@@ -187,11 +189,23 @@ fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
         """.trimMargin()
 }
 
+fun EditText.setErrorEmpty() {
+    this.error = "Field cannot be empty"
+}
+
+fun EditText.setErrorInvalid(fieldName: String) {
+    this.error = "Please enter a valid $fieldName"
+}
+
+fun EditText.disableError() {
+    this.error = null
+}
+
 fun <T> Response<T>.status(): String = "${this.message()}\n"
 
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string().also {
-        logI("Error body: ${it.toString()}")
+        //logI("Error body: ${it.toString()}")
     }
     val json = gson.fromJson(errorBodyString, JsonObject::class.java)
 

@@ -1,6 +1,5 @@
 package com.example.tabletop.mvvm.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.User
@@ -13,29 +12,21 @@ import retrofit2.Response
 @Suppress("ObjectPropertyName")
 object UserViewModel : BaseViewModel<User>() {
 
-    private val _responseLogin = MutableLiveData<Response<LoginResponse>>()
-
-    private val _responseRegister = MutableLiveData<Response<RegisterResponse>>()
-
-    val responseLogin: LiveData<Response<LoginResponse>>
-        get() = _responseLogin
-
-    val responseRegister: LiveData<Response<RegisterResponse>>
-        get() = _responseRegister
+    val responseLogin = MutableLiveData<Response<LoginResponse>>()
 
     val responseGetProfile = MutableLiveData<Response<Profile>>()
 
     val responseCreateProfile = MutableLiveData<Response<Profile>>()
 
-    fun login(loginForm: LoginForm) {
+    fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
-            _responseLogin.value = UserRepository.login(loginForm)
+            responseLogin.value = UserRepository.login(loginRequest)
         }
     }
 
     fun register(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            _responseRegister.value = UserRepository.register(registerRequest)
+            responseOne.value = UserRepository.register(registerRequest)
         }
     }
 
@@ -49,7 +40,8 @@ object UserViewModel : BaseViewModel<User>() {
         logI("Editing")
         logI(profile.toString())
         viewModelScope.launch {
-            responseCreateProfile.value = UserRepository.editProfile(accessToken, profile.id, profile)
+            responseCreateProfile.value =
+                UserRepository.editProfile(accessToken, profile.id, profile)
         }
     }
 

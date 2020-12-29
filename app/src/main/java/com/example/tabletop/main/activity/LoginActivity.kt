@@ -5,14 +5,13 @@ import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityLoginBinding
-import com.example.tabletop.mvvm.model.helpers.LoginForm
+import com.example.tabletop.mvvm.model.helpers.LoginRequest
 import com.example.tabletop.mvvm.model.helpers.LoginResponse
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
@@ -41,7 +40,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val (username, password) = if (isError) "error" to "error" else "test1" to "qwqwqwqW1$"
+        val (username, password) = if (isError) "error" to "error" else "test2137" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
@@ -56,7 +55,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             val username = binding.loginEtUsername.value
             val password = binding.loginEtPassword.value
 
-            val loginForm = LoginForm(username, password)
+            val loginForm = LoginRequest(username, password)
 
             if (isFormValid(loginForm)) {
                 //logD("All fields are valid")
@@ -72,23 +71,23 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         }
     }
 
-    private fun isFormValid(loginForm: LoginForm): Boolean {
+    private fun isFormValid(loginRequest: LoginRequest): Boolean {
         var areFieldsValid = true
-        if (loginForm.username.isEmpty()) {
+        if (loginRequest.username.isEmpty()) {
             binding.loginEtUsername.error = "Field cannot be empty"
             areFieldsValid = false
         }
-        if (loginForm.password.isEmpty()) {
+        if (loginRequest.password.isEmpty()) {
             binding.loginEtPassword.error = "Field cannot be empty"
             areFieldsValid = false
         }
         return areFieldsValid
     }
 
-    private fun loginUser(loginForm: LoginForm) {
+    private fun loginUser(loginRequest: LoginRequest) {
         var isAlreadyHandled = false
         UserViewModel.run {
-            login(loginForm)
+            login(loginRequest)
             responseLogin.observe(this@LoginActivity) {
                 if (!(isAlreadyHandled)) {
                     isAlreadyHandled = true
@@ -111,6 +110,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
                         }
                     }
                 }
+                logD("[SUCCESS] Done setting access token")
                 start<MainActivity>()
                 finish()
             }

@@ -16,6 +16,7 @@ import com.livinglifetechway.k4kotlin.core.shortToast
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logI
 import splitties.activities.start
+import splitties.fragmentargs.arg
 import splitties.toast.UnreliableToastApi
 
 @UnreliableToastApi
@@ -55,14 +56,25 @@ class MainActivity : BaseActivity() {
 
         setupSidebar()
 
-        setFragmentAndTitle(ListOfEventsFragment(), "Dashboard")
+        val bundleAllEvents = Bundle().apply { putBoolean("IS_ALL_EVENTS", true) }
+        val bundleMyEvents = Bundle().apply { putBoolean("IS_ALL_EVENTS", false) }
+
+        setFragmentAndTitle(
+            ListOfEventsFragment().apply { arguments = bundleAllEvents },
+            "All Events"
+        )
 
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.mi_profile -> setFragmentAndTitle(ProfileFragment(),"Profile")
-                R.id.mi_all_events -> setFragmentAndTitle(ListOfEventsFragment(), "Dashboard")
-                R.id.mi_my_events -> shortToast("Clicked My Events")
-                R.id.mi_events_history -> shortToast("Clicked Events History")
+                R.id.mi_all_events -> setFragmentAndTitle(
+                    ListOfEventsFragment().apply { arguments = bundleAllEvents },
+                    "All Events"
+                )
+                R.id.mi_my_events -> setFragmentAndTitle(
+                    ListOfEventsFragment().apply { arguments = bundleMyEvents },
+                    "My Events"
+                )
                 R.id.mi_settings -> setFragmentAndTitle(SettingsFragment(), "Settings")
                 R.id.mi_about -> setFragmentAndTitle(AboutFragment(), "About")
                 R.id.mi_logout -> logout()

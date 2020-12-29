@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logW
+import okhttp3.internal.http.hasBody
 import retrofit2.Response
 import splitties.fragments.start
 import splitties.toast.UnreliableToastApi
@@ -42,7 +43,6 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
             adapter = eventAdapter
         }
         settingsManager = SettingsManager(requireContext())
-        //logI("Starting ${this.className}")
     }
 
     private fun setupOnClickListeners() {
@@ -68,7 +68,14 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     private fun retrieveEvents(accessToken: String) {
         var isAlreadyHandled = false
         EventViewModel.run {
-            getMany(accessToken)
+
+            //todo change getMany endpoint to events/search/
+            if (arguments?.getBoolean("IS_ALL_EVENTS")!!) {
+                getMany(accessToken) //, mapOf("distance" to "1")
+            } else {
+                //getMany(accessToken, mapOf())
+            }
+
             responseMany.observe(viewLifecycleOwner) {
                 if (!(isAlreadyHandled)) {
                     isAlreadyHandled = true
@@ -82,7 +89,12 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
 
         val onSuccess = {
             logD(response.status())
-            response.body()?.let { eventAdapter.setData(it.results) } as Unit
+            val events = response.body()?.results!!
+            if (events.isEmpty()) {
+                binding.tvNoEvents.text = "No events to show :("
+            } else {
+                response.body()?.let { eventAdapter.setData(it.results) } as Unit
+            }
         }
 
         val onFailure = {
@@ -94,9 +106,6 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
             // }
             // logE(response.getFullResponse())
             // logD(errorBodyProperties.toString())
-            //
-            // val key = "detail"
-            // val value = "No active account found with the given credentials"
             //
             // if (errorBodyProperties[key] == value) {
             //     toast("Invalid credentials")

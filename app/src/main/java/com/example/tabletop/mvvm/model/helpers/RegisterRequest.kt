@@ -5,5 +5,6 @@ import java.io.Serializable
 data class RegisterRequest(
     val email: String,
     val username: String,
-    val password: String
+    val password: String,
+    val profile: Profile
 ) : Serializable

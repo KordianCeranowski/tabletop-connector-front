@@ -7,11 +7,11 @@ import retrofit2.Response
 
 object UserRepository : Repository<User>() {
 
-    suspend fun login(loginForm: LoginForm): Response<LoginResponse> {
-        return userApi.login(loginForm)
+    suspend fun login(loginRequest: LoginRequest): Response<LoginResponse> {
+        return userApi.login(loginRequest)
     }
 
-    suspend fun register(registerRequest: RegisterRequest): Response<RegisterResponse> {
+    suspend fun register(registerRequest: RegisterRequest): Response<User> {
         return userApi.register(registerRequest)
     }
 

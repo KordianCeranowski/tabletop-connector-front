@@ -10,13 +10,13 @@ interface UserApi {
 
     @POST(USER_API_ENDPOINT_LOGIN)
     suspend fun login(
-        @Body loginForm: LoginForm
+        @Body loginRequest: LoginRequest
     ): Response<LoginResponse>
 
     @POST(USER_API_ENDPOINT_REGISTER)
     suspend fun register(
         @Body registerRequest: RegisterRequest
-    ): Response<RegisterResponse>
+    ): Response<User>
 
     @GET(USER_API_ENDPOINT_MY_PROFILE)
     suspend fun getProfile(
@@ -57,6 +57,4 @@ interface UserApi {
         @Path("id") id: String,
         @Body user: User
     ): Response<User>
-
-
 }
