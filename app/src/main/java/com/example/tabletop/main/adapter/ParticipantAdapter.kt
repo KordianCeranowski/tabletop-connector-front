@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
+import com.example.tabletop.main.activity.ProfileActivity
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.util.startWithExtra
 import kotlinx.android.synthetic.main.row_participant.view.*
@@ -21,9 +22,11 @@ class ParticipantAdapter : RecyclerView.Adapter<ParticipantAdapter.MyViewHolder>
                 //row_participant_profile_picture.setImageURI(Uri.parse(user.profile.avatar))
             }
 
-            // itemView.setOnClickListener {
-            //     itemView.context.startWithExtra<UserProfileActivity>("USER" to user)
-            // }
+            itemView.setOnClickListener {
+                itemView.context.startWithExtra<ProfileActivity>(
+                    "PROFILE_ID" to user.profile.id
+                )
+            }
         }
     }
 

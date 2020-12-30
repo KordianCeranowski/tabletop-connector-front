@@ -20,17 +20,17 @@ interface UserApi {
         @QueryMap options: Map<String, String>
     ): Response<Many<User>>
 
-    @GET("$USER_API_ENDPOINT{id}")
+    @GET("$USER_API_ENDPOINT{id}/")
     suspend fun getOne(
         @Path("id") id: String
     ): Response<User>
 
-    @DELETE("$USER_API_ENDPOINT{id}")
+    @DELETE("$USER_API_ENDPOINT{id}/")
     suspend fun remove(
         @Path("id") id: String
     ): Response<User>
 
-    @PUT("$USER_API_ENDPOINT{id}")
+    @PUT("$USER_API_ENDPOINT{id}/")
     suspend fun edit(
         @Path("id") id: String,
         @Body user: User
@@ -47,11 +47,16 @@ interface UserApi {
     ): Response<User>
 
     @GET(USER_API_ENDPOINT_MY_PROFILE)
-    suspend fun getProfile(
+    suspend fun getMyProfile(
         @Header("Authorization") auth: String
     ): Response<Profile>
 
-    @PATCH("$USER_API_ENDPOINT_CREATE_PROFILE{id}")
+    @GET("$USER_API_ENDPOINT_PROFILE{id}/")
+    suspend fun getProfile(
+        @Path("id") id: String
+    ): Response<Profile>
+
+    @PATCH("$USER_API_ENDPOINT_CREATE_PROFILE{id}/")
     suspend fun editProfile(
         @Header("Authorization") auth: String,
         @Path("id") id: String,

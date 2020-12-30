@@ -13,6 +13,8 @@ const val USER_API_ENDPOINT_REGISTER = "auth/users/"
 
 const val USER_API_ENDPOINT_LOGIN = "auth/jwt/create/"
 
+const val USER_API_ENDPOINT_PROFILE = "profiles/"
+
 const val USER_API_ENDPOINT_MY_PROFILE = "profiles/me/"
 
 const val USER_API_ENDPOINT_EVENT_PARTICIPATION = "participation/"

@@ -38,9 +38,15 @@ object UserViewModel : BaseViewModel<User>() {
         }
     }
 
-    fun getProfile(accessToken: String) {
+    fun getMyProfile(accessToken: String) {
         viewModelScope.launch {
-            responseGetProfile.value = UserRepository.getProfile(accessToken)
+            responseGetProfile.value = UserRepository.getMyProfile(accessToken)
+        }
+    }
+
+    fun getProfile(id: String) {
+        viewModelScope.launch {
+            responseGetProfile.value = UserRepository.getProfile(id)
         }
     }
 

@@ -1,10 +1,10 @@
-package com.example.tabletop.main.fragment
+package com.example.tabletop.main.activity
 
 import android.os.Bundle
-import android.view.View
+import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import com.example.tabletop.R
+import com.example.tabletop.databinding.ActivityProfileBinding
 import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
@@ -16,20 +16,25 @@ import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
 
-//TODO: DO NOT USE
-class ProfileFragment : BaseFragment(R.layout.activity_profile) {
+@Suppress("COMPATIBILITY_WARNING")
+class ProfileActivity : BaseActivity() {
 
-    override val binding = TODO()
+    override val binding: ActivityProfileBinding by viewBinding()
 
     private lateinit var settingsManager: SettingsManager
 
-    fun setup() {
+    override fun setup() {
         binding
-        settingsManager = SettingsManager(requireContext())
+        settingsManager = SettingsManager(applicationContext)
+        setActionBarTitle("Profile")
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setup()
 
         attachObserver()
@@ -41,17 +46,17 @@ class ProfileFragment : BaseFragment(R.layout.activity_profile) {
     }
 
     private fun attachObserver() {
-        UserViewModel.responseGetProfile.observe(viewLifecycleOwner) { handleResponse(it) }
+        UserViewModel.responseGetProfile.observe(this) { handleResponse(it) }
     }
 
     private fun retrieveProfile(accessToken: String) {
-        val isMyProfile = arguments?.getBoolean("IS_MY_PROFILE")!!
-        val profileId = arguments?.getBoolean("PROFILE_ID")!!
+        val profileId = intent.getStringExtra("PROFILE_ID") ?: ""
 
-        if (isMyProfile) {
+        if (profileId.isEmpty()) {
             UserViewModel.getMyProfile(accessToken)
         } else {
-            //UserViewModel.getProfile(id)
+            //todo: test
+            UserViewModel.getProfile(profileId)
         }
     }
 
@@ -60,9 +65,9 @@ class ProfileFragment : BaseFragment(R.layout.activity_profile) {
         val onSuccess = {
             val profile = response.body()!!
             logI(profile.toString())
-            // binding.tvProfileFirstname.text = profile.firstname
-            // binding.tvProfileLastname.text = profile.lastname
-            // binding.tvProfileId.text = profile.id
+            binding.tvProfileFirstname.text = profile.firstname
+            binding.tvProfileLastname.text = profile.lastname
+            binding.tvProfileId.text = profile.id
             //binding.ivProfileAvatar.setImageURI(Uri.parse(profile.avatar))
 
             logI("Pobrano dane profilu")

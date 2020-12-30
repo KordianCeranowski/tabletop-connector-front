@@ -53,8 +53,8 @@ class EventActivity : BaseActivity() {
                     EventParticipantsFragment().apply { arguments = bundle }
                 )
                 R.id.mi_chat -> passedEvent.chat?.let {
-                    EventChatFragment().apply { arguments = bundle }
-                }?.let { setCurrentFragment(it) }
+                    setCurrentFragment(EventChatFragment().apply { arguments = bundle })
+                }
             }
             true
         }

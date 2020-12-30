@@ -28,6 +28,7 @@
         <activity android:name=".main.activity.EventFormActivity" />
         <activity android:name=".main.activity.EventActivity" />
         <activity android:name=".main.activity.MainActivity"/>
+        <activity android:name=".main.activity.ProfileActivity"/>
         <activity android:name=".main.activity.RegisterActivity" />
         <activity android:name=".main.activity.LoginActivity"/>
     </application>

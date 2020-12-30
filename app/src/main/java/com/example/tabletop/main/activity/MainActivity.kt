@@ -12,6 +12,7 @@ import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.main.fragment.*
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.className
+import com.example.tabletop.util.startWithExtra
 import com.livinglifetechway.k4kotlin.core.shortToast
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logI
@@ -66,7 +67,7 @@ class MainActivity : BaseActivity() {
 
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.mi_profile -> setFragmentAndTitle(ProfileFragment(),"Profile")
+                R.id.mi_profile -> start<ProfileActivity>()
                 R.id.mi_all_events -> setFragmentAndTitle(
                     ListOfEventsFragment().apply { arguments = bundleAllEvents },
                     "All Events"
@@ -79,6 +80,7 @@ class MainActivity : BaseActivity() {
                 R.id.mi_about -> setFragmentAndTitle(AboutFragment(), "About")
                 R.id.mi_logout -> logout()
             }
+            binding.drawerLayout.closeDrawers()
             true
         }
     }
@@ -86,7 +88,6 @@ class MainActivity : BaseActivity() {
     private fun setFragmentAndTitle(fragment: Fragment, title: String) {
         setCurrentFragment(fragment)
         setActionBarTitle(title)
-        binding.drawerLayout.closeDrawers();
     }
 
     private fun setCurrentFragment(fragment: Fragment) {

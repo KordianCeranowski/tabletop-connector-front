@@ -35,8 +35,12 @@ object UserRepository : Repository<User>() {
         return userApi.register(registerRequest)
     }
 
-    suspend fun getProfile(accessToken: String): Response<Profile> {
-        return userApi.getProfile(accessToken)
+    suspend fun getMyProfile(accessToken: String): Response<Profile> {
+        return userApi.getMyProfile(accessToken)
+    }
+
+    suspend fun getProfile(id: String): Response<Profile> {
+        return userApi.getProfile(id)
     }
 
     suspend fun editProfile(accessToken: String, id: String, profile: Profile) : Response<Profile>{
