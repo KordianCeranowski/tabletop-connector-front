@@ -10,12 +10,6 @@ interface UserApi {
 
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
-        @Query("_sort") sort: String,
-        @Query("_order") order: String
-    ): Response<Many<User>>
-
-    @GET(USER_API_ENDPOINT)
-    suspend fun getMany(
         @Header("Authorization") auth: String,
         @QueryMap options: Map<String, String>
     ): Response<Many<User>>
@@ -30,7 +24,7 @@ interface UserApi {
         @Path("id") id: String
     ): Response<User>
 
-    @PUT("$USER_API_ENDPOINT{id}/")
+    @PATCH("$USER_API_ENDPOINT{id}/")
     suspend fun edit(
         @Path("id") id: String,
         @Body user: User
@@ -48,11 +42,12 @@ interface UserApi {
 
     @GET(USER_API_ENDPOINT_MY_PROFILE)
     suspend fun getMyProfile(
-        @Header("Authorization") auth: String
+        @Header("Authorization") accessToken: String
     ): Response<Profile>
 
     @GET("$USER_API_ENDPOINT_PROFILE{id}/")
     suspend fun getProfile(
+        @Header("Authorization") accessToken: String,
         @Path("id") id: String
     ): Response<Profile>
 

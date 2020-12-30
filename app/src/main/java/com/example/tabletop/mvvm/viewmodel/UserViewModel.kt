@@ -16,7 +16,7 @@ object UserViewModel : BaseViewModel<User>() {
 
     val responseGetProfile = SingleLiveEvent<Response<Profile>>()
 
-    val responseCreateProfile = SingleLiveEvent<Response<Profile>>()
+    val responseEditProfile = SingleLiveEvent<Response<Profile>>()
 
     val responseAccessToken = SingleLiveEvent<Response<RefreshResponse>>()
 
@@ -44,24 +44,16 @@ object UserViewModel : BaseViewModel<User>() {
         }
     }
 
-    fun getProfile(id: String) {
+    fun getProfile(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseGetProfile.value = UserRepository.getProfile(id)
+            responseGetProfile.value = UserRepository.getProfile(accessToken, id)
         }
     }
 
-    fun editProfile(accessToken: String, profile: Profile) {
-        logI("Editing")
-        logI(profile.toString())
+    fun editProfile(accessToken: String, id: String, profile: Profile) {
         viewModelScope.launch {
-            responseCreateProfile.value =
+            responseEditProfile.value =
                 UserRepository.editProfile(accessToken, profile.id, profile)
-        }
-    }
-
-    override fun getMany(sort: String, order: String) {
-        viewModelScope.launch {
-            responseMany.value = UserRepository.getMany(sort, order)
         }
     }
 
@@ -71,21 +63,21 @@ object UserViewModel : BaseViewModel<User>() {
         }
     }
 
-    override fun getOne(id: String) {
+    override fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = UserRepository.getOne(id)
+            responseOne.value = UserRepository.getOne(accessToken, id)
         }
     }
 
-    override fun remove(id: String) {
+    override fun remove(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = UserRepository.remove(id)
+            responseOne.value = UserRepository.remove(accessToken, id)
         }
     }
 
-    override fun edit(id: String, newModel: User) {
+    override fun edit(accessToken: String, id: String, newModel: User) {
         viewModelScope.launch {
-            responseOne.value = UserRepository.edit(id, newModel)
+            responseOne.value = UserRepository.edit(accessToken, id, newModel)
         }
     }
 }

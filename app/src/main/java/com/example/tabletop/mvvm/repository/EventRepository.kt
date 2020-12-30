@@ -6,9 +6,6 @@ import com.example.tabletop.mvvm.model.helpers.Many
 import retrofit2.Response
 
 object EventRepository : Repository<Event>(), IRepositorySave<Event> {
-    override suspend fun getMany(sort: String, order: String): Response<Many<Event>> {
-        return eventApi.getMany(sort, order)
-    }
 
     override suspend fun getMany(
         accessToken: String,
@@ -21,15 +18,15 @@ object EventRepository : Repository<Event>(), IRepositorySave<Event> {
         return eventApi.save(accessToken, model)
     }
 
-    override suspend fun getOne(id: String): Response<Event> {
-        return eventApi.getOne(id)
+    override suspend fun getOne(accessToken: String, id: String): Response<Event> {
+        return eventApi.getOne(accessToken, id)
     }
 
-    override suspend fun remove(id: String): Response<Event> {
+    override suspend fun remove(accessToken: String, id: String): Response<Event> {
         return eventApi.remove(id)
     }
 
-    override suspend fun edit(id: String, model: Event): Response<Event> {
+    override suspend fun edit(accessToken: String, id: String, model: Event): Response<Event> {
         return eventApi.edit(id, model)
     }
 

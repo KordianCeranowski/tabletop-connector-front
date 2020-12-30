@@ -58,7 +58,7 @@ class ProfileActivity : BaseActivity() {
             UserViewModel.getMyProfile(accessToken)
         } else {
             //todo: test
-            UserViewModel.getProfile(profileId)
+            UserViewModel.getProfile(accessToken, profileId)
         }
     }
 

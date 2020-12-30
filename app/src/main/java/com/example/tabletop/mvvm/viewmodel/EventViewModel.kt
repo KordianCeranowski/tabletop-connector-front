@@ -13,9 +13,9 @@ object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
 
     val responseJoinOrLeaveEvent = SingleLiveEvent<Response<Unit>>()
 
-    override fun getMany(sort: String, order: String) {
+    fun joinOrLeaveEvent(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseMany.value = EventRepository.getMany(sort, order)
+            responseJoinOrLeaveEvent.value = EventRepository.joinOrLeaveEvent(accessToken, id)
         }
     }
 
@@ -31,27 +31,21 @@ object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
         }
     }
 
-    override fun getOne(id: String) {
+    override fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = EventRepository.getOne(id)
+            responseOne.value = EventRepository.getOne(accessToken, id)
         }
     }
 
-    override fun remove(id: String) {
+    override fun remove(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = EventRepository.remove(id)
+            responseOne.value = EventRepository.remove(accessToken, id)
         }
     }
 
-    override fun edit(id: String, newModel: Event) {
+    override fun edit(accessToken: String, id: String, newModel: Event) {
         viewModelScope.launch {
-            responseOne.value = EventRepository.edit(id, newModel)
-        }
-    }
-
-    fun joinOrLeaveEvent(accessToken: String, id: String) {
-        viewModelScope.launch {
-            responseJoinOrLeaveEvent.value = EventRepository.joinOrLeaveEvent(accessToken, id)
+            responseOne.value = EventRepository.edit(accessToken, id, newModel)
         }
     }
 }

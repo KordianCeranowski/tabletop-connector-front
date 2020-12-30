@@ -7,12 +7,6 @@ import kotlinx.coroutines.launch
 
 object GameViewModel : BaseViewModel<Game>(), IViewModelSave<Game> {
 
-    override fun getMany(sort: String, order: String) {
-        viewModelScope.launch {
-            responseMany.value = GameRepository.getMany(sort, order)
-        }
-    }
-
     override fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {
             responseMany.value = GameRepository.getMany(accessToken, options)
@@ -25,21 +19,21 @@ object GameViewModel : BaseViewModel<Game>(), IViewModelSave<Game> {
         }
     }
 
-    override fun getOne(id: String) {
+    override fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = GameRepository.getOne(id)
+            responseOne.value = GameRepository.getOne(accessToken, id)
         }
     }
 
-    override fun remove(id: String) {
+    override fun remove(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = GameRepository.remove(id)
+            responseOne.value = GameRepository.remove(accessToken, id)
         }
     }
 
-    override fun edit(id: String, newModel: Game) {
+    override fun edit(accessToken: String, id: String, newModel: Game) {
         viewModelScope.launch {
-            responseOne.value = GameRepository.edit(id, newModel)
+            responseOne.value = GameRepository.edit(accessToken, id, newModel)
         }
     }
 }

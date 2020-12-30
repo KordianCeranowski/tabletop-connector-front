@@ -6,13 +6,14 @@ import retrofit2.Response
 
 abstract class Repository<T : Model> {
 
-    abstract suspend fun getMany(sort: String, order: String): Response<Many<T>>
+    abstract suspend fun getMany(
+        accessToken: String,
+        options: Map<String, String>
+    ): Response<Many<T>>
 
-    abstract suspend fun getMany(accessToken: String, options: Map<String, String>): Response<Many<T>>
+    abstract suspend fun getOne(accessToken: String, id: String): Response<T>
 
-    abstract suspend fun getOne(id: String): Response<T>
+    abstract suspend fun remove(accessToken: String, id: String): Response<T>
 
-    abstract suspend fun remove(id: String): Response<T>
-
-    abstract suspend fun edit(id: String, model: T): Response<T>
+    abstract suspend fun edit(accessToken: String, id: String, model: T): Response<T>
 }

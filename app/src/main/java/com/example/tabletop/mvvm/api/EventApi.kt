@@ -29,6 +29,7 @@ interface EventApi {
 
     @GET("$EVENT_API_ENDPOINT{id}/")
     suspend fun getOne(
+        @Header("Authorization") accessToken: String,
         @Path("id") id: String
     ): Response<Event>
 

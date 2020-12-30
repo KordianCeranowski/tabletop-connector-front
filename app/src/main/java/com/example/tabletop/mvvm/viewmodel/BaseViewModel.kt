@@ -13,13 +13,11 @@ abstract class BaseViewModel<T : Model> : ViewModel() {
 
     val responseMany = SingleLiveEvent<Response<Many<T>>>()
 
-    abstract fun getMany(sort: String, order: String)
-
     abstract fun getMany(accessToken: String, options: Map<String, String> = emptyMap())
 
-    abstract fun getOne(id: String)
+    abstract fun getOne(accessToken: String, id: String)
 
-    abstract fun remove(id: String)
+    abstract fun remove(accessToken: String, id: String)
 
-    abstract fun edit(id: String, newModel: T)
+    abstract fun edit(accessToken: String, id: String, newModel: T)
 }
