@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
 import com.example.tabletop.main.activity.ProfileActivity
 import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.util.EXTRA_PROFILE_ID
 import com.example.tabletop.util.startWithExtra
 import kotlinx.android.synthetic.main.row_participant.view.*
 
@@ -24,7 +25,7 @@ class ParticipantAdapter : RecyclerView.Adapter<ParticipantAdapter.MyViewHolder>
 
             itemView.setOnClickListener {
                 itemView.context.startWithExtra<ProfileActivity>(
-                    "PROFILE_ID" to user.profile.id
+                    EXTRA_PROFILE_ID to user.profile.id
                 )
             }
         }

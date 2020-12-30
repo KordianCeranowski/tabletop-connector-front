@@ -3,30 +3,31 @@ package com.example.tabletop.mvvm.repository
 import com.example.tabletop.mvvm.api.RetrofitInstance.eventApi
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
+import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import retrofit2.Response
 
-object EventRepository : Repository<Event>(), IRepositorySave<Event> {
+object EventRepository {
 
-    override suspend fun getMany(
+    suspend fun getMany(
         accessToken: String,
         options: Map<String, String>
     ): Response<Many<Event>> {
         return eventApi.getMany(accessToken, options)
     }
 
-    override suspend fun save(accessToken: String, model: Event): Response<Event> {
-        return eventApi.save(accessToken, model)
+    suspend fun save(accessToken: String, eventRequest: EventRequest): Response<Event> {
+        return eventApi.save(accessToken, eventRequest)
     }
 
-    override suspend fun getOne(accessToken: String, id: String): Response<Event> {
+    suspend fun getOne(accessToken: String, id: String): Response<Event> {
         return eventApi.getOne(accessToken, id)
     }
 
-    override suspend fun remove(accessToken: String, id: String): Response<Event> {
+    suspend fun remove(accessToken: String, id: String): Response<Event> {
         return eventApi.remove(id)
     }
 
-    override suspend fun edit(accessToken: String, id: String, model: Event): Response<Event> {
+    suspend fun edit(accessToken: String, id: String, model: Event): Response<Event> {
         return eventApi.edit(id, model)
     }
 

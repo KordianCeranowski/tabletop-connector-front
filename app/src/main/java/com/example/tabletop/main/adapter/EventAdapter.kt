@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
 import com.example.tabletop.main.activity.EventActivity
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.util.EXTRA_EVENT
 import com.example.tabletop.util.startWithExtra
 import kotlinx.android.synthetic.main.row_event.view.*
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
 
     private var viewItems = emptyList<Event>()
@@ -24,7 +26,7 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
             }
 
             itemView.setOnClickListener {
-                itemView.context.startWithExtra<EventActivity>("EVENT" to event)
+                itemView.context.startWithExtra<EventActivity>(EXTRA_EVENT to event)
             }
         }
     }

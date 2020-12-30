@@ -1,15 +1,19 @@
 package com.example.tabletop.mvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
+import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.mvvm.model.helpers.Many
+import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.repository.*
 import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
+object EventViewModel : BaseViewModel<Event>() {
 
     val responseJoinOrLeaveEvent = SingleLiveEvent<Response<Unit>>()
 
@@ -19,31 +23,31 @@ object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
         }
     }
 
-    override fun getMany(accessToken: String, options: Map<String, String>) {
+    fun getMany(accessToken: String, options: Map<String, String> = emptyMap()) {
         viewModelScope.launch {
             responseMany.value = EventRepository.getMany(accessToken, options)
         }
     }
 
-    override fun save(accessToken: String, model: Event) {
+    fun save(accessToken: String, eventRequest: EventRequest) {
         viewModelScope.launch {
-            responseOne.value = EventRepository.save(accessToken, model)
+            responseOne.value = EventRepository.save(accessToken, eventRequest)
         }
     }
 
-    override fun getOne(accessToken: String, id: String) {
+    fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
             responseOne.value = EventRepository.getOne(accessToken, id)
         }
     }
 
-    override fun remove(accessToken: String, id: String) {
+    fun remove(accessToken: String, id: String) {
         viewModelScope.launch {
             responseOne.value = EventRepository.remove(accessToken, id)
         }
     }
 
-    override fun edit(accessToken: String, id: String, newModel: Event) {
+    fun edit(accessToken: String, id: String, newModel: Event) {
         viewModelScope.launch {
             responseOne.value = EventRepository.edit(accessToken, id, newModel)
         }

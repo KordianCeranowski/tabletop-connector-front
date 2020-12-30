@@ -12,12 +12,4 @@ abstract class BaseViewModel<T : Model> : ViewModel() {
     val responseOne = SingleLiveEvent<Response<T>>()
 
     val responseMany = SingleLiveEvent<Response<Many<T>>>()
-
-    abstract fun getMany(accessToken: String, options: Map<String, String> = emptyMap())
-
-    abstract fun getOne(accessToken: String, id: String)
-
-    abstract fun remove(accessToken: String, id: String)
-
-    abstract fun edit(accessToken: String, id: String, newModel: T)
 }

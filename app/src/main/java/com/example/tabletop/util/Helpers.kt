@@ -12,9 +12,14 @@ import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.Profile
+import com.example.tabletop.mvvm.model.helpers.request.AddressSimple
+import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.google.gson.*
 import net.alexandroid.utils.mylogkt.logI
+import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
+import org.json.JSONArray
+import org.json.JSONObject
 import org.json.JSONTokener
 import retrofit2.Response
 import java.io.Serializable
@@ -66,6 +71,14 @@ inline fun <reified T : Activity> Context.startWithExtra(vararg pairs: Pair<Stri
         }
         startActivity(intent)
     }
+}
+
+fun getMockEventRequest(): EventRequest {
+    return EventRequest(
+        "mock name",
+        getRandomDate(),
+        getMockAddressSimple()
+    )
 }
 
 fun getMockEvent(): Event {
@@ -145,6 +158,13 @@ fun getMockAddress(): Address {
     )
 }
 
+fun getMockAddressSimple(): AddressSimple {
+    return AddressSimple(
+        21.0,
+        37.0
+    )
+}
+
 fun getMockGame(): Game {
     return Game(
         "name",
@@ -209,26 +229,38 @@ fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val responseBody = JSONTokener(errorBodyString).nextValue()
 
     return when (responseBody) {
-        is JsonArray -> emptyMap<String, String>().also {
-            logW(responseBody.toString())
-            logW("Response body is JsonArray")
-        }
-        is JsonPrimitive -> emptyMap<String, String>().also {
-            logW("Response body is JsonPrimitive")
-        }
-        is JsonObject -> {
-            val json = gson.fromJson(errorBodyString, JsonObject::class.java)
-
-            json?.let {
-                val keys = json.keySet().map { it.toString() }
-                val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
-                keys.zip(entries).map { it.first to it.second }.toMap()
-            } ?: emptyMap()
-        }
-        else -> emptyMap<String, String>().also {
-            logW("Response body is of other type <${responseBody.className}>")
+        is JSONArray ->
+            emptyMap<String, String>().also {
+                logW(responseBody.toString())
+                logW("Response body is JsonArray")
+            }
+        is JsonPrimitive ->
+            emptyMap<String, String>().also {
+                logW("Response body is JsonPrimitive")
+            }
+        is JSONObject ->
+            getMapFromJson(errorBodyString ?: "{}")
+        is JsonObject ->
+            getMapFromJson(errorBodyString ?: "{}")
+        is String ->
+            emptyMap<String, String>().also {
+                logV(errorBodyString.toString())
+            }
+        else ->
+        emptyMap<String, String>().also {
+            logW("Response body is of type <${responseBody.className}>")
         }
     }
+}
+
+private fun getMapFromJson(errorBodyString: String): Map<String, String> {
+    val json = gson.fromJson(errorBodyString, JsonObject::class.java)
+
+    return json?.let {
+        val keys = json.keySet().map { it.toString() }
+        val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
+        keys.zip(entries).map { it.first to it.second }.toMap()
+    } ?: emptyMap()
 }
 
 fun <T> Response<T>.resolve(onSuccess: () -> Any, onFailure: () -> Any) {

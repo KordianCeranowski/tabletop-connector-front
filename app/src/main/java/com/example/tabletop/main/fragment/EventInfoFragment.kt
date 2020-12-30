@@ -1,18 +1,25 @@
 package com.example.tabletop.main.fragment
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventInfoBinding
+import com.example.tabletop.main.activity.ProfileActivity
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
+import com.example.tabletop.util.EXTRA_EVENT
+import com.example.tabletop.util.EXTRA_PROFILE_ID
 import com.example.tabletop.util.resolve
+import com.example.tabletop.util.startWithExtra
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import net.alexandroid.utils.mylogkt.logD
 import retrofit2.Response
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
@@ -34,7 +41,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         super.onViewCreated(view, savedInstanceState)
         setup()
 
-        val event = arguments?.getSerializable("EVENT") as Event
+        val event = arguments?.getSerializable(EXTRA_EVENT) as Event
 
         binding.tvEventName.text = event.name
         binding.tvEventCreator.text = event.creator.username
@@ -42,11 +49,19 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
         attachObserver()
 
+        //getMyUser auth/users/mr/
+        //if (event.creator.id == )
         binding.btnJoinEvent.setOnClickListener {
             lifecycleScope.launch {
                 val accessToken = settingsManager.userAccessTokenFlow.first()
                 joinOrLeaveEvent(accessToken, event.id)
             }
+        }
+
+        binding.tvEventCreator.setOnClickListener {
+            context?.startWithExtra<ProfileActivity>(
+                EXTRA_PROFILE_ID to event.creator.profile.id
+            )
         }
     }
 

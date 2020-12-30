@@ -15,6 +15,7 @@ import com.example.tabletop.util.className
 import com.example.tabletop.util.startWithExtra
 import com.livinglifetechway.k4kotlin.core.shortToast
 import kotlinx.coroutines.launch
+import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import splitties.activities.start
 import splitties.fragmentargs.arg
@@ -60,17 +61,26 @@ class MainActivity : BaseActivity() {
         val bundleAllEvents = Bundle().apply { putBoolean("IS_ALL_EVENTS", true) }
         val bundleMyEvents = Bundle().apply { putBoolean("IS_ALL_EVENTS", false) }
 
-        setFragmentAndTitle(
-            ListOfEventsFragment().apply { arguments = bundleAllEvents },
-            "All Events"
-        )
+        val isShowMyEvents = intent.getBooleanExtra("IS_SHOW_MY_EVENTS", false)
+        if (isShowMyEvents) {
+            setFragmentAndTitle(
+                ListOfEventsFragment().apply { arguments = bundleMyEvents },
+                "My Events"
+            )
+        } else {
+            setFragmentAndTitle(
+                ListOfEventsFragment().apply { arguments = bundleAllEvents },
+                "Events"
+            )
+        }
+
 
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.mi_profile -> start<ProfileActivity>()
                 R.id.mi_all_events -> setFragmentAndTitle(
                     ListOfEventsFragment().apply { arguments = bundleAllEvents },
-                    "All Events"
+                    "Events"
                 )
                 R.id.mi_my_events -> setFragmentAndTitle(
                     ListOfEventsFragment().apply { arguments = bundleMyEvents },

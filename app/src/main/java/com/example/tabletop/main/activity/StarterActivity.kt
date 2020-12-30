@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import com.example.tabletop.mvvm.model.helpers.RefreshRequest
+import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
 import com.example.tabletop.mvvm.model.helpers.RefreshResponse
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager

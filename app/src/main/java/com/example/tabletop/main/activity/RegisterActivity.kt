@@ -7,6 +7,9 @@ import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
+import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
+import com.example.tabletop.mvvm.model.helpers.request.ProfileSimple
+import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.*

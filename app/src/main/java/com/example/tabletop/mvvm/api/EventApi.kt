@@ -2,6 +2,7 @@ package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
+import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.util.EVENT_API_ENDPOINT
 import com.example.tabletop.util.USER_API_ENDPOINT_EVENT_PARTICIPATION
 import retrofit2.Response
@@ -11,21 +12,9 @@ interface EventApi {
 
     @GET(EVENT_API_ENDPOINT)
     suspend fun getMany(
-        @Query("_sort") sort: String,
-        @Query("_order") order: String
-    ): Response<Many<Event>>
-
-    @GET(EVENT_API_ENDPOINT)
-    suspend fun getMany(
         @Header("Authorization") auth: String,
         @QueryMap options: Map<String, String>
     ): Response<Many<Event>>
-
-    @POST(EVENT_API_ENDPOINT)
-    suspend fun save(
-        @Header("Authorization") auth: String,
-        @Body event: Event
-    ): Response<Event>
 
     @GET("$EVENT_API_ENDPOINT{id}/")
     suspend fun getOne(
@@ -33,12 +22,18 @@ interface EventApi {
         @Path("id") id: String
     ): Response<Event>
 
+    @POST(EVENT_API_ENDPOINT)
+    suspend fun save(
+        @Header("Authorization") auth: String,
+        @Body eventRequest: EventRequest
+    ): Response<Event>
+
     @DELETE("$EVENT_API_ENDPOINT{id}/")
     suspend fun remove(
         @Path("id") id: String
     ): Response<Event>
 
-    @PUT("$EVENT_API_ENDPOINT{id}/")
+    @PATCH("$EVENT_API_ENDPOINT{id}/")
     suspend fun edit(
         @Path("id") id: String,
         @Body event: Event

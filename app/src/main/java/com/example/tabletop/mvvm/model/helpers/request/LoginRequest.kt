@@ -1,4 +1,4 @@
-package com.example.tabletop.mvvm.model.helpers
+package com.example.tabletop.mvvm.model.helpers.request
 
 import java.io.Serializable
 

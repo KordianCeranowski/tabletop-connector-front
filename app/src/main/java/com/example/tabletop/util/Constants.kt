@@ -3,6 +3,11 @@ package com.example.tabletop.util
 import android.util.Patterns
 import java.util.regex.Pattern
 
+// EXTRAS
+const val EXTRA_PROFILE_ID = "PROFILE_ID"
+
+const val EXTRA_EVENT = "EVENT"
+
 // URL
 const val BASE_URL = "http://10.0.2.2:8000/api/"
 

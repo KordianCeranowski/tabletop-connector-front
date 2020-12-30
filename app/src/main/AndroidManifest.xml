@@ -14,23 +14,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".main.activity.ProfileEditActivity"></activity>
         <activity
             android:name=".main.activity.StarterActivity"
             android:theme="@style/NoUiAppCompatTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".main.activity.EventEditActivity" />
         <activity android:name=".main.activity.sample.LocationActivity" />
         <activity android:name=".main.activity.EventFormActivity" />
         <activity android:name=".main.activity.EventActivity" />
-        <activity android:name=".main.activity.MainActivity"/>
-        <activity android:name=".main.activity.ProfileActivity"/>
+        <activity android:name=".main.activity.MainActivity" />
+        <activity android:name=".main.activity.ProfileActivity" />
         <activity android:name=".main.activity.RegisterActivity" />
-        <activity android:name=".main.activity.LoginActivity"/>
+        <activity android:name=".main.activity.LoginActivity" />
     </application>
 
 </manifest>

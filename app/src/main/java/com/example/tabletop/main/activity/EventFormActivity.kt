@@ -12,6 +12,7 @@ import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Address
+import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
@@ -54,9 +55,11 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         binding.tvEventAddress.setOnClickListener { handleAddressClick() }
         binding.tvEventGames.setOnClickListener { handleGamesClick() }
 
+        attachObserver()
+
         lifecycleScope.launch {
             val accessToken = settingsManager.userAccessTokenFlow.first()
-            saveEvent(accessToken, getMockEvent())
+            saveEvent(accessToken, getMockEventRequest())
         }
     }
 
@@ -83,7 +86,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         val hour = c.get(Calendar.HOUR)
         val minute = c.get(Calendar.MINUTE)
 
-        val timeSetListener = TimePickerDialog.OnTimeSetListener{timePicker, hour, minute ->
+        val timeSetListener = TimePickerDialog.OnTimeSetListener{ timePicker, hour, minute ->
             c.set(Calendar.HOUR_OF_DAY, hour)
             c.set(Calendar.MINUTE, minute)
             binding.tvEventTime.text = SimpleDateFormat("HH:mm").format(c.time)
@@ -125,17 +128,12 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         logI("Clicked Games")
     }
 
-    private fun saveEvent(accessToken: String, event: Event) {
-        var isAlreadyHandled = false
-        EventViewModel.run {
-            save(accessToken, event)
-            responseOne.observe(this@EventFormActivity) {
-                if (!(isAlreadyHandled)) {
-                    isAlreadyHandled = true
-                    handleResponse(it)
-                }
-            }
-        }
+    private fun attachObserver() {
+        EventViewModel.responseOne.observe(this@EventFormActivity) { handleResponse(it) }
+    }
+
+    private fun saveEvent(accessToken: String, eventRequest: EventRequest) {
+        EventViewModel.save(accessToken, eventRequest)
     }
 
     private fun handleResponse(response: Response<Event>) {
@@ -145,8 +143,8 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
             lifecycleScope.launch {
                 response.body()?.let {
-                    startWithExtra<EventActivity>("EVENT" to it)
-                    // or startActivity<MyEventsActivity>()
+                    startWithExtra<EventActivity>(EXTRA_EVENT to it)
+                    // or startWithExtra<MainActivity>("IS_SHOW_MY_EVENTS" to true)
                     finish()
                 }
             }

@@ -3,6 +3,9 @@ package com.example.tabletop.mvvm.repository
 import com.example.tabletop.mvvm.api.RetrofitInstance.userApi
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
+import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
+import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
+import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import retrofit2.Response
 
 object UserRepository : Repository<User>() {

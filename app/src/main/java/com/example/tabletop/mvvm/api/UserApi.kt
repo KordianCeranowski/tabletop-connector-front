@@ -2,12 +2,16 @@ package com.example.tabletop.mvvm.api
 
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
+import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
+import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
+import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import com.example.tabletop.util.*
 import retrofit2.Response
 import retrofit2.http.*
 
 interface UserApi {
 
+    // USER
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
         @Header("Authorization") auth: String,
@@ -40,6 +44,7 @@ interface UserApi {
         @Body registerRequest: RegisterRequest
     ): Response<User>
 
+    // PROFILE
     @GET(USER_API_ENDPOINT_MY_PROFILE)
     suspend fun getMyProfile(
         @Header("Authorization") accessToken: String

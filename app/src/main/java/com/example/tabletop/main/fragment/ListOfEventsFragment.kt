@@ -79,7 +79,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
             logD(response.status())
             val events = response.body()?.results!!
             if (events.isEmpty()) {
-                binding.tvNoEvents.text = "No events to show :("
+                binding.tvEmptyList.text = "No events to show :("
             } else {
                 response.body()?.let { eventAdapter.setData(it.results) } as Unit
             }

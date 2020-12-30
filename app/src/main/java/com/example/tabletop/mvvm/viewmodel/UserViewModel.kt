@@ -3,10 +3,12 @@ package com.example.tabletop.mvvm.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
+import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
+import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
+import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
-import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
 
 @Suppress("ObjectPropertyName")
@@ -53,29 +55,29 @@ object UserViewModel : BaseViewModel<User>() {
     fun editProfile(accessToken: String, id: String, profile: Profile) {
         viewModelScope.launch {
             responseEditProfile.value =
-                UserRepository.editProfile(accessToken, profile.id, profile)
+                UserRepository.editProfile(accessToken, id, profile)
         }
     }
 
-    override fun getMany(accessToken: String, options: Map<String, String>) {
+    fun getMany(accessToken: String, options: Map<String, String> = emptyMap()) {
         viewModelScope.launch {
             responseMany.value = UserRepository.getMany(accessToken, options)
         }
     }
 
-    override fun getOne(accessToken: String, id: String) {
+    fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
             responseOne.value = UserRepository.getOne(accessToken, id)
         }
     }
 
-    override fun remove(accessToken: String, id: String) {
+    fun remove(accessToken: String, id: String) {
         viewModelScope.launch {
             responseOne.value = UserRepository.remove(accessToken, id)
         }
     }
 
-    override fun edit(accessToken: String, id: String, newModel: User) {
+    fun edit(accessToken: String, id: String, newModel: User) {
         viewModelScope.launch {
             responseOne.value = UserRepository.edit(accessToken, id, newModel)
         }

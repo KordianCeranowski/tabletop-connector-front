@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/mi_all_events"
-        android:title="All Events"/>
+        android:title="Events"/>
 
     <item
         android:id="@+id/mi_my_events"
@@ -11,17 +11,21 @@
 
     <item
         android:id="@+id/mi_profile"
-        android:title="Profile"/>
+        android:title="Profile"
+        android:icon="@drawable/ic_person"/>
 
     <item
         android:id="@+id/mi_settings"
-        android:title="Settings"/>
+        android:title="Settings"
+        android:icon="@drawable/ic_settings"/>
 
     <item
         android:id="@+id/mi_about"
-        android:title="About"/>
+        android:title="About"
+        android:icon="@drawable/ic_info"/>
 
     <item
         android:id="@+id/mi_logout"
-        android:title="Logout"/>
+        android:title="Logout"
+        android:icon="@drawable/ic_logout"/>
 </menu>

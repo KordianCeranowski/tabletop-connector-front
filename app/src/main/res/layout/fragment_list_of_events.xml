@@ -38,7 +38,7 @@
         app:layout_constraintVertical_bias="0.95" />
 
     <TextView
-        android:id="@+id/tv_no_events"
+        android:id="@+id/tv_empty_list"
         android:layout_width="347dp"
         android:layout_height="70dp"
         android:gravity="center"

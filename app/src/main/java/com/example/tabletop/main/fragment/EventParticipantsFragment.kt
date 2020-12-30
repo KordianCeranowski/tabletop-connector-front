@@ -42,7 +42,7 @@ class EventParticipantsFragment : BaseFragment(R.layout.fragment_event_participa
 
         logI("Created ${this.className}")
 
-        val eventId = (arguments?.getSerializable("EVENT") as Event).id
+        val eventId = (arguments?.getSerializable(EXTRA_EVENT) as Event).id
 
         EventViewModel.responseOne.observe(viewLifecycleOwner) { handleResponse(it) }
 

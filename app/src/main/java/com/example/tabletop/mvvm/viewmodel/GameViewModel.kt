@@ -1,39 +1,33 @@
 package com.example.tabletop.mvvm.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Game
+import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.repository.GameRepository
+import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
-object GameViewModel : BaseViewModel<Game>(), IViewModelSave<Game> {
+object GameViewModel : BaseViewModel<Game>() {
 
-    override fun getMany(accessToken: String, options: Map<String, String>) {
+    fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {
             responseMany.value = GameRepository.getMany(accessToken, options)
         }
     }
 
-    override fun save(accessToken: String, model: Game) {
-        viewModelScope.launch {
-            responseOne.value = GameRepository.save(accessToken, model)
-        }
-    }
-
-    override fun getOne(accessToken: String, id: String) {
+    fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
             responseOne.value = GameRepository.getOne(accessToken, id)
         }
     }
 
-    override fun remove(accessToken: String, id: String) {
+    fun save(accessToken: String, model: Game) {
         viewModelScope.launch {
-            responseOne.value = GameRepository.remove(accessToken, id)
+            responseOne.value = GameRepository.save(accessToken, model)
         }
     }
 
-    override fun edit(accessToken: String, id: String, newModel: Game) {
-        viewModelScope.launch {
-            responseOne.value = GameRepository.edit(accessToken, id, newModel)
-        }
-    }
 }
