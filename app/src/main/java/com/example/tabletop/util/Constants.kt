@@ -16,7 +16,9 @@ const val USER_API_ENDPOINT = "users/"
 
 const val USER_API_ENDPOINT_REGISTER = "auth/users/"
 
-const val USER_API_ENDPOINT_LOGIN = "auth/jwt/create/"
+const val USER_API_ENDPOINT_LOGIN = "auth/token/login/"
+
+const val USER_API_ENDPOINT_LOGOUT = "auth/token/logout/"
 
 const val USER_API_ENDPOINT_PROFILE = "profiles/"
 
@@ -25,8 +27,6 @@ const val USER_API_ENDPOINT_MY_PROFILE = "profiles/me/"
 const val USER_API_ENDPOINT_EVENT_PARTICIPATION = "participation/"
 
 const val USER_API_ENDPOINT_CREATE_PROFILE = "profiles/"
-
-const val USER_API_ENDPOINT_REFRESH_TOKEN = "auth/jwt/refresh/"
 
 // GAME API
 const val GAME_API_ENDPOINT = "games/"

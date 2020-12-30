@@ -40,7 +40,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val (username, password) = if (isError) "error" to "error" else "testo345" to "qwqwqwqW1$"
+        val (username, password) = if (isError) "error" to "error" else "testo346" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
@@ -100,11 +100,10 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
                 val body = response.body()!!
                 withContext(Dispatchers.Default) {
                     settingsManager.run {
-                        setUserAccessToken(body.access)
-                        setUserRefreshToken(body.refresh)
+                        setUserAccessToken(body.auth_token)
+                        setUserId(body.user_id)
                     }
                 }
-
                 start<MainActivity>()
                 finish()
             }

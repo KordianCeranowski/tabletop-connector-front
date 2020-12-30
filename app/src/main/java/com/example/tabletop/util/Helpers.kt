@@ -160,8 +160,8 @@ fun getMockAddress(): Address {
 
 fun getMockAddressSimple(): AddressSimple {
     return AddressSimple(
-        21.0,
-        37.0
+        54.513857,
+        18.527448
     )
 }
 
@@ -221,7 +221,7 @@ fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
         """.trimMargin()
 }
 
-fun <T> Response<T>.status(): String = "${this.message()}\n"
+fun <T> Response<T>.status(): String = "${this.code()} ${this.message()}\n"
 
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string()

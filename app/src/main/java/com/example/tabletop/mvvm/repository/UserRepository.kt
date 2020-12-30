@@ -38,16 +38,16 @@ object UserRepository : Repository<User>() {
         return userApi.editProfile(accessToken, id, profile)
     }
 
-    suspend fun getNewAccessToken(refreshToken: RefreshRequest): Response<RefreshResponse> {
-        return userApi.getNewAccessToken(refreshToken)
-    }
-
     suspend fun login(loginRequest: LoginRequest): Response<LoginResponse> {
         return userApi.login(loginRequest)
     }
 
     suspend fun register(registerRequest: RegisterRequest): Response<User> {
         return userApi.register(registerRequest)
+    }
+
+    suspend fun logout(accessToken: String): Response<Unit> {
+        return userApi.logout(accessToken)
     }
 
 }

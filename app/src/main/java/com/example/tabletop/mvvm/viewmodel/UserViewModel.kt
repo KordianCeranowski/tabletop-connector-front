@@ -20,11 +20,11 @@ object UserViewModel : BaseViewModel<User>() {
 
     val responseEditProfile = SingleLiveEvent<Response<Profile>>()
 
-    val responseAccessToken = SingleLiveEvent<Response<RefreshResponse>>()
+    val responseLogout = SingleLiveEvent<Response<Unit>>()
 
-    fun getNewAccessToken(refreshRequest: RefreshRequest) {
+    fun logout(accessToken: String) {
         viewModelScope.launch {
-            responseAccessToken.value = UserRepository.getNewAccessToken(refreshRequest)
+            responseLogout.value = UserRepository.logout(accessToken)
         }
     }
 

@@ -44,6 +44,11 @@ interface UserApi {
         @Body registerRequest: RegisterRequest
     ): Response<User>
 
+    @POST(USER_API_ENDPOINT_LOGOUT)
+    suspend fun logout(
+        @Header("Authorization") auth: String,
+    ): Response<Unit>
+
     // PROFILE
     @GET(USER_API_ENDPOINT_MY_PROFILE)
     suspend fun getMyProfile(
@@ -62,9 +67,4 @@ interface UserApi {
         @Path("id") id: String,
         @Body profile: Profile
     ): Response<Profile>
-
-    @POST(USER_API_ENDPOINT_REFRESH_TOKEN)
-    suspend fun getNewAccessToken(
-        @Body refreshToken: RefreshRequest
-    ): Response<RefreshResponse>
 }

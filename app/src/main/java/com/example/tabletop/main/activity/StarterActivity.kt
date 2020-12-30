@@ -45,54 +45,15 @@ class StarterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             settingsManager.run {
                 val isFirstRun = isFirstRunFlow.first().also {
-                    logV("isFirstRun: [$it]")
+                    logV("Initial isFirstRun: [$it]")
                 }
-                val refreshToken = userRefreshTokenFlow.first().also {
-                    logV("Refresh token: [$it]")
+                val accessToken = userAccessTokenFlow.first().also {
+                    logV("Initial access token: [$it]")
                 }
 
-                if (refreshToken.isEmpty()) {
-                    startProperActivity(isFirstRun)
-                } else {
-                    attachObserver(isFirstRun)
-                    retrieveRefreshToken(refreshToken)
-                }
+                startProperActivity(isFirstRun, accessToken)
             }
         }
-    }
-
-    private fun attachObserver(isFirstRun: Boolean) {
-        UserViewModel.responseAccessToken.observe(this) { handleResponse(it, isFirstRun) }
-    }
-
-    private fun retrieveRefreshToken(refreshToken: String) {
-        UserViewModel.getNewAccessToken(RefreshRequest(refreshToken))
-    }
-
-    private fun handleResponse(response: Response<RefreshResponse>, isFirstRun: Boolean) {
-        val onSuccess = {
-            logD(response.status())
-            lifecycleScope.launch {
-                val responseAccessToken = response.body()!!.access
-                withContext(Dispatchers.Default) {
-                    settingsManager.setUserAccessToken(responseAccessToken)
-                }
-                val settingsAccessToken = settingsManager.userAccessTokenFlow.first()
-                logV("Settings Access Token: $settingsAccessToken")
-                startProperActivity(isFirstRun, settingsAccessToken)
-                finish()
-            }
-        }
-
-        val onFailure = {
-            logW(response.status())
-            logW(response.getErrorBodyProperties().toString())
-
-            start<LoginActivity>()
-            finish()
-        }
-
-        response.resolve(onSuccess, onFailure)
     }
 
     override fun onStart() {
@@ -100,7 +61,7 @@ class StarterActivity : AppCompatActivity() {
         setVisible(true)
     }
 
-    private fun startProperActivity(isFirstRun: Boolean, accessToken: String = "") {
+    private fun startProperActivity(isFirstRun: Boolean, accessToken: String) {
         logI("Starting proper activity")
         val javaClass = when {
             isFirstRun -> RegisterActivity::class
@@ -115,10 +76,12 @@ class StarterActivity : AppCompatActivity() {
     // DEVELOPMENT ONLY
     private fun resetSettings() {
         lifecycleScope.launch {
-            settingsManager.run {
-                setIsFirstRun(true)
-                setUserAccessToken("")
-                setUserRefreshToken("")
+            withContext(Dispatchers.Default) {
+                settingsManager.run {
+                    setIsFirstRun(true)
+                    setUserAccessToken("")
+                    setUserId("")
+                }
             }
         }
     }

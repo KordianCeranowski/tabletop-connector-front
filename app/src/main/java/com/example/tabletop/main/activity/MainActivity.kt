@@ -4,22 +4,24 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.main.fragment.*
+import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.className
-import com.example.tabletop.util.startWithExtra
-import com.livinglifetechway.k4kotlin.core.shortToast
+import com.example.tabletop.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import net.alexandroid.utils.mylogkt.logD
+import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logI
+import net.alexandroid.utils.mylogkt.logW
+import retrofit2.Response
 import splitties.activities.start
-import splitties.fragmentargs.arg
 import splitties.toast.UnreliableToastApi
+import splitties.toast.toast
 
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
@@ -57,6 +59,8 @@ class MainActivity : BaseActivity() {
         setup()
 
         setupSidebar()
+
+        attachObserverLogout()
 
         val bundleAllEvents = Bundle().apply { putBoolean("IS_ALL_EVENTS", true) }
         val bundleMyEvents = Bundle().apply { putBoolean("IS_ALL_EVENTS", false) }
@@ -113,13 +117,37 @@ class MainActivity : BaseActivity() {
 
     private fun logout() {
         lifecycleScope.launch {
-            settingsManager.run {
-                setIsUserLoggedIn(false)
-                setUserAccessToken("")
-                setUserRefreshToken("")
+            val accessToken = settingsManager.userAccessTokenFlow.first()
+            UserViewModel.logout(accessToken)
+            start<LoginActivity>()
+            finish()
+        }
+    }
+
+    private fun attachObserverLogout() {
+        UserViewModel.responseLogout.observe(this) { handleResponse(it) }
+    }
+
+    private fun handleResponse(response: Response<Unit>) {
+        val onSuccess = {
+            lifecycleScope.launch {
+                withContext(Dispatchers.Default) {
+                    settingsManager.run {
+                        setUserAccessToken("")
+                        setUserId("")
+                    }
+                }
+                logI("Logged out successfully")
+                toast("Logged out")
             }
         }
-        start<LoginActivity>()
-        finish()
+
+        val onFailure = {
+            logW(response.getFullResponse())
+            logW(response.getErrorBodyProperties().toString())
+            toast("Something went wrong with logging out")
+        }
+
+        response.resolve(onSuccess, onFailure)
     }
 }

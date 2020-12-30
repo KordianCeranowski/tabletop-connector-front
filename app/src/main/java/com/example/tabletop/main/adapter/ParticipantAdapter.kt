@@ -19,8 +19,14 @@ class ParticipantAdapter : RecyclerView.Adapter<ParticipantAdapter.MyViewHolder>
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(user: User) {
             itemView.apply {
-                row_participant_name.text = user.username
-                //row_participant_profile_picture.setImageURI(Uri.parse(user.profile.avatar))
+                row_participant_name.text =
+                    StringBuilder()
+                        .append(user.profile.firstname)
+                        .append(" ")
+                        .append(user.profile.lastname)
+                        .toString()
+
+                row_participant_profile_picture.setImageURI(Uri.parse(user.profile.avatar))
             }
 
             itemView.setOnClickListener {

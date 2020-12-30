@@ -1,20 +1,24 @@
 package com.example.tabletop.main.activity
 
 import android.os.Bundle
-import android.text.Layout
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityEventBinding
 import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.model.User
+import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.EXTRA_EVENT
 import com.example.tabletop.util.className
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
-import net.alexandroid.utils.mylogkt.logI
+import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import java.io.Serializable
 
@@ -23,9 +27,24 @@ class EventActivity : BaseActivity() {
 
     override val binding: ActivityEventBinding by viewBinding()
 
+    private lateinit var settingsManager: SettingsManager
+
+    private lateinit var passedEvent: Event
+
+    private lateinit var userId: String
+
     override fun setup() {
         binding
+        settingsManager = SettingsManager(applicationContext)
         setActionBarTitle("Event")
+
+        passedEvent = intent.getSerializableExtra(EXTRA_EVENT) as Event
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.Default) {
+                userId = settingsManager.userIdFlow.first()
+            }
+        }
     }
 
     private fun setActionBarTitle(title: String) {
@@ -33,15 +52,15 @@ class EventActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // if (userId.isEmpty()) { // dunno how to do this
+        if (userId == passedEvent.creator.id) {
             menuInflater.inflate(R.menu.event_info_menu, menu)
-        // }
+        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mi_event_edit -> logD("Edit event")//start<EventEditActivity>()
+            R.id.mi_event_edit -> start<EventEditActivity>()
         }
         return true
     }
@@ -49,8 +68,6 @@ class EventActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
-
-        val passedEvent = intent.getSerializableExtra(EXTRA_EVENT) as Event
 
         val bundle = Bundle().apply { putSerializable(EXTRA_EVENT, passedEvent as Serializable) }
 

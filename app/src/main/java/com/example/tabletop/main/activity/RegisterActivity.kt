@@ -42,7 +42,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     // DEVELOPMENT ONLY
     private fun fillForm() {
         binding.registerEtEmail.value = "test@test.test"
-        binding.registerEtUsername.value = "testo345"
+        binding.registerEtUsername.value = "testo350"
         binding.registerEtFirstname.value = "firstname"
         binding.registerEtLastname.value = "lastname"
         binding.registerEtPassword.value = "qwqwqwqW1$"
@@ -181,6 +181,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
             }
 
             logW(response.getFullResponse())
+            logW(errorBodyProperties.toString())
             toast("Something went wrong REGISTER")
 
             val errors = mapOf(
@@ -207,13 +208,12 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
         val onSuccess = {
             lifecycleScope.launch {
-                response.body()?.let {
-                    withContext(Dispatchers.Default) {
-                        settingsManager.run {
-                            setIsFirstRun(false)
-                            setUserAccessToken(it.access)
-                            setUserRefreshToken(it.refresh)
-                        }
+                val body = response.body()!!
+                withContext(Dispatchers.Default) {
+                    settingsManager.run {
+                        setIsFirstRun(false)
+                        setUserAccessToken(body.auth_token)
+                        setUserId(body.user_id)
                     }
                 }
                 start<MainActivity>()
@@ -226,6 +226,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
                 errorBodyProperties = response.getErrorBodyProperties()
             }
             toast("Something went wrong LOGIN")
+            logI(response.getFullResponse())
             logI("Error body: $errorBodyProperties")
         }
 

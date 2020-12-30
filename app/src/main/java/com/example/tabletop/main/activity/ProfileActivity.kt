@@ -1,5 +1,6 @@
 package com.example.tabletop.main.activity
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +23,7 @@ import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
+import splitties.activities.start
 
 @Suppress("COMPATIBILITY_WARNING")
 class ProfileActivity : BaseActivity() {
@@ -53,7 +55,7 @@ class ProfileActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mi_profile_edit -> logD("Edit profile")//start<ProfileEditActivity>()
+            R.id.mi_profile_edit -> start<ProfileEditActivity>()
         }
         return true
     }
@@ -78,7 +80,6 @@ class ProfileActivity : BaseActivity() {
         if (profileId.isEmpty()) {
             UserViewModel.getMyProfile(accessToken)
         } else {
-            //todo: test
             UserViewModel.getProfile(accessToken, profileId)
         }
     }
@@ -86,14 +87,14 @@ class ProfileActivity : BaseActivity() {
     private fun handleResponse(response: Response<Profile>){
         val onSuccess = {
             val profile = response.body()!!
-            logI(profile.toString())
             binding.tvProfileFullname.text =
                 StringBuilder()
                     .append(profile.firstname)
                     .append(" ")
                     .append(profile.lastname)
                     .toString()
-            //binding.ivProfileAvatar.setImageURI(Uri.parse(profile.avatar))
+
+            binding.ivProfileAvatar.setImageURI(Uri.parse(profile.avatar))
         }
 
         val onFailure = {
