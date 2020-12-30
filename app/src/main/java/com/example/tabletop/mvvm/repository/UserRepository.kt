@@ -7,22 +7,6 @@ import retrofit2.Response
 
 object UserRepository : Repository<User>() {
 
-    suspend fun login(loginRequest: LoginRequest): Response<LoginResponse> {
-        return userApi.login(loginRequest)
-    }
-
-    suspend fun register(registerRequest: RegisterRequest): Response<User> {
-        return userApi.register(registerRequest)
-    }
-
-    suspend fun getProfile(accessToken: String): Response<Profile> {
-        return userApi.getProfile(accessToken)
-    }
-
-    suspend fun editProfile(accessToken: String, id: String, profile: Profile) : Response<Profile>{
-        return userApi.editProfile(accessToken, id, profile)
-    }
-
     override suspend fun getMany(sort: String, order: String): Response<Many<User>> {
         return userApi.getMany(sort, order)
     }
@@ -41,5 +25,25 @@ object UserRepository : Repository<User>() {
 
     override suspend fun edit(id: String, model: User): Response<User> {
         return userApi.edit(id, model)
+    }
+
+    suspend fun login(loginRequest: LoginRequest): Response<LoginResponse> {
+        return userApi.login(loginRequest)
+    }
+
+    suspend fun register(registerRequest: RegisterRequest): Response<User> {
+        return userApi.register(registerRequest)
+    }
+
+    suspend fun getProfile(accessToken: String): Response<Profile> {
+        return userApi.getProfile(accessToken)
+    }
+
+    suspend fun editProfile(accessToken: String, id: String, profile: Profile) : Response<Profile>{
+        return userApi.editProfile(accessToken, id, profile)
+    }
+
+    suspend fun getNewAccessToken(refreshToken: RefreshRequest): Response<RefreshResponse> {
+        return userApi.getNewAccessToken(refreshToken)
     }
 }

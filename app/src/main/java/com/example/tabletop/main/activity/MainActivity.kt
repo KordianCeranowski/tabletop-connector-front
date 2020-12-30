@@ -30,7 +30,7 @@ class MainActivity : BaseActivity() {
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
-        //logI("Starting ${this.className}")
+        logI("Starting ${this.className}")
     }
 
     private fun setupSidebar() {
@@ -40,7 +40,7 @@ class MainActivity : BaseActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

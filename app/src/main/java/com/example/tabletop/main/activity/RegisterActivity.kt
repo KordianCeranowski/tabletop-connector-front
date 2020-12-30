@@ -52,6 +52,8 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
         fillForm()
 
+        attachObservers()
+
         binding.btnRegister.setOnClickListener {
             val email = binding.registerEtEmail.value
             val username = binding.registerEtUsername.value
@@ -61,7 +63,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
             val firstname = binding.registerEtFirstname.value
             val lastname = binding.registerEtLastname.value
 
-            val profile = Profile(firstname, lastname)
+            val profile = ProfileSimple(firstname, lastname)
             val form = RegisterForm(email, username, password, confirmPassword, profile)
 
             logD(form.toString())
@@ -147,20 +149,15 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         }
     }
 
-
-    // ------------------------- REGISTER -----------------------------
+    private fun attachObservers() {
+        UserViewModel.run {
+            responseOne.observe(this@RegisterActivity) { handleResponseRegister(it) }
+            responseLogin.observe(this@RegisterActivity) { handleResponseLogin(it) }
+        }
+    }
 
     private fun registerUser(registerRequest: RegisterRequest) {
-        var isAlreadyHandled = false
-        UserViewModel.run {
-            register(registerRequest)
-            responseOne.observe(this@RegisterActivity) {
-                if (!(isAlreadyHandled)) {
-                    isAlreadyHandled = true
-                    handleResponseRegister(it)
-                }
-            }
-        }
+        UserViewModel.register(registerRequest)
     }
 
     private fun handleResponseRegister(response: Response<User>) {
@@ -176,7 +173,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         }
 
         val onFailure = {
-            if (!(this@RegisterActivity::errorBodyProperties.isInitialized)) {
+            if (!(this::errorBodyProperties.isInitialized)) {
                 errorBodyProperties = response.getErrorBodyProperties()
             }
 
@@ -198,21 +195,9 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         response.resolve(onSuccess, onFailure)
     }
 
-
-    // ------------------------- LOGIN -----------------------------
-
     private fun loginUser(loginRequest: LoginRequest) {
-        var isAlreadyHandled = false
-        UserViewModel.run {
-            logD(loginRequest.toString())
-            login(loginRequest)
-            responseLogin.observe(this@RegisterActivity) {
-                if (!(isAlreadyHandled)) {
-                    isAlreadyHandled = true
-                    handleResponseLogin(it)
-                }
-            }
-        }
+        logD(loginRequest.toString())
+        UserViewModel.login(loginRequest)
     }
 
     private fun handleResponseLogin(response: Response<LoginResponse>) {
@@ -222,20 +207,19 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
                 response.body()?.let {
                     withContext(Dispatchers.Default) {
                         settingsManager.run {
-                            setIsUserLoggedIn(true)
                             setIsFirstRun(false)
                             setUserAccessToken(it.access)
                             setUserRefreshToken(it.refresh)
                         }
                     }
                 }
+                start<MainActivity>()
+                finish()
             }
-            start<MainActivity>()
-            finish()
         }
 
         val onFailure = {
-            if (!(this@RegisterActivity::errorBodyProperties.isInitialized)) {
+            if (!(this::errorBodyProperties.isInitialized)) {
                 errorBodyProperties = response.getErrorBodyProperties()
             }
             toast("Something went wrong LOGIN")

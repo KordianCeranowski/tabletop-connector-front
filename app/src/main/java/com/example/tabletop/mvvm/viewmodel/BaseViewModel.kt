@@ -4,13 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tabletop.mvvm.model.Model
 import com.example.tabletop.mvvm.model.helpers.Many
+import com.example.tabletop.util.SingleLiveEvent
 import retrofit2.Response
 
 abstract class BaseViewModel<T : Model> : ViewModel() {
 
-    val responseOne = MutableLiveData<Response<T>>()
+    val responseOne = SingleLiveEvent<Response<T>>()
 
-    val responseMany = MutableLiveData<Response<Many<T>>>()
+    val responseMany = SingleLiveEvent<Response<Many<T>>>()
 
     abstract fun getMany(sort: String, order: String)
 

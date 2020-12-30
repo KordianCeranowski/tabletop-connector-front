@@ -8,28 +8,6 @@ import retrofit2.http.*
 
 interface UserApi {
 
-    @POST(USER_API_ENDPOINT_LOGIN)
-    suspend fun login(
-        @Body loginRequest: LoginRequest
-    ): Response<LoginResponse>
-
-    @POST(USER_API_ENDPOINT_REGISTER)
-    suspend fun register(
-        @Body registerRequest: RegisterRequest
-    ): Response<User>
-
-    @GET(USER_API_ENDPOINT_MY_PROFILE)
-    suspend fun getProfile(
-        @Header("Authorization") auth: String
-    ): Response<Profile>
-
-    @PATCH("$USER_API_ENDPOINT_CREATE_PROFILE{id}")
-    suspend fun editProfile(
-        @Header("Authorization") auth: String,
-        @Path("id") id: String,
-        @Body profile: Profile
-    ): Response<Profile>
-
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
         @Query("_sort") sort: String,
@@ -57,4 +35,31 @@ interface UserApi {
         @Path("id") id: String,
         @Body user: User
     ): Response<User>
+
+    @POST(USER_API_ENDPOINT_LOGIN)
+    suspend fun login(
+        @Body loginRequest: LoginRequest
+    ): Response<LoginResponse>
+
+    @POST(USER_API_ENDPOINT_REGISTER)
+    suspend fun register(
+        @Body registerRequest: RegisterRequest
+    ): Response<User>
+
+    @GET(USER_API_ENDPOINT_MY_PROFILE)
+    suspend fun getProfile(
+        @Header("Authorization") auth: String
+    ): Response<Profile>
+
+    @PATCH("$USER_API_ENDPOINT_CREATE_PROFILE{id}")
+    suspend fun editProfile(
+        @Header("Authorization") auth: String,
+        @Path("id") id: String,
+        @Body profile: Profile
+    ): Response<Profile>
+
+    @POST(USER_API_ENDPOINT_REFRESH_TOKEN)
+    suspend fun getNewAccessToken(
+        @Body refreshToken: RefreshRequest
+    ): Response<RefreshResponse>
 }

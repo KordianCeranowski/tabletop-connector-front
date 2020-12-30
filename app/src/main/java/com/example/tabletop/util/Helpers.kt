@@ -205,7 +205,7 @@ fun <T> Response<T>.status(): String = "${this.message()}\n"
 
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string().also {
-        //logI("Error body: ${it.toString()}")
+        logI("Error body: ${it.toString()}")
     }
     val json = gson.fromJson(errorBodyString, JsonObject::class.java)
 

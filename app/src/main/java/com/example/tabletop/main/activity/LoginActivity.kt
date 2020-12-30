@@ -51,15 +51,16 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
         fillForm()
 
+        attachObserver()
+
         binding.btnLogin.setOnClickListener {
             val username = binding.loginEtUsername.value
             val password = binding.loginEtPassword.value
 
-            val loginForm = LoginRequest(username, password)
+            val loginRequest = LoginRequest(username, password)
 
-            if (isFormValid(loginForm)) {
-                //logD("All fields are valid")
-                loginUser(loginForm)
+            if (isFormValid(loginRequest)) {
+                loginUser(loginRequest)
             } else {
                 toast("Please correct invalid fields")
             }
@@ -84,40 +85,33 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         return areFieldsValid
     }
 
+    private fun attachObserver() {
+        UserViewModel.responseLogin.observe(this) { handleResponse(it) }
+    }
+
     private fun loginUser(loginRequest: LoginRequest) {
-        var isAlreadyHandled = false
-        UserViewModel.run {
-            login(loginRequest)
-            responseLogin.observe(this@LoginActivity) {
-                if (!(isAlreadyHandled)) {
-                    isAlreadyHandled = true
-                    handleResponse(it) }
-                }
-        }
+        UserViewModel.login(loginRequest)
     }
 
     private fun handleResponse(response: Response<LoginResponse>) {
-
         val onSuccess = {
             logD(response.status())
             lifecycleScope.launch {
-                response.body()?.let {
-                    withContext(Dispatchers.Default) {
-                        settingsManager.run {
-                            setIsUserLoggedIn(true)
-                            setUserAccessToken(it.access)
-                            setUserRefreshToken(it.refresh)
-                        }
+                val body = response.body()!!
+                withContext(Dispatchers.Default) {
+                    settingsManager.run {
+                        setUserAccessToken(body.access)
+                        setUserRefreshToken(body.refresh)
                     }
                 }
-                logD("[SUCCESS] Done setting access token")
+
                 start<MainActivity>()
                 finish()
             }
         }
 
         val onFailure = {
-            if (!(this@LoginActivity::errorBodyProperties.isInitialized)) {
+            if (!(this::errorBodyProperties.isInitialized)) {
                 errorBodyProperties = response.getErrorBodyProperties()
             }
 

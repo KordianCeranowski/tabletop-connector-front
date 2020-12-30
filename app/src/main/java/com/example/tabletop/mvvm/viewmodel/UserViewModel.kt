@@ -1,10 +1,10 @@
 package com.example.tabletop.mvvm.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.repository.UserRepository
+import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
@@ -12,11 +12,19 @@ import retrofit2.Response
 @Suppress("ObjectPropertyName")
 object UserViewModel : BaseViewModel<User>() {
 
-    val responseLogin = MutableLiveData<Response<LoginResponse>>()
+    val responseLogin = SingleLiveEvent<Response<LoginResponse>>()
 
-    val responseGetProfile = MutableLiveData<Response<Profile>>()
+    val responseGetProfile = SingleLiveEvent<Response<Profile>>()
 
-    val responseCreateProfile = MutableLiveData<Response<Profile>>()
+    val responseCreateProfile = SingleLiveEvent<Response<Profile>>()
+
+    val responseAccessToken = SingleLiveEvent<Response<RefreshResponse>>()
+
+    fun getNewAccessToken(refreshRequest: RefreshRequest) {
+        viewModelScope.launch {
+            responseAccessToken.value = UserRepository.getNewAccessToken(refreshRequest)
+        }
+    }
 
     fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {

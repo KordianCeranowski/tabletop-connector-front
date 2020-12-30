@@ -1,13 +1,12 @@
 package com.example.tabletop.main.activity
 
-import android.Manifest
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.location.Geocoder
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.databinding.ActivityEventFormBinding
@@ -17,12 +16,12 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import im.delight.android.location.SimpleLocation
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
-import splitties.permissions.hasPermission
 import splitties.permissions.requestPermission
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
@@ -50,16 +49,14 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
         logI("Opened EventFormActivity.OnCreate")
 
-        binding.tvEventDate.setOnClickListener{ handleDateClick() }
-        binding.tvEventTime.setOnClickListener{ handleTimeClick() }
-        binding.tvEventAddress.setOnClickListener{ handleAddressClick() }
-        binding.tvEventGames.setOnClickListener{ handleGamesClick() }
-
+        binding.tvEventDate.setOnClickListener { handleDateClick() }
+        binding.tvEventTime.setOnClickListener { handleTimeClick() }
+        binding.tvEventAddress.setOnClickListener { handleAddressClick() }
+        binding.tvEventGames.setOnClickListener { handleGamesClick() }
 
         lifecycleScope.launch {
-            settingsManager.userAccessTokenFlow
-                .asLiveData()
-                .observe(this@EventFormActivity) { saveEvent(it, getMockEvent()) }
+            val accessToken = settingsManager.userAccessTokenFlow.first()
+            saveEvent(accessToken, getMockEvent())
         }
     }
 
@@ -78,6 +75,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         dpd.show()
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun handleTimeClick() {
         logI("Clicked Time")
 

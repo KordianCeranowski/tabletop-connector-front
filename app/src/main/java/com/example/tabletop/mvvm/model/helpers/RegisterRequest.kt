@@ -6,5 +6,5 @@ data class RegisterRequest(
     val email: String,
     val username: String,
     val password: String,
-    val profile: Profile
+    val profile: ProfileSimple
 ) : Serializable

@@ -3,24 +3,21 @@ package com.example.tabletop.main.fragment
 import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventInfoBinding
-import com.example.tabletop.main.activity.MainActivity
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.model.helpers.LoginResponse
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.className
 import com.example.tabletop.util.resolve
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
-import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 
+@Suppress("COMPATIBILITY_WARNING")
 @UnreliableToastApi
 class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
@@ -30,13 +27,12 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     fun setup() {
         settingsManager = SettingsManager(requireContext())
+        //logI("Starting ${this.className}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
-
-        logI("Created ${this.className}")
 
         val event = arguments?.getSerializable("EVENT") as Event
 
@@ -44,20 +40,25 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         binding.tvEventCreator.text = event.creator.username
         binding.tvEventDate.text = event.date
 
+        attachObserver()
+
         binding.btnJoinEvent.setOnClickListener {
-            settingsManager
-                .userAccessTokenFlow
-                .asLiveData().observe(viewLifecycleOwner) { accessToken ->
-                    EventViewModel.run {
-                        joinOrLeaveEvent(accessToken, event.id)
-                        responseJoinOrLeaveEvent.observe(viewLifecycleOwner) { handleResponse(it) }
-                    }
-                }
+            lifecycleScope.launch {
+                val accessToken = settingsManager.userAccessTokenFlow.first()
+                joinOrLeaveEvent(accessToken, event.id)
+            }
         }
     }
 
-    private fun handleResponse(response: Response<Unit>) {
+    private fun attachObserver() {
+        EventViewModel.responseJoinOrLeaveEvent.observe(viewLifecycleOwner) { handleResponse(it) }
+    }
 
+    private fun joinOrLeaveEvent(accessToken: String, eventId: String) {
+        EventViewModel.joinOrLeaveEvent(accessToken, eventId)
+    }
+
+    private fun handleResponse(response: Response<Unit>) {
         val onSuccess = {
             toast("Joined/left an event")
         }

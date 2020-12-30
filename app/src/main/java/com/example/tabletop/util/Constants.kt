@@ -19,7 +19,7 @@ const val USER_API_ENDPOINT_EVENT_PARTICIPATION = "participation/"
 
 const val USER_API_ENDPOINT_CREATE_PROFILE = "profiles/"
 
-const val USER_API_ENDPOINT_REFRESH_TOKEN = "/auth/jwt/refresh/"
+const val USER_API_ENDPOINT_REFRESH_TOKEN = "auth/jwt/refresh/"
 
 // GAME API
 const val GAME_API_ENDPOINT = "games/"

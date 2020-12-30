@@ -7,5 +7,5 @@ data class RegisterForm(
     val username: String,
     val password: String,
     val confirmPassword: String,
-    val profile: Profile
+    val profile: ProfileSimple
 ) : Serializable

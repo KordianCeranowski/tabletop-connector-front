@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.repository.*
+import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
 object EventViewModel : BaseViewModel<Event>(), IViewModelSave<Event> {
 
-    val responseJoinOrLeaveEvent = MutableLiveData<Response<Unit>>()
+    val responseJoinOrLeaveEvent = SingleLiveEvent<Response<Unit>>()
 
     override fun getMany(sort: String, order: String) {
         viewModelScope.launch {

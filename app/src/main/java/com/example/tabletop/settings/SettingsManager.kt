@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import net.alexandroid.utils.mylogkt.logI
 
@@ -23,6 +24,7 @@ class SettingsManager(context: Context) {
 
     val userRefreshTokenFlow: Flow<String> = getFlow { it[USER_REFRESH_TOKEN] ?: ""  }
 
+    // todo: remove
     val isUserLoggedInFlow: Flow<Boolean> = getFlow { it[IS_USER_LOGGED_IN] ?: false }
 
     val userLongitudeFlow: Flow<Int> = getFlow { it[USER_LONGITUDE] ?: 0  }
@@ -39,7 +41,7 @@ class SettingsManager(context: Context) {
 
     suspend fun setUserAccessToken(userAccessToken: String) {
         dataStore.edit { preferences ->
-            val accessToken = "JWT $userAccessToken"
+            val accessToken = if (userAccessToken.isEmpty()) "" else "JWT $userAccessToken"
             preferences[USER_ACCESS_TOKEN] = accessToken.also {
                 logI("accessToken : \"$it\"")
             }
@@ -48,8 +50,7 @@ class SettingsManager(context: Context) {
 
     suspend fun setUserRefreshToken(userRefreshToken: String) {
         dataStore.edit { preferences ->
-            val refreshToken = "JWT $userRefreshToken"
-            preferences[USER_REFRESH_TOKEN] = refreshToken.also {
+            preferences[USER_REFRESH_TOKEN] = userRefreshToken.also {
                 logI("refreshToken : \"$it\"")
             }
         }
