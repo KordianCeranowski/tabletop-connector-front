@@ -39,7 +39,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     // DEVELOPMENT ONLY
     private fun fillForm() {
         binding.registerEtEmail.value = "test@test.test"
-        binding.registerEtUsername.value = "test2137"
+        binding.registerEtUsername.value = "testo345"
         binding.registerEtFirstname.value = "firstname"
         binding.registerEtLastname.value = "lastname"
         binding.registerEtPassword.value = "qwqwqwqW1$"

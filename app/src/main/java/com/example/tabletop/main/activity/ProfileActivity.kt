@@ -9,11 +9,13 @@ import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.getErrorBodyProperties
+import com.example.tabletop.util.getFullResponse
 import com.example.tabletop.util.resolve
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
+import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 
 @Suppress("COMPATIBILITY_WARNING")
@@ -61,7 +63,6 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun handleResponse(response: Response<Profile>){
-
         val onSuccess = {
             val profile = response.body()!!
             logI(profile.toString())
@@ -70,11 +71,10 @@ class ProfileActivity : BaseActivity() {
             binding.tvProfileId.text = profile.id
             //binding.ivProfileAvatar.setImageURI(Uri.parse(profile.avatar))
 
-            logI("Pobrano dane profilu")
         }
 
         val onFailure = {
-            logE("Pobieranie profilu nie działa, najpewniej nie jestes zalogowany")
+            logW(response.getFullResponse())
             response.getErrorBodyProperties()
         }
 

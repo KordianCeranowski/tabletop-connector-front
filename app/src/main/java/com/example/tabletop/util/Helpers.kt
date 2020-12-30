@@ -1,3 +1,5 @@
+@file:Suppress("MoveVariableDeclarationIntoWhen")
+
 package com.example.tabletop.util
 
 import android.app.Activity
@@ -5,17 +7,15 @@ import android.content.Context
 import android.content.Intent
 import android.widget.EditText
 import androidx.activity.ComponentActivity
-import androidx.viewbinding.ViewBinding
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.Profile
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import com.livinglifetechway.k4kotlin.core.value
+import com.google.gson.*
 import net.alexandroid.utils.mylogkt.logI
+import net.alexandroid.utils.mylogkt.logW
+import org.json.JSONTokener
 import retrofit2.Response
 import java.io.Serializable
 
@@ -175,6 +175,18 @@ fun getMockProfile(): Profile {
 val Any.className: String
     get() = this::class.simpleName as String
 
+fun EditText.setErrorEmpty() {
+    this.error = "Field cannot be empty"
+}
+
+fun EditText.setErrorInvalid(fieldName: String) {
+    this.error = "Please enter a valid $fieldName"
+}
+
+fun EditText.disableError() {
+    this.error = null
+}
+
 // Serializer
 fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
     val body = body()?.let { gson.toJson(body()) }
@@ -189,31 +201,34 @@ fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
         """.trimMargin()
 }
 
-fun EditText.setErrorEmpty() {
-    this.error = "Field cannot be empty"
-}
-
-fun EditText.setErrorInvalid(fieldName: String) {
-    this.error = "Please enter a valid $fieldName"
-}
-
-fun EditText.disableError() {
-    this.error = null
-}
-
 fun <T> Response<T>.status(): String = "${this.message()}\n"
 
 fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
-    val errorBodyString = this.errorBody()?.string().also {
-        logI("Error body: ${it.toString()}")
-    }
-    val json = gson.fromJson(errorBodyString, JsonObject::class.java)
+    val errorBodyString = this.errorBody()?.string()
 
-    return json?.let {
-        val keys = json.keySet().map { it.toString() }
-        val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
-        keys.zip(entries).map { it.first to it.second }.toMap()
-    } ?: emptyMap()
+    val responseBody = JSONTokener(errorBodyString).nextValue()
+
+    return when (responseBody) {
+        is JsonArray -> emptyMap<String, String>().also {
+            logW(responseBody.toString())
+            logW("Response body is JsonArray")
+        }
+        is JsonPrimitive -> emptyMap<String, String>().also {
+            logW("Response body is JsonPrimitive")
+        }
+        is JsonObject -> {
+            val json = gson.fromJson(errorBodyString, JsonObject::class.java)
+
+            json?.let {
+                val keys = json.keySet().map { it.toString() }
+                val entries = keys.map { key -> json[key].toString().removeDoubleQuotes() }
+                keys.zip(entries).map { it.first to it.second }.toMap()
+            } ?: emptyMap()
+        }
+        else -> emptyMap<String, String>().also {
+            logW("Response body is of other type <${responseBody.className}>")
+        }
+    }
 }
 
 fun <T> Response<T>.resolve(onSuccess: () -> Any, onFailure: () -> Any) {
