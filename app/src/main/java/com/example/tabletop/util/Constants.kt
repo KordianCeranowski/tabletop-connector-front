@@ -34,6 +34,8 @@ const val GAME_API_ENDPOINT = "games/"
 // EVENT API
 const val EVENT_API_ENDPOINT = "events/"
 
+const val EVENT_API_ENDPOINT_CUSTOM = "events/search/"
+
 // VALIDATION PATTERN
 enum class ValidationPattern(val value: Pattern) {
     EMAIL(

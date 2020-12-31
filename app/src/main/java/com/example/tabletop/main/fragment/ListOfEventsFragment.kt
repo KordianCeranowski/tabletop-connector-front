@@ -71,9 +71,9 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
         eventViewModel.run {
             //todo change getMany endpoint to events/search/
             if (arguments?.getBoolean("IS_ALL_EVENTS")!!) {
-                getMany(accessToken) //, mapOf("distance" to "1")
+                getMany(accessToken)
             } else {
-                //getMany(accessToken, mapOf())
+                getManyCustom(accessToken, mapOf())
             }
             responseMany.observe(viewLifecycleOwner) { handleResponse(it) }
         }

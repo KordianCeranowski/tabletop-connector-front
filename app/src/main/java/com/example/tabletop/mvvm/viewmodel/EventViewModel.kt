@@ -20,9 +20,15 @@ class EventViewModel : BaseViewModel<Event>() {
         }
     }
 
-    fun getMany(accessToken: String, options: Map<String, String> = emptyMap()) {
+    fun getMany(accessToken: String) {
         viewModelScope.launch {
-            responseMany.value = EventRepository.getMany(accessToken, options)
+            responseMany.value = EventRepository.getMany(accessToken)
+        }
+    }
+
+    fun getManyCustom(accessToken: String, options: Map<String, String>) {
+        viewModelScope.launch {
+            responseMany.value = EventRepository.getCustomMany(accessToken, options)
         }
     }
 

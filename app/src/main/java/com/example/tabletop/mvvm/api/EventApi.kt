@@ -4,14 +4,21 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.util.EVENT_API_ENDPOINT
+import com.example.tabletop.util.EVENT_API_ENDPOINT_CUSTOM
 import com.example.tabletop.util.USER_API_ENDPOINT_EVENT_PARTICIPATION
 import retrofit2.Response
 import retrofit2.http.*
+import java.util.*
 
 interface EventApi {
 
     @GET(EVENT_API_ENDPOINT)
     suspend fun getMany(
+        @Header("Authorization") auth: String
+    ): Response<Many<Event>>
+
+    @GET(EVENT_API_ENDPOINT_CUSTOM)
+    suspend fun getCustomMany(
         @Header("Authorization") auth: String,
         @QueryMap options: Map<String, String>
     ): Response<Many<Event>>

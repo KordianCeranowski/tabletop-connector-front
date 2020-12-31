@@ -8,11 +8,15 @@ import retrofit2.Response
 
 object EventRepository {
 
-    suspend fun getMany(
+    suspend fun getMany(accessToken: String): Response<Many<Event>> {
+        return eventApi.getMany(accessToken)
+    }
+
+    suspend fun getCustomMany(
         accessToken: String,
         options: Map<String, String>
     ): Response<Many<Event>> {
-        return eventApi.getMany(accessToken, options)
+        return eventApi.getCustomMany(accessToken, options)
     }
 
     suspend fun save(accessToken: String, eventRequest: EventRequest): Response<Event> {
