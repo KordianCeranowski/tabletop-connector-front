@@ -12,6 +12,7 @@ import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -27,6 +28,8 @@ import splitties.toast.toast
 class MainActivity : BaseActivity() {
 
     override val binding: ActivityMainBinding by viewBinding()
+
+    private val userViewModel by lazyViewModels { UserViewModel() }
 
     private lateinit var settingsManager: SettingsManager
 
@@ -78,7 +81,6 @@ class MainActivity : BaseActivity() {
             )
         }
 
-
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.mi_profile -> start<ProfileActivity>()
@@ -118,14 +120,14 @@ class MainActivity : BaseActivity() {
     private fun logout() {
         lifecycleScope.launch {
             val accessToken = settingsManager.userAccessTokenFlow.first()
-            UserViewModel.logout(accessToken)
+            userViewModel.logout(accessToken)
             start<LoginActivity>()
             finish()
         }
     }
 
     private fun attachObserverLogout() {
-        UserViewModel.responseLogout.observe(this) { handleResponse(it) }
+        userViewModel.responseLogout.observe(this) { handleResponse(it) }
     }
 
     private fun handleResponse(response: Response<Unit>) {

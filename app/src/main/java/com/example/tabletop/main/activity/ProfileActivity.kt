@@ -10,14 +10,17 @@ import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityProfileBinding
 import com.example.tabletop.mvvm.model.helpers.Profile
+import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.EXTRA_PROFILE_ID
 import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
 import com.example.tabletop.util.resolve
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
@@ -29,6 +32,8 @@ import splitties.activities.start
 class ProfileActivity : BaseActivity() {
 
     override val binding: ActivityProfileBinding by viewBinding()
+
+    private val userViewModel by lazyViewModels { UserViewModel() }
 
     private lateinit var settingsManager: SettingsManager
 
@@ -73,14 +78,14 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun attachObserver() {
-        UserViewModel.responseGetProfile.observe(this) { handleResponse(it) }
+        userViewModel.responseGetProfile.observe(this) { handleResponse(it) }
     }
 
     private fun retrieveProfile(accessToken: String) {
         if (profileId.isEmpty()) {
-            UserViewModel.getMyProfile(accessToken)
+            userViewModel.getMyProfile(accessToken)
         } else {
-            UserViewModel.getProfile(accessToken, profileId)
+            userViewModel.getProfile(accessToken, profileId)
         }
     }
 

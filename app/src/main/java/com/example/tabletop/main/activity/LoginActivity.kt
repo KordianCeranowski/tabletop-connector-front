@@ -11,6 +11,7 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +29,8 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityLoginBinding by viewBinding()
 
+    private val userViewModel by lazyViewModels { UserViewModel() }
+
     override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
@@ -40,7 +43,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val (username, password) = if (isError) "error" to "error" else "testo346" to "qwqwqwqW1$"
+        val (username, password) = if (isError) "error" to "error" else "testo5325" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
@@ -86,11 +89,11 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun attachObserver() {
-        UserViewModel.responseLogin.observe(this) { handleResponse(it) }
+        userViewModel.responseLogin.observe(this) { handleResponse(it) }
     }
 
     private fun loginUser(loginRequest: LoginRequest) {
-        UserViewModel.login(loginRequest)
+        userViewModel.login(loginRequest)
     }
 
     private fun handleResponse(response: Response<LoginResponse>) {

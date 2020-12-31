@@ -14,6 +14,7 @@ import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +31,8 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityRegisterBinding by viewBinding()
 
+    private val userViewModel by lazyViewModels { UserViewModel() }
+
     override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
@@ -42,9 +45,9 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     // DEVELOPMENT ONLY
     private fun fillForm() {
         binding.registerEtEmail.value = "test@test.test"
-        binding.registerEtUsername.value = "testo350"
-        binding.registerEtFirstname.value = "firstname"
-        binding.registerEtLastname.value = "lastname"
+        binding.registerEtUsername.value = "testo5325"
+        binding.registerEtFirstname.value = "Kuba"
+        binding.registerEtLastname.value = "Talar"
         binding.registerEtPassword.value = "qwqwqwqW1$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
@@ -153,14 +156,14 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun attachObservers() {
-        UserViewModel.run {
+        userViewModel.run {
             responseOne.observe(this@RegisterActivity) { handleResponseRegister(it) }
             responseLogin.observe(this@RegisterActivity) { handleResponseLogin(it) }
         }
     }
 
     private fun registerUser(registerRequest: RegisterRequest) {
-        UserViewModel.register(registerRequest)
+        userViewModel.register(registerRequest)
     }
 
     private fun handleResponseRegister(response: Response<User>) {
@@ -201,7 +204,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     private fun loginUser(loginRequest: LoginRequest) {
         logD(loginRequest.toString())
-        UserViewModel.login(loginRequest)
+        userViewModel.login(loginRequest)
     }
 
     private fun handleResponseLogin(response: Response<LoginResponse>) {

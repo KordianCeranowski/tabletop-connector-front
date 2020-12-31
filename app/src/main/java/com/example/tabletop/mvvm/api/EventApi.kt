@@ -40,7 +40,7 @@ interface EventApi {
     ): Response<Event>
 
     @PATCH("$USER_API_ENDPOINT_EVENT_PARTICIPATION{id}/")
-    suspend fun joinOrLeaveEvent(
+    suspend fun participateInEvent(
         @Header("Authorization") auth: String,
         @Path("id") id: String
     ): Response<Unit>

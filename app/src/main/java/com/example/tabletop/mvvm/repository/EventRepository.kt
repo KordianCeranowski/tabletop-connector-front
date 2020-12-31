@@ -31,7 +31,7 @@ object EventRepository {
         return eventApi.edit(id, model)
     }
 
-    suspend fun joinOrLeaveEvent(accessToken: String, id: String): Response<Unit> {
-        return eventApi.joinOrLeaveEvent(accessToken, id)
+    suspend fun participateInEvent(accessToken: String, id: String): Response<Unit> {
+        return eventApi.participateInEvent(accessToken, id)
     }
 }

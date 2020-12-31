@@ -15,8 +15,11 @@ import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
+import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
@@ -30,6 +33,8 @@ import splitties.toast.UnreliableToastApi
 class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
 
     override val binding: FragmentListOfEventsBinding by viewBinding()
+
+    private val eventViewModel by lazyActivityViewModels { EventViewModel() }
 
     private lateinit var settingsManager: SettingsManager
 
@@ -54,15 +59,16 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
         super.onViewCreated(view, savedInstanceState)
         setup()
         setupOnClickListeners()
+    }
 
-        lifecycleScope.launch {
-            val accessToken = settingsManager.userAccessTokenFlow.first()
-            retrieveEvents(accessToken)
-        }
+    override fun onResume() {
+        super.onResume()
+        val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
+        retrieveEvents(accessToken)
     }
 
     private fun retrieveEvents(accessToken: String) {
-        EventViewModel.run {
+        eventViewModel.run {
             //todo change getMany endpoint to events/search/
             if (arguments?.getBoolean("IS_ALL_EVENTS")!!) {
                 getMany(accessToken) //, mapOf("distance" to "1")

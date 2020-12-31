@@ -10,7 +10,7 @@ import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-object GameViewModel : BaseViewModel<Game>() {
+class GameViewModel : BaseViewModel<Game>() {
 
     fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {

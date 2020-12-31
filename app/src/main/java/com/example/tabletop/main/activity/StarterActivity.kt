@@ -45,10 +45,10 @@ class StarterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             settingsManager.run {
                 val isFirstRun = isFirstRunFlow.first().also {
-                    logV("Initial isFirstRun: [$it]")
+                    logV("Initial Is First Run: [$it]")
                 }
                 val accessToken = userAccessTokenFlow.first().also {
-                    logV("Initial access token: [$it]")
+                    logV("Initial Access Token: [$it]")
                 }
 
                 startProperActivity(isFirstRun, accessToken)

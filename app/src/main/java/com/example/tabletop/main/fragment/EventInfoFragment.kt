@@ -1,8 +1,6 @@
 package com.example.tabletop.main.fragment
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import androidx.lifecycle.lifecycleScope
@@ -14,8 +12,13 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
+import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
@@ -30,64 +33,125 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     override val binding: FragmentEventInfoBinding by viewBinding()
 
+    private val eventViewModel by lazyActivityViewModels { EventViewModel() }
+
     private lateinit var settingsManager: SettingsManager
+
+    private lateinit var currentEvent: Event
+
+    private val accessToken: String
+        get() = runBlocking { settingsManager.userAccessTokenFlow.first() }
+
+    private val userId: String
+        get() = runBlocking { settingsManager.userIdFlow.first() }
+
+    private val participantsId: List<String>
+        get() = currentEvent.participants.map { it.id }.also { logV(it.size.toString()) }
 
     fun setup() {
         settingsManager = SettingsManager(requireContext())
         //logI("Starting ${this.className}")
+        currentEvent = arguments?.getSerializable(EXTRA_EVENT) as Event
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
 
-        val passedEvent = arguments?.getSerializable(EXTRA_EVENT) as Event
+        attachObservers()
 
-        binding.tvEventName.text = passedEvent.name
-        binding.tvEventCreator.text = passedEvent.creator.username
-        binding.tvEventDate.text = passedEvent.date
+        setupOnClickListeners()
+    }
 
-        attachObserver()
+    override fun onResume() {
+        super.onResume()
 
-        lifecycleScope.launch {
-            val userId = settingsManager.userIdFlow.first()
-            if (userId == passedEvent.creator.id) {
-                binding.btnJoinEvent.visibility = View.INVISIBLE
+        binding.tvEventName.text = currentEvent.name
+        binding.tvEventCreator.text = currentEvent.creator.username
+        binding.tvEventDate.text = currentEvent.date
+
+        setupBtnJoinEvent()
+    }
+
+    private fun setupBtnJoinEvent() {
+        binding.btnJoinEvent.let { btn ->
+            if (userId == currentEvent.creator.id) {
+                btn.visibility = View.INVISIBLE
             } else {
-                binding.btnJoinEvent.setOnClickListener {
-                    lifecycleScope.launch {
-                        val accessToken = settingsManager.userAccessTokenFlow.first()
-                        joinOrLeaveEvent(accessToken, passedEvent.id)
-                    }
-                }
+                btn.visibility = View.VISIBLE
+                btn.text =
+                    if (participantsId.contains(userId))
+                        "Joined!".also { logI("Participant") }
+                    else
+                        "Join".also { logI("Not participant") }
+            }
+        }
+    }
+
+    private fun setupOnClickListeners() {
+        binding.btnJoinEvent.setOnClickListener {
+            lifecycleScope.launch {
+                val accessToken = settingsManager.userAccessTokenFlow.first()
+                participateInEvent(accessToken, currentEvent.id)
             }
         }
 
         binding.tvEventCreator.setOnClickListener {
             context?.startWithExtra<ProfileActivity>(
-                EXTRA_PROFILE_ID to passedEvent.creator.profile.id
+                EXTRA_PROFILE_ID to currentEvent.creator.profile.id
             )
         }
     }
 
-    private fun attachObserver() {
-        EventViewModel.responseJoinOrLeaveEvent.observe(viewLifecycleOwner) { handleResponse(it) }
+    private fun attachObservers() {
+        eventViewModel.run {
+            responseParticipation.observe(viewLifecycleOwner) {
+                handleResponseParticipation(it)
+            }
+            responseOneParticipation.observe(viewLifecycleOwner) {
+                handleResponseRetrieveEvent(it)
+            }
+        }
     }
 
-    private fun joinOrLeaveEvent(accessToken: String, eventId: String) {
-        EventViewModel.joinOrLeaveEvent(accessToken, eventId)
+    private fun participateInEvent(accessToken: String, eventId: String) {
+        eventViewModel.participateInEvent(accessToken, eventId)
     }
 
-    private fun handleResponse(response: Response<Unit>) {
+    private fun handleResponseParticipation(response: Response<Unit>) {
         val onSuccess = {
-            toast("Joined/left an event")
+            logD(response.status())
+            retrieveEvent(accessToken, currentEvent.id)
         }
 
         val onFailure = {
-            toast("Something went wrong")
+            toast("Something went wrong while joining event")
             logW(response.getFullResponse())
             logI(response.getErrorBodyProperties().toString())
+        }
 
+        response.resolve(onSuccess, onFailure)
+    }
+
+    private fun retrieveEvent(accessToken: String, eventId: String) {
+        eventViewModel.getOneParticipation(accessToken, eventId)
+    }
+
+    private fun handleResponseRetrieveEvent(response: Response<Event>) {
+        val onSuccess = {
+            logD(response.status())
+            currentEvent = response.body()!!
+            binding.btnJoinEvent.text =
+                if (participantsId.contains(userId))
+                    "Joined!".also { logI("Participant") }
+                else
+                    "Join".also { logI("Not participant") }
+        }
+
+        val onFailure = {
+            toast("Something went wrong while retrieving event")
+            logW(response.getFullResponse())
+            logI(response.getErrorBodyProperties().toString())
         }
 
         response.resolve(onSuccess, onFailure)

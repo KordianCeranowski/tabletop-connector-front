@@ -1,25 +1,22 @@
 package com.example.tabletop.mvvm.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.mvvm.model.User
-import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.repository.*
 import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-object EventViewModel : BaseViewModel<Event>() {
+class EventViewModel : BaseViewModel<Event>() {
 
-    val responseJoinOrLeaveEvent = SingleLiveEvent<Response<Unit>>()
+    val responseParticipation = SingleLiveEvent<Response<Unit>>()
 
-    fun joinOrLeaveEvent(accessToken: String, id: String) {
+    val responseOneParticipation = SingleLiveEvent<Response<Event>>()
+
+    fun participateInEvent(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseJoinOrLeaveEvent.value = EventRepository.joinOrLeaveEvent(accessToken, id)
+            responseParticipation.value = EventRepository.participateInEvent(accessToken, id)
         }
     }
 
@@ -38,6 +35,12 @@ object EventViewModel : BaseViewModel<Event>() {
     fun getOne(accessToken: String, id: String) {
         viewModelScope.launch {
             responseOne.value = EventRepository.getOne(accessToken, id)
+        }
+    }
+
+    fun getOneParticipation(accessToken: String, id: String) {
+        viewModelScope.launch {
+            responseOneParticipation.value = EventRepository.getOne(accessToken, id)
         }
     }
 

@@ -16,6 +16,7 @@ import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
+import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import im.delight.android.location.SimpleLocation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -34,6 +35,8 @@ import java.util.*
 class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityEventFormBinding by viewBinding()
+
+    private val eventViewModel by lazyViewModels { EventViewModel() }
 
     override lateinit var errorBodyProperties: Map<String, String>
 
@@ -129,11 +132,11 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun attachObserver() {
-        EventViewModel.responseOne.observe(this@EventFormActivity) { handleResponse(it) }
+        eventViewModel.responseOne.observe(this@EventFormActivity) { handleResponse(it) }
     }
 
     private fun saveEvent(accessToken: String, eventRequest: EventRequest) {
-        EventViewModel.save(accessToken, eventRequest)
+        eventViewModel.save(accessToken, eventRequest)
     }
 
     private fun handleResponse(response: Response<Event>) {

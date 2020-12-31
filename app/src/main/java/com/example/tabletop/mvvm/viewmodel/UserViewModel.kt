@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 @Suppress("ObjectPropertyName")
-object UserViewModel : BaseViewModel<User>() {
+class UserViewModel : BaseViewModel<User>() {
 
     val responseLogin = SingleLiveEvent<Response<LoginResponse>>()
 
