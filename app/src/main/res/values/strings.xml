@@ -26,5 +26,6 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="edit">Edit</string>
+    <string name="distance">Distance</string>
 
 </resources>

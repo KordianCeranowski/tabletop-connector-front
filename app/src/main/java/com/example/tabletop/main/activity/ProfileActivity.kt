@@ -1,22 +1,18 @@
 package com.example.tabletop.main.activity
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import com.bumptech.glide.Glide
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityProfileBinding
 import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.EXTRA_PROFILE_ID
-import com.example.tabletop.util.getErrorBodyProperties
-import com.example.tabletop.util.getFullResponse
-import com.example.tabletop.util.resolve
+import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -44,7 +40,7 @@ class ProfileActivity : BaseActivity() {
         settingsManager = SettingsManager(applicationContext)
         setActionBarTitle("Profile")
 
-        profileId = intent.getStringExtra(EXTRA_PROFILE_ID) ?: ""
+        profileId = intent.getStringExtra(Extra.PROFILE_ID.toString()) ?: ""
     }
 
     private fun setActionBarTitle(title: String) {
@@ -71,10 +67,8 @@ class ProfileActivity : BaseActivity() {
 
         attachObserver()
 
-        lifecycleScope.launch {
-            val accessToken = settingsManager.userAccessTokenFlow.first()
-            retrieveProfile(accessToken)
-        }
+        val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
+        retrieveProfile(accessToken)
     }
 
     private fun attachObserver() {
@@ -91,15 +85,21 @@ class ProfileActivity : BaseActivity() {
 
     private fun handleResponse(response: Response<Profile>){
         val onSuccess = {
-            val profile = response.body()!!
-            binding.tvProfileFullname.text =
-                StringBuilder()
-                    .append(profile.firstname)
-                    .append(" ")
-                    .append(profile.lastname)
-                    .toString()
+            if (response.body() != null) {
+                val profile = response.body()!!
+                binding.tvProfileFullname.text =
+                    StringBuilder()
+                        .append(profile.firstname)
+                        .append(" ")
+                        .append(profile.lastname)
+                        .toString()
 
-            binding.ivProfileAvatar.setImageURI(Uri.parse(profile.avatar))
+                profile.avatar?.let { retrieveAvatar(it) }
+
+                Unit
+            } else {
+                logW("Response body is empty")
+            }
         }
 
         val onFailure = {
@@ -109,4 +109,11 @@ class ProfileActivity : BaseActivity() {
 
         response.resolve(onSuccess, onFailure)
     }
+
+    private fun retrieveAvatar(url: String) = Glide
+        .with(this)
+        .load(url)
+        .centerCrop()
+        .placeholder(R.drawable.ic_person)
+        .into(binding.ivProfileAvatar)
 }

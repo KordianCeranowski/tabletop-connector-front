@@ -1,8 +1,12 @@
 package com.example.tabletop.main.fragment
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
+import android.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +32,7 @@ import retrofit2.Response
 import splitties.fragments.start
 import splitties.toast.UnreliableToastApi
 
-@Suppress("COMPATIBILITY_WARNING")
+@Suppress("COMPATIBILITY_WARNING", "UNCHECKED_CAST")
 @UnreliableToastApi
 class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
 
@@ -64,26 +68,37 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     override fun onResume() {
         super.onResume()
         val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
+
+        attachObserverResponseMany()
+
         retrieveEvents(accessToken)
     }
 
     private fun retrieveEvents(accessToken: String) {
+        val queryMap = (arguments?.getSerializable("QUERY_MAP") ?: emptyMap<Query, String>())
+                as Map<Query, String>
+
         eventViewModel.run {
-            //todo change getMany endpoint to events/search/
-            if (arguments?.getBoolean("IS_ALL_EVENTS")!!) {
+            if (queryMap.isEmpty()) {
                 getMany(accessToken)
             } else {
-                getManyCustom(accessToken, mapOf())
+                getManyCustom(accessToken, queryMap)
             }
-            responseMany.observe(viewLifecycleOwner) { handleResponse(it) }
         }
+    }
+
+    private fun attachObserverResponseMany() {
+        eventViewModel.responseMany.observe(viewLifecycleOwner) { handleResponse(it) }
     }
 
     private fun handleResponse(response: Response<Many<Event>>) {
 
         val onSuccess = {
             logD(response.status())
-            val events = response.body()?.results!!
+            if (response.body() == null) {
+                logW("Response has empty body")
+            }
+            val events = response.body()?.results ?: emptyList()
             if (events.isEmpty()) {
                 binding.tvEmptyList.text = "No events to show :("
             } else {

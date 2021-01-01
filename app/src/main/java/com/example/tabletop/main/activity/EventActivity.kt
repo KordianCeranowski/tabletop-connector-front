@@ -46,18 +46,35 @@ class EventActivity : BaseActivity() {
 
     private lateinit var selectedFragment: Fragment
 
+    // Setup
     override fun setup() {
         binding
         setActionBarTitle("Event")
 
         settingsManager = SettingsManager(applicationContext)
-        currentEvent = intent.getSerializableExtra(EXTRA_EVENT) as Event
+        currentEvent = intent.getSerializableExtra(Extra.EVENT.toString()) as Event
     }
 
     private fun setActionBarTitle(title: String) {
         supportActionBar?.title = title
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setup()
+
+        attachObserverResponseOne()
+
+        selectFragment(EventInfoFragment())
+
+        setupBottomNavBarItemSelectedIListener()
+
+        /*bottomNavigationView.getOrCreateBadge(R.id.mi_chat).apply {
+            eventChatFragment?.let { number = 3 }
+        }*/
+    }
+
+    // Bottom Nav Bar
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (userId == currentEvent.creator.id) {
             menuInflater.inflate(R.menu.event_info_menu, menu)
@@ -72,16 +89,9 @@ class EventActivity : BaseActivity() {
         return true
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setup()
-
-        attachObserverResponseOne()
-
-        selectFragment(EventInfoFragment())
-
+    private fun setupBottomNavBarItemSelectedIListener() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
-            when(menuItem.itemId) {
+            when (menuItem.itemId) {
                 R.id.mi_info -> selectFragment(EventInfoFragment())
                 R.id.mi_games -> selectFragment(EventGamesFragment())
                 R.id.mi_location -> selectFragment(EventLocationFragment())
@@ -90,10 +100,6 @@ class EventActivity : BaseActivity() {
             }
             true
         }
-
-        /*bottomNavigationView.getOrCreateBadge(R.id.mi_chat).apply {
-            eventChatFragment?.let { number = 3 }
-        }*/
     }
 
     private fun selectFragment(fragment: Fragment) {
@@ -105,14 +111,15 @@ class EventActivity : BaseActivity() {
         }
     }
 
+    // Retrieve Event
+    private fun retrieveEvent(accessToken: String, eventId: String) {
+        eventViewModel.getOne(accessToken, eventId)
+    }
+
     private fun attachObserverResponseOne() {
         eventViewModel.responseOne.observe(this) {
             handleResponseRetrieveEvent(it)
         }
-    }
-
-    private fun retrieveEvent(accessToken: String, eventId: String) {
-        eventViewModel.getOne(accessToken, eventId)
     }
 
     private fun handleResponseRetrieveEvent(response: Response<Event>) {
@@ -134,7 +141,9 @@ class EventActivity : BaseActivity() {
 
     private fun replaceFragmentWithSelected() {
         logV("2) Bundling event...")
-        val bundle = Bundle().apply { putSerializable(EXTRA_EVENT, currentEvent as Serializable) }
+        val bundle = Bundle().apply {
+            putSerializable(Extra.EVENT.toString(), currentEvent as Serializable)
+        }
         logV("3) Bundled event!")
 
         val fragmentWithBundle = selectedFragment.apply { arguments = bundle }

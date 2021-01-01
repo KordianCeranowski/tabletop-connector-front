@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.repository.*
+import com.example.tabletop.util.Query
 import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -26,7 +27,7 @@ class EventViewModel : BaseViewModel<Event>() {
         }
     }
 
-    fun getManyCustom(accessToken: String, options: Map<String, String>) {
+    fun getManyCustom(accessToken: String, options: Map<Query, String>) {
         viewModelScope.launch {
             responseMany.value = EventRepository.getCustomMany(accessToken, options)
         }

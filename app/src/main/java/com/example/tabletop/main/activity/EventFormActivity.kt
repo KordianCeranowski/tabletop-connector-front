@@ -20,6 +20,7 @@ import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import im.delight.android.location.SimpleLocation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
@@ -60,12 +61,11 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
         attachObserver()
 
-        lifecycleScope.launch {
-            val accessToken = settingsManager.userAccessTokenFlow.first()
-            saveEvent(accessToken, getMockEventRequest())
-        }
+        val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
+        saveEvent(accessToken, getMockEventRequest())
     }
 
+    // Handling
     private fun handleDateClick() {
         logI("Clicked Date")
 
@@ -131,12 +131,13 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         logI("Clicked Games")
     }
 
-    private fun attachObserver() {
-        eventViewModel.responseOne.observe(this@EventFormActivity) { handleResponse(it) }
-    }
-
+    // Save Event
     private fun saveEvent(accessToken: String, eventRequest: EventRequest) {
         eventViewModel.save(accessToken, eventRequest)
+    }
+
+    private fun attachObserver() {
+        eventViewModel.responseOne.observe(this@EventFormActivity) { handleResponse(it) }
     }
 
     private fun handleResponse(response: Response<Event>) {
@@ -144,13 +145,13 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         val onSuccess = {
             logD(response.getFullResponse())
 
-            lifecycleScope.launch {
-                response.body()?.let {
-                    startWithExtra<EventActivity>(EXTRA_EVENT to it)
-                    // or startWithExtra<MainActivity>("IS_SHOW_MY_EVENTS" to true)
-                    finish()
-                }
-            }
+            val userId = runBlocking { settingsManager.userIdFlow.first() }
+
+            response.body()?.let {
+                //startWithExtra<EventActivity>(EXTRA_EVENT to it)
+                startWithExtra<MainActivity>(Extra.IS_MY_EVENTS.toString() to true)
+                finish()
+            } as Unit
         }
 
         val onFailure = {

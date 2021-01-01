@@ -9,7 +9,7 @@ import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventGamesBinding
 import com.example.tabletop.main.adapter.GameAdapter
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.util.EXTRA_EVENT
+import com.example.tabletop.util.Extra
 import com.example.tabletop.util.className
 import com.example.tabletop.util.getMockGame
 import net.alexandroid.utils.mylogkt.logI
@@ -33,7 +33,7 @@ class EventGamesFragment : BaseFragment(R.layout.fragment_event_games) {
 
         logI("Created ${this.className}")
 
-        val games = (arguments?.getSerializable(EXTRA_EVENT) as Event).games
+        val games = (arguments?.getSerializable(Extra.EVENT.toString()) as Event).games
 
         if (games.isEmpty()) {
             binding.tvEmptyList.text = "No games added yet"

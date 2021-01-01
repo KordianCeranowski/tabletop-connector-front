@@ -37,7 +37,8 @@ class EventParticipantsFragment : BaseFragment(R.layout.fragment_event_participa
 
         logI("Created ${this.className}")
 
-        val participants = (arguments?.getSerializable(EXTRA_EVENT) as Event).participants
+        val participants =
+            (arguments?.getSerializable(Extra.EVENT.toString()) as Event).participants
 
         if (participants.isEmpty()) {
             binding.tvEmptyList.text = "No participants to show :("

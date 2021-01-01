@@ -4,6 +4,7 @@ import com.example.tabletop.mvvm.api.RetrofitInstance.eventApi
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
+import com.example.tabletop.util.Query
 import retrofit2.Response
 
 object EventRepository {
@@ -14,9 +15,10 @@ object EventRepository {
 
     suspend fun getCustomMany(
         accessToken: String,
-        options: Map<String, String>
+        options: Map<Query, String>
     ): Response<Many<Event>> {
-        return eventApi.getCustomMany(accessToken, options)
+        val result = options.map { it.key.value to it.value }.toMap()
+        return eventApi.getCustomMany(accessToken, result)
     }
 
     suspend fun save(accessToken: String, eventRequest: EventRequest): Response<Event> {

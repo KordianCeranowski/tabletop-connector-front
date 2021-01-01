@@ -51,7 +51,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
     fun setup() {
         settingsManager = SettingsManager(requireContext())
         //logI("Starting ${this.className}")
-        currentEvent = arguments?.getSerializable(EXTRA_EVENT) as Event
+        currentEvent = arguments?.getSerializable(Extra.EVENT.toString()) as Event
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,7 +98,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
         binding.tvEventCreator.setOnClickListener {
             context?.startWithExtra<ProfileActivity>(
-                EXTRA_PROFILE_ID to currentEvent.creator.profile.id
+                Extra.PROFILE_ID.toString() to currentEvent.creator.profile.id
             )
         }
     }

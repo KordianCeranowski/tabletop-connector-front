@@ -1,20 +1,23 @@
 package com.example.tabletop.main.adapter
 
+import android.graphics.Movie
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
 import com.example.tabletop.main.activity.EventActivity
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.util.EXTRA_EVENT
+import com.example.tabletop.util.Extra
 import com.example.tabletop.util.startWithExtra
 import kotlinx.android.synthetic.main.row_event.view.*
+
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
 
-    private var viewItems = emptyList<Event>()
+    private var events = emptyList<Event>()
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(event: Event) {
@@ -26,7 +29,9 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
             }
 
             itemView.setOnClickListener {
-                itemView.context.startWithExtra<EventActivity>(EXTRA_EVENT to event)
+                itemView.context.startWithExtra<EventActivity>(
+                    Extra.EVENT.toString() to event
+                )
             }
         }
     }
@@ -38,16 +43,16 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(viewHolder: MyViewHolder, position: Int) {
-        val event = viewItems[position]
+        val event = events[position]
         viewHolder.bind(event)
     }
 
     override fun getItemCount(): Int {
-        return viewItems.size
+        return events.size
     }
 
     fun setData(newList: List<Event>) {
-        viewItems = newList
+        events = newList
         notifyDataSetChanged()
     }
 }
