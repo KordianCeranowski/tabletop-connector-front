@@ -27,5 +27,21 @@
     <string name="login_failed">"Login failed"</string>
     <string name="edit">Edit</string>
     <string name="distance">Distance</string>
+    <string name="event_form_btn_add">Add</string>
+    <string name="event_form_btn_submit">Submit</string>
+    <string name="event_form_games_text">GAMES</string>
+    <string name="event_form_btn_autofill">Autofill</string>
+    <string name="event_form_number_hint">Number</string>
+    <string name="event_form_street_hint">Street</string>
+    <string name="event_form_postal_hint">Postal Code</string>
+    <string name="event_form_city_hint">City</string>
+    <string name="event_form_country_hint">Country</string>
+    <string name="event_form_where_text">WHERE</string>
+    <string name="event_form_choose_time">Choose Time</string>
+    <string name="event_form_choose_date">Choose Date</string>
+    <string name="event_form_when">WHEN</string>
+    <string name="event_form_name">Name</string>
+    <string name="event_form_add_new_event">ADD NEW EVENT</string>
+    <string name="search_here">Search Here</string>
 
 </resources>

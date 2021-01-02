@@ -1,14 +1,19 @@
 package com.example.tabletop.main.activity
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.R
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
+import android.widget.ArrayAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.helpers.Address
@@ -25,11 +30,13 @@ import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
+import splitties.activities.start
 import splitties.permissions.requestPermission
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @UnreliableToastApi
 @Suppress("COMPATIBILITY_WARNING")
@@ -43,6 +50,10 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
     private lateinit var settingsManager: SettingsManager
 
+    private val games = mutableListOf<String>()
+
+    private lateinit var linearLayoutManager: LinearLayoutManager
+
     override fun setup() {
         binding
         settingsManager = SettingsManager(applicationContext)
@@ -54,10 +65,13 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
         logI("Opened EventFormActivity.OnCreate")
 
-        binding.tvEventDate.setOnClickListener { handleDateClick() }
-        binding.tvEventTime.setOnClickListener { handleTimeClick() }
-        binding.tvEventAddress.setOnClickListener { handleAddressClick() }
-        binding.tvEventGames.setOnClickListener { handleGamesClick() }
+        binding.listGames.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, games)
+
+        binding.btnDate.setOnClickListener { handleDateClick() }
+        binding.btnTime.setOnClickListener { handleTimeClick() }
+        binding.btnAutofill.setOnClickListener { handleAddressClick() }
+        binding.btnAdd.setOnClickListener { handleGamesClick() }
+
 
         attachObserver()
 
@@ -75,7 +89,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{
-                view, mYear, mMonth, mDay -> binding.tvEventDate.text = "$mDay/$mMonth/$mYear"
+                view, mYear, mMonth, mDay -> binding.btnDate.text = "$mDay/$mMonth/$mYear"
         }, year, month, day)
 
         dpd.show()
@@ -92,7 +106,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         val timeSetListener = TimePickerDialog.OnTimeSetListener{ timePicker, hour, minute ->
             c.set(Calendar.HOUR_OF_DAY, hour)
             c.set(Calendar.MINUTE, minute)
-            binding.tvEventTime.text = SimpleDateFormat("HH:mm").format(c.time)
+            binding.btnTime.text = SimpleDateFormat("HH:mm").format(c.time)
         }
         TimePickerDialog(this, timeSetListener, hour, minute, true).show()
     }
@@ -110,25 +124,53 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
             }
             val latitude = location.latitude
             val longitude = location.longitude
+            logI("lat $latitude, long $longitude")
             location.endUpdates()
 
             val geocoder = Geocoder(this@EventFormActivity, Locale.getDefault())
-            val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
+            val loc = geocoder.getFromLocation(latitude, longitude, 1)
+            if (loc == null || loc.size == 0){
+                toast("Couldn't access location")
+                logI(loc.toString())
+            }
+            else {
+                val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
 
-            val country = address.countryName
-            val city = address.locality
-            val street =  address.thoroughfare
-            val postalCode = address.postalCode
-            val number = address.featureName
+                val country = address.countryName
+                val city = address.locality
+                val street = address.thoroughfare
+                val postalCode = address.postalCode
+                val number = address.featureName
 
-            val addr = Address(country, city, street, postalCode, number, latitude, longitude)
+                val addr = Address(country, city, street, postalCode, number, latitude, longitude)
 
-            logI(addr.toString())
+                binding.tfCountry.setText(country)
+                binding.tfCity.setText(city)
+                binding.tfPostal.setText(postalCode)
+                binding.tfStreet.setText(street)
+                binding.tfNumber.setText(number)
+
+                logI(addr.toString())
+            }
         }
     }
 
     private fun handleGamesClick() {
         logI("Clicked Games")
+        val intent = Intent(this, GamesListActivity::class.java)
+        startActivityForResult(intent, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                val result = data?.extras?.get("gamename")
+                games.add(result.toString())
+                logI(games.toString())
+                binding.listGames.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, games)
+            }
+        }
     }
 
     // Save Event
