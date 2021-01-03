@@ -3,45 +3,6 @@ package com.example.tabletop.util
 import android.util.Patterns
 import java.util.regex.Pattern
 
-// EXTRAS
-
-enum class Extra(private val value: String) {
-    PROFILE_ID("PROFILE_ID"),
-    EVENT("EVENT"),
-    IS_MY_EVENTS("IS_MY_EVENTS"),
-    QUERY_MAP("QUERY_MAP");
-
-    override fun toString() = this.value
-}
-
-// const val EXTRA_PROFILE_ID = "PROFILE_ID"
-//
-// const val EXTRA_EVENT = "EVENT"
-//
-// const val EXTRA_IS_MY_EVENTS = "IS_MY_EVENTS"
-//
-// const val EXTRA_QUERY_MAP = "QUERY_MAP"
-
-// QUERY
-
-enum class Query(val value: String) {
-    PARTICIPANT("participant"),
-    DISTANCE("distance"),
-    NAME("search"),
-    GEO_X("geo_x"),
-    GEO_Y ("geo_y"),
-}
-
-// const val QUERY_PARTICIPANT = "participant"
-//
-// const val QUERY_DISTANCE = "distance"
-//
-// const val QUERY_NAME = "search"
-//
-// const val QUERY_GEO_X = "geo_x"
-//
-// const val QUERY_GEO_Y = "geo_y"
-
 // URL
 const val BASE_URL = "http://10.0.2.2:8000/api/"
 
@@ -70,8 +31,29 @@ const val EVENT_API_ENDPOINT = "events/"
 
 const val EVENT_API_ENDPOINT_CUSTOM = "events/search/"
 
+// EXTRA
+enum class Extra(private val value: String) {
+    PROFILE_ID("PROFILE_ID"),
+    EVENT("EVENT"),
+    IS_MY_EVENTS("IS_MY_EVENTS"),
+    QUERY_MAP("QUERY_MAP");
+
+    operator fun invoke() = this.value
+}
+
+// QUERY
+enum class Query(private val value: String) {
+    PARTICIPANT("participant"),
+    DISTANCE("distance"),
+    NAME("search"),
+    GEO_X("geo_x"),
+    GEO_Y ("geo_y");
+
+    operator fun invoke() = this.value
+}
+
 // VALIDATION PATTERN
-enum class ValidationPattern(val value: Pattern) {
+enum class ValidationPattern(private val value: Pattern) {
     EMAIL(
         Patterns.EMAIL_ADDRESS
     ),
@@ -94,5 +76,7 @@ enum class ValidationPattern(val value: Pattern) {
                     ".{8,}" +           // at least 8 characters
                     "$"
         )
-    )
+    );
+
+    operator fun invoke() = this.value
 }

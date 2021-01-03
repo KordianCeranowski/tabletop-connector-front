@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
-import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
 import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.SingleLiveEvent
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 @Suppress("ObjectPropertyName")
-class UserViewModel : BaseViewModel<User>() {
+class UserViewModel : ApiViewModel<User>() {
 
     val responseLogin = SingleLiveEvent<Response<LoginResponse>>()
 

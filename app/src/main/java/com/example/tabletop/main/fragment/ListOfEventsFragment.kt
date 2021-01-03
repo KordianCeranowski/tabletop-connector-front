@@ -1,13 +1,8 @@
 package com.example.tabletop.main.fragment
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
-import android.widget.SearchView
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
@@ -20,13 +15,9 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
-import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
-import net.alexandroid.utils.mylogkt.logI
-import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.fragments.start
@@ -44,7 +35,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
 
     private val eventAdapter by lazy { EventAdapter() }
 
-    fun setup() {
+    private fun setup() {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = eventAdapter
@@ -52,7 +43,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
         settingsManager = SettingsManager(requireContext())
     }
 
-    private fun setupOnClickListeners() {
+    private fun setupBtnOnClickListener() {
         binding.btnCreateEvent.setOnClickListener {
             start<EventFormActivity>()
         }
@@ -62,14 +53,14 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
-        setupOnClickListeners()
+        setupBtnOnClickListener()
+
+        attachObserverResponseMany()
     }
 
     override fun onResume() {
         super.onResume()
         val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
-
-        attachObserverResponseMany()
 
         retrieveEvents(accessToken)
     }
@@ -78,13 +69,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
         val queryMap = (arguments?.getSerializable("QUERY_MAP") ?: emptyMap<Query, String>())
                 as Map<Query, String>
 
-        eventViewModel.run {
-            if (queryMap.isEmpty()) {
-                getMany(accessToken)
-            } else {
-                getManyCustom(accessToken, queryMap)
-            }
-        }
+        eventViewModel.getManyCustom(accessToken, queryMap)
     }
 
     private fun attachObserverResponseMany() {
@@ -92,7 +77,6 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     }
 
     private fun handleResponse(response: Response<Many<Event>>) {
-
         val onSuccess = {
             logD(response.status())
             if (response.body() == null) {
@@ -100,7 +84,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
             }
             val events = response.body()?.results ?: emptyList()
             if (events.isEmpty()) {
-                binding.tvEmptyList.text = "No events to show :("
+                binding.tvEmptyList.text = getString(R.string.empty_recycler_view)
             } else {
                 response.body()?.let { eventAdapter.setData(it.results) } as Unit
             }

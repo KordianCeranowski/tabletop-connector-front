@@ -9,6 +9,10 @@
     android:paddingTop="26dp"
     android:paddingBottom="26dp"
 
+    android:focusable="true"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+
     android:background="@drawable/border">
 
     <TextView
@@ -20,26 +24,29 @@
         android:text="PLACEHOLDER NAME"
         android:textSize="16sp"
 
+        android:gravity="start"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.695"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.507" />
+        app:layout_constraintVertical_bias="0.505" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/row_participant_profile_picture"
 
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="56dp"
+        android:layout_height="54dp"
         android:layout_marginStart="72dp"
 
-        android:src="@drawable/ic_person"
         android:textSize="16sp"
+
+        app:civ_border_width="1dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintHorizontal_bias="0.024"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

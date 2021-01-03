@@ -134,6 +134,10 @@
                     android:id="@+id/btn_autofill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+
+                    android:layout_gravity="center"
                     android:text="@string/event_form_btn_autofill"/>
             </LinearLayout>
 
@@ -159,13 +163,19 @@
                 android:id="@+id/btn_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+
+                android:layout_gravity="center"
                 android:text="@string/event_form_btn_add" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btn_submit"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
             android:text="@string/event_form_btn_submit"/>
     </LinearLayout>
 <!--</ScrollView>-->

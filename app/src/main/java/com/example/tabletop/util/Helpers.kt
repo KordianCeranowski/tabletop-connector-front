@@ -6,7 +6,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
+import com.bumptech.glide.Glide
+import com.example.tabletop.R
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
@@ -15,7 +18,6 @@ import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.model.helpers.request.AddressSimple
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.google.gson.*
-import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import org.json.JSONArray
@@ -73,6 +75,26 @@ inline fun <reified T : Activity> Context.startWithExtra(vararg pairs: Pair<Stri
     }
 }
 
+fun ImageView.setImageFromURL(
+    context: Context,
+    url: String,
+    placeholder: Int = R.drawable.ic_person
+) {
+    Glide
+        .with(context)
+        .load(url)
+        .centerCrop()
+        .placeholder(placeholder)
+        .into(this)
+}
+
+fun getSeparatedDateTime(dateTime: String): Pair<String, String> {
+    val separatorIndex = dateTime.toList().zip(dateTime.indices).find { it.first == 'T' }!!.second
+    val date = dateTime.subSequence(0, separatorIndex).toString()
+    val time = dateTime.subSequence(separatorIndex + 1, 16).toString()
+    return date to time
+}
+
 fun getMockEventRequest(): EventRequest {
     return EventRequest(
         "mock name",
@@ -126,7 +148,7 @@ fun getRandomDate() : String {
         val firstDigit = (0..1).random()
         val secondDigit = (if (firstDigit == 0) (1..9) else (0..2)).random()
     }
-    val year = "2020"
+    val year = "2021"
 
     val hours = "12"
     val minutes = "00"

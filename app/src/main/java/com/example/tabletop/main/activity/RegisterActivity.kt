@@ -1,9 +1,12 @@
 package com.example.tabletop.main.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityRegisterBinding
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.*
@@ -17,6 +20,7 @@ import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.*
 import net.alexandroid.utils.mylogkt.logD
@@ -39,7 +43,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
-        supportActionBar?.title = "Register"
+        supportActionBar?.title = "Sign Up"
     }
 
     // DEVELOPMENT ONLY
@@ -50,6 +54,23 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         binding.registerEtLastname.value = "Talar"
         binding.registerEtPassword.value = "qwqwqwqW1$"
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
+    }
+
+    // Top Right Menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.register_menu, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mi_register_goto_login ->  {
+                start<LoginActivity>()
+                finish()
+            }
+        }
+        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,7 +138,6 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         } else {
             binding.registerEtLastname.disableError()
         }
-
         return areFieldsValid
     }
 
@@ -127,19 +147,19 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
                 Triple(
                     binding.registerEtEmail,
                     "email",
-                    ValidationPattern.EMAIL.value
+                    ValidationPattern.EMAIL()
                 )
             ValidationPattern.NICKNAME ->
                 Triple(
                     binding.registerEtUsername,
                     "username",
-                    ValidationPattern.NICKNAME.value
+                    ValidationPattern.NICKNAME()
                 )
             ValidationPattern.PASSWORD ->
                 Triple(
                     binding.registerEtPassword,
                     "password",
-                    ValidationPattern.PASSWORD.value
+                    ValidationPattern.PASSWORD()
                 )
         }
 
@@ -210,18 +230,16 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun handleResponseLogin(response: Response<LoginResponse>) {
 
         val onSuccess = {
-            lifecycleScope.launch {
-                val body = response.body()!!
-                withContext(Dispatchers.Default) {
-                    settingsManager.run {
-                        setIsFirstRun(false)
-                        setUserAccessToken(body.auth_token)
-                        setUserId(body.user_id)
-                    }
+            val body = response.body()!!
+            runBlocking {
+                settingsManager.run {
+                    setIsFirstRun(false)
+                    setUserAccessToken(body.auth_token)
+                    setUserId(body.user_id)
                 }
-                start<MainActivity>()
-                finish()
             }
+            start<MainActivity>()
+            finish()
         }
 
         val onFailure = {

@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/mi_main_filter"
-        android:title=""
-        android:icon="@drawable/ic_filter_list"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/mi_login_goto_register"
+        android:title="Sign Up"
+        app:showAsAction="always"/>
 
 </menu>

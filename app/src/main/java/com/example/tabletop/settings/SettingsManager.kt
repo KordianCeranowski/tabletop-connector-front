@@ -21,11 +21,13 @@ class SettingsManager(context: Context) {
 
     val userAccessTokenFlow: Flow<String> = getFlow { it[USER_ACCESS_TOKEN] ?: ""  }
 
+    val userFirstNameFlow: Flow<String> = getFlow { it[USER_FIRST_NAME] ?: ""  }
+
     val userIdFlow: Flow<String> = getFlow { it[USER_ID] ?: ""  }
 
-    val userLongitudeFlow: Flow<Int> = getFlow { it[USER_LONGITUDE] ?: 0  }
+    val userLongitudeFlow: Flow<Double> = getFlow { it[USER_LONGITUDE] ?: 0.0  }
 
-    val userLatitudeFlow: Flow<Int>  = getFlow { it[USER_LATITUDE] ?: 0  }
+    val userLatitudeFlow: Flow<Double>  = getFlow { it[USER_LATITUDE] ?: 0.0  }
 
     suspend fun setIsFirstRun(isFirstRun: Boolean) {
         dataStore.edit { preferences ->
@@ -42,18 +44,28 @@ class SettingsManager(context: Context) {
         }
     }
 
+    suspend fun setUserFirstName(userFirstName: String) {
+        dataStore.edit { preferences ->
+            preferences[USER_ID] = userFirstName.also { logV("User first name : \"$it\"") }
+        }
+    }
+
     suspend fun setUserId(userId: String) {
         dataStore.edit { preferences ->
             preferences[USER_ID] = userId.also { logV("User id : \"$it\"") }
         }
     }
 
-    suspend fun setUserLongitude(userLongitude: Int) {
-        dataStore.edit { it[USER_LONGITUDE] = userLongitude }
+    suspend fun setUserLongitude(userLongitude: Double) {
+        dataStore.edit { preferences ->
+            preferences[USER_LONGITUDE] = userLongitude.also { logV("Longitude : \"$it\"") }
+        }
     }
 
-    suspend fun setUserLatitude(userLatitude: Int) {
-        dataStore.edit { it[USER_LATITUDE] = userLatitude }
+    suspend fun setUserLatitude(userLatitude: Double) {
+        dataStore.edit { preferences ->
+            preferences[USER_LATITUDE] = userLatitude.also { logV("Latitude : \"$it\"") }
+        }
     }
 
     private fun <T> getFlow(action: (Preferences) -> T): Flow<T> {
@@ -72,8 +84,9 @@ class SettingsManager(context: Context) {
     companion object {
         private val IS_FIRST_RUN = preferencesKey<Boolean>("isFirstRun")
         private val USER_ACCESS_TOKEN = preferencesKey<String>("userAccessToken")
+        private val USER_FIRST_NAME = preferencesKey<String>("userFirstName")
         private val USER_ID = preferencesKey<String>("userId")
-        private val USER_LONGITUDE = preferencesKey<Int>("userLongitude")
-        private val USER_LATITUDE = preferencesKey<Int>("userLatitude")
+        private val USER_LONGITUDE = preferencesKey<Double>("userLongitude")
+        private val USER_LATITUDE = preferencesKey<Double>("userLatitude")
     }
 }

@@ -17,7 +17,7 @@ object EventRepository {
         accessToken: String,
         options: Map<Query, String>
     ): Response<Many<Event>> {
-        val result = options.map { it.key.value to it.value }.toMap()
+        val result = options.map { it.key() to it.value }.toMap()
         return eventApi.getCustomMany(accessToken, result)
     }
 
@@ -30,11 +30,11 @@ object EventRepository {
     }
 
     suspend fun remove(accessToken: String, id: String): Response<Event> {
-        return eventApi.remove(id)
+        return eventApi.remove(accessToken, id)
     }
 
     suspend fun edit(accessToken: String, id: String, model: Event): Response<Event> {
-        return eventApi.edit(id, model)
+        return eventApi.edit(accessToken, id, model)
     }
 
     suspend fun participateInEvent(accessToken: String, id: String): Response<Unit> {

@@ -20,6 +20,11 @@ class GamesListActivity : BaseActivity() {
     override fun setup() {
         binding
         settingsManager = SettingsManager(applicationContext)
+        setActionBarTitle("Games")
+    }
+
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,9 +43,5 @@ class GamesListActivity : BaseActivity() {
             data.putExtra("gamename", numbers[position])
             finish()
         }
-
-
     }
-
-
 }

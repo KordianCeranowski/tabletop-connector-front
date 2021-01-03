@@ -3,22 +3,19 @@ package com.example.tabletop.main.fragment
 import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventInfoBinding
 import com.example.tabletop.main.activity.ProfileActivity
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.mvvm.viewmodel.BottomNavBarViewModel
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
+import com.livinglifetechway.k4kotlin.core.androidx.shortToast
 import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
-import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
@@ -35,6 +32,8 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     private val eventViewModel by lazyActivityViewModels { EventViewModel() }
 
+    private val bottomNavBarViewModel by lazyActivityViewModels { BottomNavBarViewModel() }
+
     private lateinit var settingsManager: SettingsManager
 
     private lateinit var currentEvent: Event
@@ -46,7 +45,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         get() = runBlocking { settingsManager.userIdFlow.first() }
 
     private val participantsId: List<String>
-        get() = currentEvent.participants.map { it.id }.also { logV(it.size.toString()) }
+        get() = currentEvent.participants.map { it.id }
 
     fun setup() {
         settingsManager = SettingsManager(requireContext())
@@ -66,34 +65,50 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
     override fun onResume() {
         super.onResume()
 
+        val (date, time) = getSeparatedDateTime(currentEvent.date)
+
         binding.tvEventName.text = currentEvent.name
         binding.tvEventCreator.text = currentEvent.creator.username
-        binding.tvEventDate.text = currentEvent.date
+        binding.tvEventDate.text = date
+        binding.tvEventTime.text = time
 
-        setupBtnJoinEvent()
+        setupBtnJoinEventVisibility()
+        setBtnJoinEventIcon()
+
+        setChatAble()
     }
 
-    private fun setupBtnJoinEvent() {
+    private fun setupBtnJoinEventVisibility() {
         binding.btnJoinEvent.let { btn ->
             if (userId == currentEvent.creator.id) {
                 btn.visibility = View.INVISIBLE
             } else {
                 btn.visibility = View.VISIBLE
-                btn.text =
-                    if (participantsId.contains(userId))
-                        "Joined!".also { logI("Participant") }
-                    else
-                        "Join".also { logI("Not participant") }
             }
         }
     }
 
+    private fun setBtnJoinEventIcon(showToast: Boolean = false) {
+        val isParticipant = participantsId.contains(userId)
+        val icon =
+            if (isParticipant)
+                R.drawable.ic_check.also { if (showToast) shortToast("Joined event!") }
+            else
+                R.drawable.ic_plus.also { if (showToast) shortToast("Left event!") }
+
+        binding.btnJoinEvent.setImageResource(icon)
+    }
+
+    private fun setChatAble() {
+        val isChatEnabled = participantsId.contains(userId)
+        bottomNavBarViewModel.setChatEnabled(isChatEnabled)
+    }
+
     private fun setupOnClickListeners() {
         binding.btnJoinEvent.setOnClickListener {
-            lifecycleScope.launch {
-                val accessToken = settingsManager.userAccessTokenFlow.first()
-                participateInEvent(accessToken, currentEvent.id)
-            }
+            val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
+            participateInEvent(accessToken, currentEvent.id)
+            setBtnJoinEventIcon()
         }
 
         binding.tvEventCreator.setOnClickListener {
@@ -141,11 +156,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         val onSuccess = {
             logD(response.status())
             currentEvent = response.body()!!
-            binding.btnJoinEvent.text =
-                if (participantsId.contains(userId))
-                    "Joined!".also { logI("Participant") }
-                else
-                    "Join".also { logI("Not participant") }
+            setBtnJoinEventIcon(true)
         }
 
         val onFailure = {

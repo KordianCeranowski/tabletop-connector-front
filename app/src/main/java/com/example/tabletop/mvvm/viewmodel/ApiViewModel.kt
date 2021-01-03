@@ -7,7 +7,7 @@ import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.util.SingleLiveEvent
 import retrofit2.Response
 
-abstract class BaseViewModel<T : Model> : ViewModel() {
+abstract class ApiViewModel<T : Model> : ViewModel() {
 
     val responseOne = SingleLiveEvent<Response<T>>()
 

@@ -1,6 +1,5 @@
 package com.example.tabletop.main.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import com.example.tabletop.R
 import com.example.tabletop.main.activity.ProfileActivity
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.util.Extra
+import com.example.tabletop.util.setImageFromURL
 import com.example.tabletop.util.startWithExtra
 import kotlinx.android.synthetic.main.row_participant.view.*
 
@@ -18,7 +18,7 @@ class ParticipantAdapter : RecyclerView.Adapter<ParticipantAdapter.MyViewHolder>
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(user: User) {
-            itemView.apply {
+            itemView.run {
                 row_participant_name.text =
                     StringBuilder()
                         .append(user.profile.firstname)
@@ -26,7 +26,7 @@ class ParticipantAdapter : RecyclerView.Adapter<ParticipantAdapter.MyViewHolder>
                         .append(user.profile.lastname)
                         .toString()
 
-                row_participant_profile_picture.setImageURI(Uri.parse(user.profile.avatar))
+                row_participant_profile_picture.setImageFromURL(context, user.profile.avatar)
             }
 
             itemView.setOnClickListener {

@@ -13,20 +13,22 @@
     <string name="btn_login">Sign In</string>
     <string name="btn_register">Sign Up</string>
 
-    <string name="lorem_ipsum">According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don\'t care what humans think is impossible.</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <string name="title_activity_login2">LoginActivity2</string>
+
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="edit">Edit</string>
     <string name="distance">Distance</string>
+    <string name="empty_recycler_view">No events to show :(</string>
+
     <string name="event_form_btn_add">Add</string>
     <string name="event_form_btn_submit">Submit</string>
     <string name="event_form_games_text">GAMES</string>
@@ -37,11 +39,12 @@
     <string name="event_form_city_hint">City</string>
     <string name="event_form_country_hint">Country</string>
     <string name="event_form_where_text">WHERE</string>
-    <string name="event_form_choose_time">Choose Time</string>
-    <string name="event_form_choose_date">Choose Date</string>
+    <string name="event_form_choose_time">Time</string>
+    <string name="event_form_choose_date">Date</string>
     <string name="event_form_when">WHEN</string>
     <string name="event_form_name">Name</string>
     <string name="event_form_add_new_event">ADD NEW EVENT</string>
     <string name="search_here">Search Here</string>
+    <string name="name">Name</string>
 
 </resources>

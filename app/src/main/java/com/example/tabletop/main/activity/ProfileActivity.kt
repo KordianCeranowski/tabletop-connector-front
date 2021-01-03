@@ -40,7 +40,7 @@ class ProfileActivity : BaseActivity() {
         settingsManager = SettingsManager(applicationContext)
         setActionBarTitle("Profile")
 
-        profileId = intent.getStringExtra(Extra.PROFILE_ID.toString()) ?: ""
+        profileId = intent.getStringExtra(Extra.PROFILE_ID()) ?: ""
     }
 
     private fun setActionBarTitle(title: String) {
@@ -93,10 +93,7 @@ class ProfileActivity : BaseActivity() {
                         .append(" ")
                         .append(profile.lastname)
                         .toString()
-
-                profile.avatar?.let { retrieveAvatar(it) }
-
-                Unit
+                binding.ivProfileAvatar.setImageFromURL(this, profile.avatar)
             } else {
                 logW("Response body is empty")
             }
@@ -109,11 +106,4 @@ class ProfileActivity : BaseActivity() {
 
         response.resolve(onSuccess, onFailure)
     }
-
-    private fun retrieveAvatar(url: String) = Glide
-        .with(this)
-        .load(url)
-        .centerCrop()
-        .placeholder(R.drawable.ic_person)
-        .into(binding.ivProfileAvatar)
 }

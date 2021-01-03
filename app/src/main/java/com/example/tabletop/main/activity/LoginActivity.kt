@@ -1,9 +1,12 @@
 package com.example.tabletop.main.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityLoginBinding
 import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.model.helpers.LoginResponse
@@ -13,7 +16,7 @@ import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
@@ -38,7 +41,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     override fun setup() {
         binding
         settingsManager = SettingsManager(applicationContext)
-        supportActionBar?.title = "Login"
+        supportActionBar?.title = "Sign In"
     }
 
     // DEVELOPMENT ONLY
@@ -46,6 +49,23 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         val (username, password) = if (isError) "error" to "error" else "testo5325" to "qwqwqwqW1$"
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
+    }
+
+    // Top Right Menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.login_menu, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mi_login_goto_register ->  {
+                start<RegisterActivity>()
+                finish()
+            }
+        }
+        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,11 +87,6 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             } else {
                 toast("Please correct invalid fields")
             }
-        }
-
-        binding.btnGotoRegister.setOnClickListener {
-            start<RegisterActivity>()
-            finish()
         }
     }
 
@@ -99,17 +114,16 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
     private fun handleResponse(response: Response<LoginResponse>) {
         val onSuccess = {
             logD(response.status())
-            lifecycleScope.launch {
-                val body = response.body()!!
-                withContext(Dispatchers.Default) {
-                    settingsManager.run {
-                        setUserAccessToken(body.auth_token)
-                        setUserId(body.user_id)
-                    }
+            val body = response.body()!!
+            runBlocking {
+                settingsManager.run {
+                    setUserAccessToken(body.auth_token)
+                    setUserId(body.user_id)
                 }
-                start<MainActivity>()
-                finish()
             }
+            start<MainActivity>()
+            finish()
+
         }
 
         val onFailure = {

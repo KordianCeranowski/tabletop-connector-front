@@ -9,7 +9,7 @@ import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class EventViewModel : BaseViewModel<Event>() {
+class EventViewModel : ApiViewModel<Event>() {
 
     val responseParticipation = SingleLiveEvent<Response<Unit>>()
 

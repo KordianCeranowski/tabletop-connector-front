@@ -24,7 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".main.activity.EventEditActivity" />
-        <activity android:name=".main.activity.sample.LocationActivity" />
         <activity android:name=".main.activity.EventFormActivity" />
         <activity android:name=".main.activity.EventActivity" />
         <activity android:name=".main.activity.MainActivity" />

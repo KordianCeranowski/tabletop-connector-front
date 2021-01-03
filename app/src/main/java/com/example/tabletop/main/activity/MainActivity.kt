@@ -27,7 +27,6 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.io.Serializable
 
-
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
 
@@ -56,6 +55,11 @@ class MainActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
@@ -66,18 +70,17 @@ class MainActivity : BaseActivity() {
 
         val userId = runBlocking { settingsManager.userIdFlow.first() }
 
-        val isMyEvents = intent.getBooleanExtra(Extra.IS_MY_EVENTS.toString(), false)
+        val isMyEvents = intent.getBooleanExtra(Extra.IS_MY_EVENTS(), false)
 
-        val bundleMyEvents = Bundle().apply {
-            putSerializable(
-                Extra.QUERY_MAP.toString(),
-                mapOf(Query.PARTICIPANT to userId) as Serializable
-            )
+        val queryMap = if (isMyEvents) mapOf(Query.PARTICIPANT to userId) else emptyMap()
+
+        val bundleQueryMap = Bundle().apply {
+            putSerializable(Extra.QUERY_MAP(), queryMap as Serializable)
         }
 
-        setupInitialFragment(isMyEvents, bundleMyEvents)
+        setupInitialFragment(isMyEvents, bundleQueryMap)
 
-        setupSidebarItemSelectedListener(bundleMyEvents)
+        setupSidebarItemSelectedListener(bundleQueryMap)
     }
 
     // Sidebar
@@ -123,6 +126,11 @@ class MainActivity : BaseActivity() {
 
     // Alert Dialog Filter
     private fun showAlertDialogFilter() {
+        val userLocation = object {
+            val longitude = runBlocking { settingsManager.userLongitudeFlow.first() }
+            val latitude = runBlocking { settingsManager.userLatitudeFlow.first() }
+        }
+
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Filter")
 
@@ -130,12 +138,22 @@ class MainActivity : BaseActivity() {
         builder.setView(customLayout)
 
         builder.setPositiveButton("OK") { _, _ ->
-            // send data from the AlertDialog to the Activity
-            val editText = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_distance)
-            sendDialogDataToActivity(editText.text.toString())
+            val dialogBox = object {
+                val distance = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_distance)
+                    .text.toString()
+                val name = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_name)
+                    .text.toString()
+            }
+            val queryMap = mapOf(
+                Query.DISTANCE to dialogBox.distance,
+                Query.NAME to dialogBox.name,
+                Query.GEO_X to userLocation.longitude.toString(),
+                Query.GEO_Y to userLocation.latitude.toString()
+            )
+            sendDialogDataToActivity(queryMap)
         }
 
-        builder.setNegativeButton("Cancel") { dialog, _ ->
+        builder.setNegativeButton("Cancel") { _, _ ->
             //dialog.cancel()
             //dialog.dismiss()
         }
@@ -144,27 +162,20 @@ class MainActivity : BaseActivity() {
         dialog.show()
     }
 
-    private fun sendDialogDataToActivity(data: String) {
-        logD(data)
+    private fun sendDialogDataToActivity(queryMap: Map<Query, String>) {
+        logD(queryMap.toString())
         val bundle = Bundle().apply {
-            putSerializable(
-                Extra.QUERY_MAP.toString(),
-                mapOf(Query.DISTANCE to "TODO") as Serializable
-            )
+            putSerializable(Extra.QUERY_MAP(), queryMap as Serializable)
         }
         setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "My Events")
     }
 
     // Fragments
-    private fun setupInitialFragment(isMyEvents: Boolean, bundleMyEvents: Bundle) {
-        if (isMyEvents) {
-            setFragmentAndTitle(
-                ListOfEventsFragment().apply { arguments = bundleMyEvents },
-                "My Events"
-            )
-        } else {
-            setFragmentAndTitle(ListOfEventsFragment(), "Events")
-        }
+    private fun setupInitialFragment(isMyEvents: Boolean, bundleQueryMap: Bundle) {
+        setFragmentAndTitle(
+            ListOfEventsFragment().apply { arguments = bundleQueryMap },
+            if (isMyEvents) "My Events" else "Events"
+        )
     }
 
     private fun setFragmentAndTitle(fragment: Fragment, title: String) {
@@ -187,6 +198,13 @@ class MainActivity : BaseActivity() {
     private fun logout() {
         val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
         userViewModel.logout(accessToken)
+        runBlocking {
+            settingsManager.run {
+                setUserAccessToken("")
+                setUserFirstName("")
+                setUserId("")
+            }
+        }
         start<LoginActivity>()
         finish()
     }

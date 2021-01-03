@@ -57,6 +57,11 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
     override fun setup() {
         binding
         settingsManager = SettingsManager(applicationContext)
+        setActionBarTitle("New Event")
+    }
+
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +80,8 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
         attachObserver()
 
-        val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
-        saveEvent(accessToken, getMockEventRequest())
+        //val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
+        //saveEvent(accessToken, getMockEventRequest())
     }
 
     // Handling
@@ -183,7 +188,6 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponse(response: Response<Event>) {
-
         val onSuccess = {
             logD(response.getFullResponse())
 
@@ -191,7 +195,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
             response.body()?.let {
                 //startWithExtra<EventActivity>(EXTRA_EVENT to it)
-                startWithExtra<MainActivity>(Extra.IS_MY_EVENTS.toString() to true)
+                startWithExtra<MainActivity>(Extra.IS_MY_EVENTS() to true)
                 finish()
             } as Unit
         }

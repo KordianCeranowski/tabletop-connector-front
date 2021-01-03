@@ -8,7 +8,6 @@ import com.example.tabletop.util.EVENT_API_ENDPOINT_CUSTOM
 import com.example.tabletop.util.USER_API_ENDPOINT_EVENT_PARTICIPATION
 import retrofit2.Response
 import retrofit2.http.*
-import java.util.*
 
 interface EventApi {
 
@@ -37,11 +36,13 @@ interface EventApi {
 
     @DELETE("$EVENT_API_ENDPOINT{id}/")
     suspend fun remove(
+        @Header("Authorization") auth: String,
         @Path("id") id: String
     ): Response<Event>
 
     @PATCH("$EVENT_API_ENDPOINT{id}/")
     suspend fun edit(
+        @Header("Authorization") auth: String,
         @Path("id") id: String,
         @Body event: Event
     ): Response<Event>

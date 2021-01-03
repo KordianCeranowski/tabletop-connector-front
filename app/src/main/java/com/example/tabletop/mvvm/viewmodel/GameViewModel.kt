@@ -1,16 +1,11 @@
 package com.example.tabletop.mvvm.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.mvvm.model.User
-import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.repository.GameRepository
-import com.example.tabletop.util.SingleLiveEvent
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
-class GameViewModel : BaseViewModel<Game>() {
+class GameViewModel : ApiViewModel<Game>() {
 
     fun getMany(accessToken: String, options: Map<String, String>) {
         viewModelScope.launch {
