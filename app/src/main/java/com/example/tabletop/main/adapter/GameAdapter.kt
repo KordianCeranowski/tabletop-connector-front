@@ -22,14 +22,14 @@ class GameAdapter : RecyclerView.Adapter<GameAdapter.MyViewHolder>() {
                 row_game_players.text = run {
                     StringBuilder()
                         .append("Players: ")
-                        .append(game.minPlayers)
+                        .append(game.min_players)
                         .append('-')
-                        .append(game.maxPlayers)
+                        .append(game.max_players)
                         .toString()
                 }
                 row_game_play_time.text = run {
                     StringBuilder()
-                        .append(game.playTime)
+                        .append(game.playtime)
                         .append(" min")
                         .toString()
                 }

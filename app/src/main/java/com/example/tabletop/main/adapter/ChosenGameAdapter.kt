@@ -26,7 +26,7 @@ class ChosenGameAdapter : RecyclerView.Adapter<ChosenGameAdapter.MyViewHolder>()
         fun bind(game: Game) {
             itemView.apply {
                 row_game_name.text = game.name
-                imageView.setImageFromURL(context, game.thumbnail)
+                row_chosen_game_image.setImageFromURL(context, game.thumbnail)
                 button.setOnClickListener {
                     viewItems = viewItems - game
                     notifyDataSetChanged()

@@ -4,22 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
 
     android:background="@drawable/border"
     android:clickable="true"
 
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingTop="15dp"
+    android:paddingTop="5dp"
 
-    android:paddingBottom="15dp">
+    android:paddingBottom="5dp">
 
     <TextView
         android:id="@+id/row_game_name"
 
-        android:layout_width="200dp"
-        android:layout_height="62dp"
+        android:layout_width="217dp"
+        android:layout_height="57dp"
 
         android:gravity="center"
         android:text="A very long name of a game"
@@ -28,45 +28,30 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.36"
+        app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.578" />
-
-    <ImageView
-        android:id="@+id/row_game_image"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="39dp"
+        android:layout_height="38dp"
         android:text="DELETE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.538" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="55dp"
-        android:layout_height="49dp"
+        android:id="@+id/row_chosen_game_image"
+        android:layout_width="74dp"
+        android:layout_height="67dp"
         app:layout_constraintBottom_toTopOf="@+id/row_game_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/row_game_name"
-        app:layout_constraintVertical_bias="0.495"/>
+        app:layout_constraintVertical_bias="0.495" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

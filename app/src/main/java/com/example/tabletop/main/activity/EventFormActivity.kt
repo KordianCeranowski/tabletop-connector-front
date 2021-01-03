@@ -123,42 +123,23 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         logI("Clicked Address")
 
         lifecycleScope.launch {
-            requestPermission(ACCESS_FINE_LOCATION)
-            val location = SimpleLocation(this@EventFormActivity)
-            location.beginUpdates()
-            if (!location.hasLocationEnabled()) {
-                // ask the user to enable location access
-                SimpleLocation.openSettings(this@EventFormActivity)
-            }
-            val latitude = location.latitude
-            val longitude = location.longitude
-            logI("lat $latitude, long $longitude")
-            location.endUpdates()
+
+            val (longitude, latitude) = getLocation()
 
             val geocoder = Geocoder(this@EventFormActivity, Locale.getDefault())
             val loc = geocoder.getFromLocation(latitude, longitude, 1)
-            if (loc == null || loc.size == 0){
+            if (loc == null || loc.size == 0) {
                 toast("Couldn't access location")
                 logI(loc.toString())
             }
             else {
                 val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
-
-                val country = address.countryName
-                val city = address.locality
-                val street = address.thoroughfare
-                val postalCode = address.postalCode
-                val number = address.featureName
-
-                val addr = Address(country, city, street, postalCode, number, latitude, longitude)
-
-                binding.tfCountry.setText(country)
-                binding.tfCity.setText(city)
-                binding.tfPostal.setText(postalCode)
-                binding.tfStreet.setText(street)
-                binding.tfNumber.setText(number)
-
-                logI(addr.toString())
+                // val addr = Address(country, city, street, postalCode, number, null, null)
+                binding.tfCountry.setText(address.countryName)
+                binding.tfCity.setText(address.locality)
+                binding.tfPostal.setText(address.thoroughfare)
+                binding.tfStreet.setText(address.postalCode)
+                binding.tfNumber.setText(address.featureName)
             }
         }
     }
