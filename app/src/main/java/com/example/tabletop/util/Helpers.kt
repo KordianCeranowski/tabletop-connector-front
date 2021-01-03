@@ -191,7 +191,7 @@ fun getMockGame(): Game {
     return Game(
         "name",
         "URL",
-        "URI",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Jmonkey-logo-head-tilted.png/600px-Jmonkey-logo-head-tilted.png",
         2,
         8,
         30

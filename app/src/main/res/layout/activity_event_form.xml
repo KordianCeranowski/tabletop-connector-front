@@ -154,10 +154,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/event_form_games_text" />
 
-            <ListView
-                android:id="@+id/list_games"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="100dp" />
+                android:layout_height="100dp"/>
 
             <Button
                 android:id="@+id/btn_add"
