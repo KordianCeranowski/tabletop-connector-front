@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
 import com.example.tabletop.main.activity.GamesListActivity
 import com.example.tabletop.mvvm.model.Game
+import com.example.tabletop.util.setImageFromURL
 import kotlinx.android.synthetic.main.row_game.view.*
 import net.alexandroid.utils.mylogkt.logI
 import splitties.toast.toast
@@ -24,10 +25,7 @@ class SearchGameAdapter : RecyclerView.Adapter<SearchGameAdapter.MyViewHolder>()
         fun bind(game: Game) {
             itemView.apply {
                 row_game_name.text = game.name
-                //row_game_image.setImageURI(Uri.parse(game.image))
-
-                logI("minPlayers" + game.min_players.toString())
-                logI("maxPlayers" +game.max_players.toString())
+                row_game_image.setImageFromURL(context, game.thumbnail)
                 row_game_players.text = run {
                     StringBuilder()
                         .append("Players: ")
@@ -36,8 +34,6 @@ class SearchGameAdapter : RecyclerView.Adapter<SearchGameAdapter.MyViewHolder>()
                         .append(game.max_players)
                         .toString()
                 }
-
-                logI("playTime" +game.playtime.toString())
                 row_game_play_time.text = run {
                     StringBuilder()
                         .append(game.playtime)
