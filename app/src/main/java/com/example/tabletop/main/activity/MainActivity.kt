@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -20,14 +21,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
-import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.io.Serializable
-
 
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
@@ -142,11 +141,7 @@ class MainActivity : BaseActivity() {
 
     // Alert Dialog Filter
     private fun showAlertDialogFilter() {
-        //todo get coordinates
-        val userLocation = object {
-            val longitude = runBlocking { settingsManager.userLongitudeFlow.first() }
-            val latitude = runBlocking { settingsManager.userLatitudeFlow.first() }
-        }
+        val (longitude, latitude) = getCurrentLocation()
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Filter")
@@ -154,18 +149,27 @@ class MainActivity : BaseActivity() {
         val customLayout = layoutInflater.inflate(R.layout.dialog_box_filter, null)
         builder.setView(customLayout)
 
-        builder.setPositiveButton("OK") { _, _ ->
-            val dialogBox = object {
-                val distance = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_distance)
-                    .text.toString()
-                val name = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_name)
-                    .text.toString()
+        val sbDistance = customLayout.findViewById<SeekBar>(R.id.sb_distance)
+
+        val tvDistanceCounter = customLayout.findViewById<TextView>(R.id.tv_distance_counter)
+
+        sbDistance.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                    tvDistanceCounter.text = "${p0?.progress} km"
+                }
+                override fun onStartTrackingTouch(p0: SeekBar?) {}
+                override fun onStopTrackingTouch(p0: SeekBar?) {}
             }
+        )
+
+        builder.setPositiveButton("OK") { _, _ ->
             val queryMap = mapOf(
-                Query.DISTANCE to dialogBox.distance,
-                Query.NAME to dialogBox.name,
-                Query.GEO_X to userLocation.longitude.toString(),
-                Query.GEO_Y to userLocation.latitude.toString()
+                Query.DISTANCE to sbDistance.progress.toString(),
+                //Query.DATE_FROM to
+                //Query.DATE_TO to
+                Query.GEO_X to longitude.toString(),
+                Query.GEO_Y to latitude.toString()
             )
             sendDialogDataToActivity(queryMap)
         }
@@ -181,7 +185,7 @@ class MainActivity : BaseActivity() {
         val bundle = Bundle().apply {
             putSerializable(Extra.QUERY_MAP(), queryMap as Serializable)
         }
-        setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "My Events")
+        setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "Events")
     }
 
     // Fragments

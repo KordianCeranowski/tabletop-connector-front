@@ -60,6 +60,8 @@ enum class Query(private val value: String) {
     PARTICIPANT("participant"),
     DISTANCE("distance"),
     NAME("search"),
+    DATE_FROM("date_from"),
+    DATE_TO("date_to"),
     GEO_X("geo_x"),
     GEO_Y ("geo_y");
 

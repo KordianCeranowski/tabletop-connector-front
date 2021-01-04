@@ -307,7 +307,7 @@ fun ImageView.setImageFromURL(context: Context, url: String) {
         .into(this)
 }
 
-fun BaseActivity.getLocation(): Pair<Double, Double>{
+fun BaseActivity.getCurrentLocation(): Pair<Double, Double>{
     runBlocking {
         requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     }
@@ -324,4 +324,4 @@ fun BaseActivity.getLocation(): Pair<Double, Double>{
     return Pair(longitude, latitude)
 }
 
-fun <T> T.print(): T = this.also { println(it) }
+fun <T> T.withPrint(): T = this.also { println(it) }

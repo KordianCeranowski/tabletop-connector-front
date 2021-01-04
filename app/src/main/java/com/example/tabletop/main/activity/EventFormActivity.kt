@@ -1,7 +1,5 @@
 package com.example.tabletop.main.activity
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -10,22 +8,18 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import android.widget.ArrayAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.main.adapter.ChosenGameAdapter
-import com.example.tabletop.main.adapter.SearchGameAdapter
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import im.delight.android.location.SimpleLocation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -33,8 +27,6 @@ import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
 import retrofit2.Response
-import splitties.activities.start
-import splitties.permissions.requestPermission
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.text.SimpleDateFormat
@@ -122,7 +114,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
         lifecycleScope.launch {
 
-            val (longitude, latitude) = getLocation()
+            val (longitude, latitude) = getCurrentLocation()
 
             val geocoder = Geocoder(this@EventFormActivity, Locale.getDefault())
             val loc = geocoder.getFromLocation(latitude, longitude, 1)
