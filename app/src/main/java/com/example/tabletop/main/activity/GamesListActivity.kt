@@ -1,26 +1,20 @@
 package com.example.tabletop.main.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
 import android.viewbinding.library.activity.viewBinding
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityGamesListBinding
-import com.example.tabletop.main.adapter.EventAdapter
-import com.example.tabletop.main.adapter.GameAdapter
 import com.example.tabletop.main.adapter.SearchGameAdapter
-import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.mvvm.viewmodel.GameViewModel
 import com.example.tabletop.settings.SettingsManager
-import com.example.tabletop.util.*
-import com.livinglifetechway.k4kotlin.core.toast
-import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
+import com.example.tabletop.util.getErrorBodyProperties
+import com.example.tabletop.util.getFullResponse
+import com.example.tabletop.util.resolve
+import com.example.tabletop.util.status
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -37,15 +31,32 @@ class GamesListActivity : BaseActivity() {
 
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
-
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
-            gameAdapter.setData(listOf(getMockGame(),getMockGame(),getMockGame()))
             adapter = gameAdapter
         }
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setup()
+        logI("GamesListActivity started")
+        searchGames("")
+        binding.etSearch.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                logI("inserted ${binding.etSearch.text}")
+                searchGames(binding.etSearch.text.toString())
+                return@OnKeyListener true
+            }
+            false
+        })
+
+        supportActionBar?.title = "Games"
+    }
+
+    private fun searchGames(name: String) {
         val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
-        gameViewModel.getMany(accessToken)
+        gameViewModel.getMany(accessToken, name)
         gameViewModel.responseMany.observe(this) {
             val onSuccess = {
                 logI("OnSuccess")
@@ -66,17 +77,5 @@ class GamesListActivity : BaseActivity() {
             logI("Resolve")
             it.resolve(onSuccess, onFailure)
         }
-
-        setActionBarTitle("Games")
-    }
-
-    private fun setActionBarTitle(title: String) {
-        supportActionBar?.title = title
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setup()
-        logI("GamesListActivity started")
     }
 }
