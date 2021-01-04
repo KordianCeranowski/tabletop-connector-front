@@ -1,22 +1,31 @@
 package com.example.tabletop.main.adapter
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
+import com.example.tabletop.main.activity.GamesListActivity
 import com.example.tabletop.mvvm.model.Game
+import com.example.tabletop.util.setImageFromURL
 import kotlinx.android.synthetic.main.row_game.view.*
+import net.alexandroid.utils.mylogkt.logI
+import splitties.toast.toast
 
-class GameAdapter : RecyclerView.Adapter<GameAdapter.MyViewHolder>() {
+class SearchGameAdapter : RecyclerView.Adapter<SearchGameAdapter.MyViewHolder>() {
 
     private var viewItems = emptyList<Game>()
+    var activity: Activity? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(game: Game) {
             itemView.apply {
                 row_game_name.text = game.name
-                //row_game_image.setImageURI(Uri.parse(game.image))
+                row_game_image.setImageFromURL(context, game.thumbnail)
                 row_game_players.text = run {
                     StringBuilder()
                         .append("Players: ")
@@ -30,6 +39,12 @@ class GameAdapter : RecyclerView.Adapter<GameAdapter.MyViewHolder>() {
                         .append(game.playtime)
                         .append(" min")
                         .toString()
+                }
+                setOnClickListener {
+                    val data = Intent()
+                    data.putExtra("game", game)
+                    (context as GamesListActivity).setResult(Activity.RESULT_OK, data)
+                    (context as GamesListActivity).finish()
                 }
             }
         }

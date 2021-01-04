@@ -4,8 +4,8 @@ data class Game(
     val name: String,
     val image: String,
     val thumbnail: String,
-    val minPlayers: Int,
-    val maxPlayers: Int,
-    val playTime: Int,
+    val min_players: Int,
+    val max_players: Int,
+    val playtime: Int,
     val id: String = ""
 ) : Model()

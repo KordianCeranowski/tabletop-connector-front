@@ -2,6 +2,7 @@
 
 package com.example.tabletop.util
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import com.bumptech.glide.Glide
 import com.example.tabletop.R
+import com.example.tabletop.main.activity.BaseActivity
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
@@ -18,12 +20,16 @@ import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.model.helpers.request.AddressSimple
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.google.gson.*
+import im.delight.android.location.SimpleLocation
+import kotlinx.coroutines.runBlocking
+import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
 import retrofit2.Response
+import splitties.permissions.requestPermission
 import java.io.Serializable
 
 val gson: Gson = GsonBuilder().setPrettyPrinting().create()
@@ -73,6 +79,19 @@ inline fun <reified T : Activity> Context.startWithExtra(vararg pairs: Pair<Stri
         }
         startActivity(intent)
     }
+}
+
+fun ImageView.setImageFromURL(
+    context: Context,
+    url: String,
+    placeholder: Int = R.drawable.ic_person
+) {
+    Glide
+        .with(context)
+        .load(url)
+        .centerCrop()
+        .placeholder(placeholder)
+        .into(this)
 }
 
 fun getSeparatedDateTime(dateTime: String): Pair<String, String> {
@@ -178,7 +197,7 @@ fun getMockGame(): Game {
     return Game(
         "name",
         "URL",
-        "URI",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Jmonkey-logo-head-tilted.png/600px-Jmonkey-logo-head-tilted.png",
         2,
         8,
         30
@@ -287,3 +306,22 @@ fun ImageView.setImageFromURL(context: Context, url: String) {
         .centerCrop()
         .into(this)
 }
+
+fun BaseActivity.getLocation(): Pair<Double, Double>{
+    runBlocking {
+        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+    val location = SimpleLocation(this)
+    location.beginUpdates()
+    if (!location.hasLocationEnabled()) {
+        // ask the user to enable location access
+        SimpleLocation.openSettings(this)
+    }
+    val longitude = location.longitude.also { logI(it.toString()) }
+    val latitude = location.latitude.also { logI(it.toString()) }
+    location.endUpdates()
+
+    return Pair(longitude, latitude)
+}
+
+fun <T> T.print(): T = this.also { println(it) }

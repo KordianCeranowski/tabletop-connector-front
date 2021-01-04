@@ -15,7 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.databinding.ActivityEventFormBinding
+import com.example.tabletop.main.adapter.ChosenGameAdapter
+import com.example.tabletop.main.adapter.SearchGameAdapter
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
@@ -50,12 +53,14 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
     private lateinit var settingsManager: SettingsManager
 
-    private val games = mutableListOf<String>()
+    private val gameAdapter by lazy { ChosenGameAdapter() }
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun setup() {
-        binding
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = gameAdapter
+        }
         settingsManager = SettingsManager(applicationContext)
         setActionBarTitle("New Event")
     }
@@ -69,8 +74,6 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         setup()
 
         logI("Opened EventFormActivity.OnCreate")
-
-        binding.listGames.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, games)
 
         binding.btnDate.setOnClickListener { handleDateClick() }
         binding.btnTime.setOnClickListener { handleTimeClick() }
@@ -120,42 +123,23 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         logI("Clicked Address")
 
         lifecycleScope.launch {
-            requestPermission(ACCESS_FINE_LOCATION)
-            val location = SimpleLocation(this@EventFormActivity)
-            location.beginUpdates()
-            if (!location.hasLocationEnabled()) {
-                // ask the user to enable location access
-                SimpleLocation.openSettings(this@EventFormActivity)
-            }
-            val latitude = location.latitude
-            val longitude = location.longitude
-            logI("lat $latitude, long $longitude")
-            location.endUpdates()
+
+            val (longitude, latitude) = getLocation()
 
             val geocoder = Geocoder(this@EventFormActivity, Locale.getDefault())
             val loc = geocoder.getFromLocation(latitude, longitude, 1)
-            if (loc == null || loc.size == 0){
+            if (loc == null || loc.size == 0) {
                 toast("Couldn't access location")
                 logI(loc.toString())
             }
             else {
                 val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
-
-                val country = address.countryName
-                val city = address.locality
-                val street = address.thoroughfare
-                val postalCode = address.postalCode
-                val number = address.featureName
-
-                val addr = Address(country, city, street, postalCode, number, latitude, longitude)
-
-                binding.tfCountry.setText(country)
-                binding.tfCity.setText(city)
-                binding.tfPostal.setText(postalCode)
-                binding.tfStreet.setText(street)
-                binding.tfNumber.setText(number)
-
-                logI(addr.toString())
+                // val addr = Address(country, city, street, postalCode, number, null, null)
+                binding.tfCountry.setText(address.countryName)
+                binding.tfCity.setText(address.locality)
+                binding.tfPostal.setText(address.thoroughfare)
+                binding.tfStreet.setText(address.postalCode)
+                binding.tfNumber.setText(address.featureName)
             }
         }
     }
@@ -170,10 +154,9 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                val result = data?.extras?.get("gamename")
-                games.add(result.toString())
-                logI(games.toString())
-                binding.listGames.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, games)
+                val result = data?.extras?.get("game") as Game
+                gameAdapter.addGame(result)
+                logI("recived ${result.toString()}")
             }
         }
     }
