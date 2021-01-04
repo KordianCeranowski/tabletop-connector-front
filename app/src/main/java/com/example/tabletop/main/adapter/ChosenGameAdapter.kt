@@ -55,8 +55,12 @@ class ChosenGameAdapter : RecyclerView.Adapter<ChosenGameAdapter.MyViewHolder>()
         notifyDataSetChanged()
     }
 
-    fun addGame(game: Game){
+    fun addGame(game: Game) {
         viewItems = viewItems + game
         notifyDataSetChanged()
+    }
+
+    fun getGames(): List<Game> {
+        return viewItems
     }
 }

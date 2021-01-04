@@ -79,7 +79,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         binding.btnTime.setOnClickListener { handleTimeClick() }
         binding.btnAutofill.setOnClickListener { handleAddressClick() }
         binding.btnAdd.setOnClickListener { handleGamesClick() }
-
+        binding.btnSubmit.setOnClickListener { handleSubmitClick()}
 
         attachObserver()
 
@@ -159,6 +159,21 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
                 logI("recived ${result.toString()}")
             }
         }
+    }
+
+    private fun handleSubmitClick() {
+        val date = binding.btnDate.text.toString()
+        val time = binding.btnTime.text.toString()
+        val address = Address(
+            binding.tfCountry.text.toString(),
+            binding.tfCity.text.toString(),
+            binding.tfStreet.text.toString(),
+            binding.tfPostal.text.toString(),
+            binding.tfNumber.text.toString(),
+            null,null
+        )
+        val games = gameAdapter.getGames()
+
     }
 
     // Save Event
