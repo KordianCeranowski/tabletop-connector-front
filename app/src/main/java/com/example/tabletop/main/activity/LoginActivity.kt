@@ -118,6 +118,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             runBlocking {
                 settingsManager.run {
                     setUserAccessToken(body.auth_token)
+                    setUserFirstName(body.firstname)
                     setUserId(body.user_id)
                 }
             }

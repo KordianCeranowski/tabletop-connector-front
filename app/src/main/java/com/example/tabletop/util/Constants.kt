@@ -3,6 +3,9 @@ package com.example.tabletop.util
 import android.util.Patterns
 import java.util.regex.Pattern
 
+// ERROR MESSAGES
+const val ERROR_MESSAGE_FAILURE = "Something went wrong"
+
 // URL
 const val BASE_URL = "http://10.0.2.2:8000/api/"
 
@@ -10,6 +13,10 @@ const val BASE_URL = "http://10.0.2.2:8000/api/"
 const val USER_API_ENDPOINT = "users/"
 
 const val USER_API_ENDPOINT_REGISTER = "auth/users/"
+
+const val USER_API_ENDPOINT_SET_PASSWORD = "/auth/users/set_password/"
+
+const val USER_API_ENDPOINT_SET_USERNAME = "auth/users/set_username/"
 
 const val USER_API_ENDPOINT_LOGIN = "auth/token/login/"
 
@@ -22,6 +29,7 @@ const val USER_API_ENDPOINT_MY_PROFILE = "profiles/me/"
 const val USER_API_ENDPOINT_EVENT_PARTICIPATION = "participation/"
 
 const val USER_API_ENDPOINT_CREATE_PROFILE = "profiles/"
+
 
 // GAME API
 const val GAME_API_ENDPOINT = "games/"

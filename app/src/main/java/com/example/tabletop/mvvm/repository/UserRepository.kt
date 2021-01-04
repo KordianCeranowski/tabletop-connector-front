@@ -6,6 +6,7 @@ import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
 import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
+import com.google.gson.JsonObject
 import retrofit2.Response
 
 object UserRepository : Repository<User>() {
@@ -50,4 +51,11 @@ object UserRepository : Repository<User>() {
         return userApi.logout(accessToken)
     }
 
+    suspend fun changeUsername(accessToken: String, json: JsonObject): Response<JsonObject> {
+        return userApi.changeUsername(accessToken, json)
+    }
+
+    suspend fun changePassword(accessToken: String, json: JsonObject): Response<JsonObject> {
+        return userApi.changePassword(accessToken, json)
+    }
 }

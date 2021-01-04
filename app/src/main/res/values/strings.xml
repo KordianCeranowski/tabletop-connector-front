@@ -46,5 +46,7 @@
     <string name="event_form_add_new_event">ADD NEW EVENT</string>
     <string name="search_here">Search Here</string>
     <string name="name">Name</string>
+    <string name="hint_new_username">New Username</string>
+    <string name="confirm">Confirm</string>
 
 </resources>

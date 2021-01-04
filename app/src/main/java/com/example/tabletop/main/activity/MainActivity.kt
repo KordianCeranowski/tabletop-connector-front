@@ -15,6 +15,7 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
+import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
@@ -27,6 +28,7 @@ import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.io.Serializable
 
+
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
 
@@ -38,10 +40,11 @@ class MainActivity : BaseActivity() {
 
     private lateinit var toggle: ActionBarDrawerToggle
 
+    private var isMenuItemFilterVisible = true
+
     // Setup
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
-        logI("Starting ${this.className}")
     }
 
     private fun setupSidebar() {
@@ -53,6 +56,12 @@ class MainActivity : BaseActivity() {
         toggle.syncState()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Setup welcome message
+        val userFirstName = runBlocking { settingsManager.userFirstNameFlow.first() }
+        logV("User first name $userFirstName")
+        val tvUserFirstName = binding.nvSidebar.getHeaderView(0).tv_nav_header_user_firstname
+        tvUserFirstName.text = "Welcome, $userFirstName"
     }
 
     override fun onBackPressed() {
@@ -86,6 +95,14 @@ class MainActivity : BaseActivity() {
     // Sidebar
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.mi_main_filter).isVisible = isMenuItemFilterVisible
+
         return true
     }
 
@@ -112,8 +129,8 @@ class MainActivity : BaseActivity() {
                         ListOfEventsFragment().apply { arguments = bundleMyEvents },
                         "My Events"
                     )
-                R.id.mi_settings ->
-                    setFragmentAndTitle(SettingsFragment(), "Settings")
+                R.id.mi_account ->
+                    setFragmentAndTitle(AccountFragment(), "Account")
                 R.id.mi_about ->
                     setFragmentAndTitle(AboutFragment(), "About")
                 R.id.mi_logout ->
@@ -126,6 +143,7 @@ class MainActivity : BaseActivity() {
 
     // Alert Dialog Filter
     private fun showAlertDialogFilter() {
+        //todo get coordinates
         val userLocation = object {
             val longitude = runBlocking { settingsManager.userLongitudeFlow.first() }
             val latitude = runBlocking { settingsManager.userLatitudeFlow.first() }
@@ -153,10 +171,7 @@ class MainActivity : BaseActivity() {
             sendDialogDataToActivity(queryMap)
         }
 
-        builder.setNegativeButton("Cancel") { _, _ ->
-            //dialog.cancel()
-            //dialog.dismiss()
-        }
+        builder.setNegativeButton("Cancel") { _, _ -> }
 
         val dialog = builder.create()
         dialog.show()
@@ -184,6 +199,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
+        isMenuItemFilterVisible = (fragment.className == "ListOfEventsFragment").also {
+            invalidateOptionsMenu()
+        }
+
         supportFragmentManager.beginTransaction().apply {
             replace(binding.flFragmentMain.id, fragment)
             commit()

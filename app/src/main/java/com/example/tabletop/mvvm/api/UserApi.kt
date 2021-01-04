@@ -6,12 +6,15 @@ import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
 import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import com.example.tabletop.util.*
+import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
 
 interface UserApi {
 
     // USER
+
+    // useless
     @GET(USER_API_ENDPOINT)
     suspend fun getMany(
         @Header("Authorization") auth: String,
@@ -23,16 +26,29 @@ interface UserApi {
         @Path("id") id: String
     ): Response<User>
 
-    @DELETE("$USER_API_ENDPOINT{id}/")
-    suspend fun remove(
-        @Path("id") id: String
-    ): Response<User>
-
     @PATCH("$USER_API_ENDPOINT{id}/")
     suspend fun edit(
         @Path("id") id: String,
         @Body user: User
     ): Response<User>
+    //
+
+    @DELETE("$USER_API_ENDPOINT{id}/")
+    suspend fun remove(
+        @Path("id") id: String
+    ): Response<User>
+
+    @POST(USER_API_ENDPOINT_SET_USERNAME)
+    suspend fun changeUsername(
+        @Header("Authorization") accessToken: String,
+        @Body json: JsonObject
+    ): Response<JsonObject>
+
+    @POST(USER_API_ENDPOINT_SET_PASSWORD)
+    suspend fun changePassword(
+        @Header("Authorization") accessToken: String,
+        @Body json: JsonObject
+    ): Response<JsonObject>
 
     @POST(USER_API_ENDPOINT_LOGIN)
     suspend fun login(
@@ -63,7 +79,7 @@ interface UserApi {
 
     @PATCH("$USER_API_ENDPOINT_CREATE_PROFILE{id}/")
     suspend fun editProfile(
-        @Header("Authorization") auth: String,
+        @Header("Authorization") accessToken: String,
         @Path("id") id: String,
         @Body profile: Profile
     ): Response<Profile>

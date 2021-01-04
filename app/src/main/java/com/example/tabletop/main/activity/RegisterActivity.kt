@@ -228,13 +228,13 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponseLogin(response: Response<LoginResponse>) {
-
         val onSuccess = {
             val body = response.body()!!
             runBlocking {
                 settingsManager.run {
                     setIsFirstRun(false)
                     setUserAccessToken(body.auth_token)
+                    setUserFirstName(body.firstname)
                     setUserId(body.user_id)
                 }
             }

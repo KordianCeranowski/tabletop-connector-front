@@ -75,19 +75,6 @@ inline fun <reified T : Activity> Context.startWithExtra(vararg pairs: Pair<Stri
     }
 }
 
-fun ImageView.setImageFromURL(
-    context: Context,
-    url: String,
-    placeholder: Int = R.drawable.ic_person
-) {
-    Glide
-        .with(context)
-        .load(url)
-        .centerCrop()
-        .placeholder(placeholder)
-        .into(this)
-}
-
 fun getSeparatedDateTime(dateTime: String): Pair<String, String> {
     val separatorIndex = dateTime.toList().zip(dateTime.indices).find { it.first == 'T' }!!.second
     val date = dateTime.subSequence(0, separatorIndex).toString()
@@ -291,4 +278,12 @@ fun <T> Response<T>.resolve(onSuccess: () -> Any, onFailure: () -> Any) {
     } else {
         onFailure()
     }
+}
+
+fun ImageView.setImageFromURL(context: Context, url: String) {
+    Glide
+        .with(context)
+        .load(url)
+        .centerCrop()
+        .into(this)
 }

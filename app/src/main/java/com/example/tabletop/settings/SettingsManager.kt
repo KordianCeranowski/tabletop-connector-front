@@ -46,7 +46,9 @@ class SettingsManager(context: Context) {
 
     suspend fun setUserFirstName(userFirstName: String) {
         dataStore.edit { preferences ->
-            preferences[USER_ID] = userFirstName.also { logV("User first name : \"$it\"") }
+            preferences[USER_FIRST_NAME] = userFirstName.also {
+                logV("User first name : \"$it\"")
+            }
         }
     }
 
