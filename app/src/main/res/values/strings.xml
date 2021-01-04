@@ -9,6 +9,10 @@
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
 
+    <string name="hint_new_username">New Username</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="hint_current_password">Current Password</string>
+
     <!-- Buttons -->
     <string name="btn_login">Sign In</string>
     <string name="btn_register">Sign Up</string>
@@ -28,6 +32,7 @@
     <string name="edit">Edit</string>
     <string name="distance">Distance</string>
     <string name="empty_recycler_view">No events to show :(</string>
+    <string name="confirm">Confirm</string>
 
     <string name="event_form_btn_add">Add</string>
     <string name="event_form_btn_submit">Submit</string>
@@ -46,7 +51,4 @@
     <string name="event_form_add_new_event">ADD NEW EVENT</string>
     <string name="search_here">Search Here</string>
     <string name="name">Name</string>
-    <string name="hint_new_username">New Username</string>
-    <string name="confirm">Confirm</string>
-
 </resources>

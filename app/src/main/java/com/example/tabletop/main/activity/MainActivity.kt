@@ -59,7 +59,6 @@ class MainActivity : BaseActivity() {
 
         // Setup welcome message
         val userFirstName = runBlocking { settingsManager.userFirstNameFlow.first() }
-        logV("User first name $userFirstName")
         val tvUserFirstName = binding.nvSidebar.getHeaderView(0).tv_nav_header_user_firstname
         tvUserFirstName.text = "Welcome, $userFirstName"
     }
@@ -130,7 +129,7 @@ class MainActivity : BaseActivity() {
                         "My Events"
                     )
                 R.id.mi_account ->
-                    setFragmentAndTitle(AccountFragment(), "Account")
+                    start<AccountActivity>()
                 R.id.mi_about ->
                     setFragmentAndTitle(AboutFragment(), "About")
                 R.id.mi_logout ->

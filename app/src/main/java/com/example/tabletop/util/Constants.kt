@@ -3,6 +3,11 @@ package com.example.tabletop.util
 import android.util.Patterns
 import java.util.regex.Pattern
 
+// DEVELOPMENT ONLY
+const val USER_TEST_LOGIN = "testo"
+
+const val USER_TEST_PASSWORD = "qwqwqwqW1$"
+
 // ERROR MESSAGES
 const val ERROR_MESSAGE_FAILURE = "Something went wrong"
 
@@ -14,7 +19,7 @@ const val USER_API_ENDPOINT = "users/"
 
 const val USER_API_ENDPOINT_REGISTER = "auth/users/"
 
-const val USER_API_ENDPOINT_SET_PASSWORD = "/auth/users/set_password/"
+const val USER_API_ENDPOINT_SET_PASSWORD = "auth/users/set_password/"
 
 const val USER_API_ENDPOINT_SET_USERNAME = "auth/users/set_username/"
 
@@ -43,6 +48,7 @@ const val EVENT_API_ENDPOINT_CUSTOM = "events/search/"
 enum class Extra(private val value: String) {
     PROFILE_ID("PROFILE_ID"),
     EVENT("EVENT"),
+    EVENT_ID("EVENT_ID"),
     IS_MY_EVENTS("IS_MY_EVENTS"),
     QUERY_MAP("QUERY_MAP");
 

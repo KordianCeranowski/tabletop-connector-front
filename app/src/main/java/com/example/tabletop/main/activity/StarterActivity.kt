@@ -39,8 +39,9 @@ class StarterActivity : AppCompatActivity() {
             }
         }
         runBlocking {
-            settingsManager.userFirstNameFlow.first().also {
-                logV("Initial User First Name: [$it]")
+            settingsManager.run {
+                userFirstNameFlow.first().also { logV("Initial User First Name: [$it]") }
+                userIdFlow.first().also { logV("Initial User Id: [$it]") }
             }
         }
         startProperActivity(isFirstRun, accessToken)

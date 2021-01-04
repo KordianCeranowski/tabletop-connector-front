@@ -49,10 +49,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     // DEVELOPMENT ONLY
     private fun fillForm() {
         binding.registerEtEmail.value = "test@test.test"
-        binding.registerEtUsername.value = "testo5325"
-        binding.registerEtFirstname.value = "Kuba"
-        binding.registerEtLastname.value = "Talar"
-        binding.registerEtPassword.value = "qwqwqwqW1$"
+        binding.registerEtUsername.value = USER_TEST_LOGIN
+        binding.registerEtFirstname.value = "Łukasz"
+        binding.registerEtLastname.value = "Stanisławowski"
+        binding.registerEtPassword.value = USER_TEST_PASSWORD
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
 

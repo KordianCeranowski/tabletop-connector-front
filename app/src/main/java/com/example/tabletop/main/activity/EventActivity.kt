@@ -93,7 +93,9 @@ class EventActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mi_event_edit -> start<EventEditActivity>()
+            R.id.mi_event_edit -> startWithExtra<EventEditActivity>(
+                Extra.EVENT_ID() to currentEvent.id
+            )
         }
         return true
     }

@@ -55,7 +55,6 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
     private val gameAdapter by lazy { ChosenGameAdapter() }
 
-
     override fun setup() {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -79,7 +78,6 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
         binding.btnTime.setOnClickListener { handleTimeClick() }
         binding.btnAutofill.setOnClickListener { handleAddressClick() }
         binding.btnAdd.setOnClickListener { handleGamesClick() }
-
 
         attachObserver()
 
