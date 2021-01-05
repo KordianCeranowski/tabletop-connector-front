@@ -251,7 +251,7 @@ fun <T> Response<T>.getFullResponse(showBody: Boolean = true): String {
 
 fun <T> Response<T>.status(): String = "${this.code()} ${this.message()}\n"
 
-fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
+fun <T> Response<T>.getErrorJson(): Map<String, String> {
     val errorBodyString = this.errorBody()?.string()
 
     val responseBody = JSONTokener(errorBodyString).nextValue()
@@ -308,20 +308,23 @@ fun ImageView.setImageFromURL(context: Context, url: String) {
 }
 
 fun BaseActivity.getCurrentLocation(): Pair<Double, Double>{
-    runBlocking {
-        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
+    runBlocking { requestPermission(Manifest.permission.ACCESS_FINE_LOCATION) }
+
     val location = SimpleLocation(this)
+
     location.beginUpdates()
+
     if (!location.hasLocationEnabled()) {
         // ask the user to enable location access
         SimpleLocation.openSettings(this)
     }
+
     val longitude = location.longitude.also { logI(it.toString()) }
     val latitude = location.latitude.also { logI(it.toString()) }
+
     location.endUpdates()
 
-    return Pair(longitude, latitude)
+    return (longitude to latitude)
 }
 
 fun <T> T.withPrint(): T = this.also { println(it) }

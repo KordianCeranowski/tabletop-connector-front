@@ -48,18 +48,16 @@ class EventEditActivity : BaseActivity() {
     }
 
     private fun showAlertDialogDeleteEvent(accessToken: String, eventId: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirm")
+        val builder = AlertDialog.Builder(this).apply {
+            setTitle("Confirm")
+            setMessage("Are you sure you want to delete this event?")
 
-        val customLayout = layoutInflater.inflate(R.layout.alert_dialog_delete_event, null)
-        builder.setView(customLayout)
+            setPositiveButton("OK") { _, _ ->
+                deleteEvent(accessToken, eventId)
+            }
 
-        builder.setPositiveButton("OK") { _, _ ->
-            deleteEvent(accessToken, eventId)
+            setNegativeButton("Cancel") { _, _ -> }
         }
-
-        builder.setNegativeButton("Cancel") { _, _ -> }
-
         val dialog = builder.create()
         dialog.show()
     }

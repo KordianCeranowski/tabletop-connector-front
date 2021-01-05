@@ -17,11 +17,9 @@ import retrofit2.Response
 import splitties.toast.toast
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-class UserChangePasswordActivity : BaseActivity(), IErrorBodyProperties {
+class UserChangePasswordActivity : BaseActivity() {
 
     override val binding: ActivityUserChangePasswordBinding by viewBinding()
-
-    override lateinit var errorBodyProperties: Map<String, String>
 
     private val userViewModel by lazyViewModels { UserViewModel() }
 
@@ -102,39 +100,40 @@ class UserChangePasswordActivity : BaseActivity(), IErrorBodyProperties {
     private fun handleResponse(response: Response<JsonObject>) {
         val onSuccess = {
             logD(response.status())
-            logD(response.getFullResponse())
 
             toast("Password changed")
             finish()
         }
 
         val onFailure = {
-            logW(response.getFullResponse())
-            logW(response.getErrorBodyProperties().toString())
-            toast(ERROR_MESSAGE_FAILURE)
+            val errorJson = response.getErrorJson()
 
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
-            logD(errorBodyProperties.toString())
+            logW(response.getFullResponse())
+            logW(errorJson.toString())
 
             val errors = mapOf(
                 "current_password" to "[Invalid password.]"
             )
 
-            errorBodyProperties.forEach { (key, value) ->
-                when(key) {
-                    "current_password" -> {
-                        val tempKey = "current_password"
-                        if (value == errors[tempKey]) {
-                            toast("Invalid password")
-                            binding.etChangePasswordCurrentPassword.error = "Invalid password"
+            handleErrors(errorJson, errors)
+        }
+
+        response.resolve(onSuccess, onFailure)
+    }
+
+    private fun handleErrors(errorJson: Map<String, String>, errors: Map<String, String>) {
+        errorJson.forEach { (key, value) ->
+            when (key) {
+                "current_password" -> {
+                    binding.etChangePasswordCurrentPassword.run {
+                        if (value == errors["current_password"]) {
+                            error = "Invalid password".also { toast("Invalid password") }
+                        } else {
+                            disableError().also { toast(ERROR_MESSAGE_FAILURE) }
                         }
                     }
                 }
             }
         }
-
-        response.resolve(onSuccess, onFailure)
     }
 }

@@ -1,26 +1,14 @@
 package com.example.tabletop.main.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityGamesListBinding
-import com.example.tabletop.main.adapter.EventAdapter
-import com.example.tabletop.main.adapter.GameAdapter
 import com.example.tabletop.main.adapter.SearchGameAdapter
-import com.example.tabletop.mvvm.model.Game
-import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.mvvm.viewmodel.GameViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
-import com.livinglifetechway.k4kotlin.core.toast
-import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -60,7 +48,7 @@ class GamesListActivity : BaseActivity() {
             val onFailure = {
                 logI("OnFailure")
                 logW(it.getFullResponse())
-                logW(it.getErrorBodyProperties().toString())
+                logW(it.getErrorJson().toString())
             }
 
             logI("Resolve")

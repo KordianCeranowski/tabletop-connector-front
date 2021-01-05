@@ -143,15 +143,10 @@ class MainActivity : BaseActivity() {
     private fun showAlertDialogFilter() {
         val (longitude, latitude) = getCurrentLocation()
 
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Filter")
+        val layout = layoutInflater.inflate(R.layout.alert_dialog_event_filter, null)
 
-        val customLayout = layoutInflater.inflate(R.layout.alert_dialog_event_filter, null)
-        builder.setView(customLayout)
-
-        val sbDistance = customLayout.findViewById<SeekBar>(R.id.sb_distance)
-
-        val tvDistanceCounter = customLayout.findViewById<TextView>(R.id.tv_distance_counter)
+        val sbDistance = layout.findViewById<SeekBar>(R.id.sb_distance)
+        val tvDistanceCounter = layout.findViewById<TextView>(R.id.tv_distance_counter)
 
         sbDistance.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
@@ -163,18 +158,23 @@ class MainActivity : BaseActivity() {
             }
         )
 
-        builder.setPositiveButton("OK") { _, _ ->
-            val queryMap = mapOf(
-                Query.DISTANCE to sbDistance.progress.toString(),
-                //Query.DATE_FROM to
-                //Query.DATE_TO to
-                Query.GEO_X to longitude.toString(),
-                Query.GEO_Y to latitude.toString()
-            )
-            sendDialogDataToActivity(queryMap)
-        }
+        val builder = AlertDialog.Builder(this).apply {
+            setTitle("Filter")
+            setView(layout)
 
-        builder.setNegativeButton("Cancel") { _, _ -> }
+            setPositiveButton("OK") { _, _ ->
+                val queryMap = mapOf(
+                    Query.DISTANCE to sbDistance.progress.toString(),
+                    //Query.DATE_FROM to
+                    //Query.DATE_TO to
+                    Query.GEO_X to longitude.toString(),
+                    Query.GEO_Y to latitude.toString()
+                )
+                sendDialogDataToActivity(queryMap)
+            }
+
+            setNegativeButton("Cancel") { _, _ -> }
+        }
 
         val dialog = builder.create()
         dialog.show()
@@ -248,9 +248,12 @@ class MainActivity : BaseActivity() {
         }
 
         val onFailure = {
+            val errorJson = response.getErrorJson()
+
             logW(response.getFullResponse())
-            logW(response.getErrorBodyProperties().toString())
-            toast("Something went wrong with logging out")
+            logW(errorJson.toString())
+
+            toast("Something went wrong")
         }
 
         response.resolve(onSuccess, onFailure)

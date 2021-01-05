@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
-import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.toast.UnreliableToastApi
@@ -49,7 +48,6 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     fun setup() {
         settingsManager = SettingsManager(requireContext())
-        //logI("Starting ${this.className}")
         currentEvent = arguments?.getSerializable(Extra.EVENT.toString()) as Event
     }
 
@@ -68,7 +66,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         val (date, time) = getSeparatedDateTime(currentEvent.date)
 
         binding.tvEventName.text = currentEvent.name
-        binding.tvEventCreator.text = currentEvent.creator.username
+        binding.tvEventCreator.text = currentEvent.creator.profile.fullName
         binding.tvEventDate.text = date
         binding.tvEventTime.text = time
 
@@ -142,7 +140,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         val onFailure = {
             toast("Something went wrong while joining event")
             logW(response.getFullResponse())
-            logI(response.getErrorBodyProperties().toString())
+            logI(response.getErrorJson().toString())
         }
 
         response.resolve(onSuccess, onFailure)
@@ -162,7 +160,7 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
         val onFailure = {
             toast("Something went wrong while retrieving event")
             logW(response.getFullResponse())
-            logI(response.getErrorBodyProperties().toString())
+            logI(response.getErrorJson().toString())
         }
 
         response.resolve(onSuccess, onFailure)

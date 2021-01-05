@@ -8,7 +8,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.databinding.ActivityEventFormBinding
@@ -20,9 +19,6 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
@@ -35,13 +31,11 @@ import java.util.*
 
 @UnreliableToastApi
 @Suppress("COMPATIBILITY_WARNING")
-class EventFormActivity : BaseActivity(), IErrorBodyProperties {
+class EventFormActivity : BaseActivity() {
 
     override val binding: ActivityEventFormBinding by viewBinding()
 
     private val eventViewModel by lazyViewModels { EventViewModel() }
-
-    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -112,25 +106,25 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
     private fun handleAddressClick() {
         logI("Clicked Address")
 
-        lifecycleScope.launch {
+        val (longitude, latitude) = getCurrentLocation()
 
-            val (longitude, latitude) = getCurrentLocation()
+        val geocoder = Geocoder(this, Locale.getDefault())
 
-            val geocoder = Geocoder(this@EventFormActivity, Locale.getDefault())
-            val loc = geocoder.getFromLocation(latitude, longitude, 1)
-            if (loc == null || loc.size == 0) {
-                toast("Couldn't access location")
-                logI(loc.toString())
-            }
-            else {
-                val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
-                // val addr = Address(country, city, street, postalCode, number, null, null)
-                binding.tfCountry.setText(address.countryName)
-                binding.tfCity.setText(address.locality)
-                binding.tfPostal.setText(address.thoroughfare)
-                binding.tfStreet.setText(address.postalCode)
-                binding.tfNumber.setText(address.featureName)
-            }
+        val loc = geocoder.getFromLocation(latitude, longitude, 1)
+
+        if (loc == null || loc.size == 0) {
+            toast("Couldn't access location")
+            logI(loc.toString())
+        }
+        else {
+            val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
+            // val addr = Address(country, city, street, postalCode, number, null, null)
+
+            binding.tfCountry.setText(address.countryName)
+            binding.tfCity.setText(address.locality)
+            binding.tfPostal.setText(address.thoroughfare)
+            binding.tfStreet.setText(address.postalCode)
+            binding.tfNumber.setText(address.featureName)
         }
     }
 
@@ -146,7 +140,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
             if (resultCode == Activity.RESULT_OK) {
                 val result = data?.extras?.get("game") as Game
                 gameAdapter.addGame(result)
-                logI("recived ${result.toString()}")
+                logI("recived $result")
             }
         }
     }
@@ -157,40 +151,24 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun attachObserver() {
-        eventViewModel.responseOne.observe(this@EventFormActivity) { handleResponse(it) }
+        eventViewModel.responseOne.observe(this) { handleResponse(it) }
     }
 
     private fun handleResponse(response: Response<Event>) {
         val onSuccess = {
             logD(response.getFullResponse())
 
-            val userId = runBlocking { settingsManager.userIdFlow.first() }
-
             response.body()?.let {
-                //startWithExtra<EventActivity>(EXTRA_EVENT to it)
                 startWithExtra<MainActivity>(Extra.IS_MY_EVENTS() to true)
                 finish()
             } as Unit
         }
 
         val onFailure = {
+            val errorJson = response.getErrorJson()
+
             logE(response.getFullResponse())
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
-            logD(errorBodyProperties.toString())
-
-            val errors = mapOf(
-                "name" to listOf("This field is required."),
-                "date" to listOf("This field is required."),
-                "address" to listOf("This field is required."),
-            )
-
-            if (errorBodyProperties["name"] == errors.getValue("name").first()) {
-                toast("Invalid credentials")
-            } else {
-                toast("Something went wrong")
-            }
+            logD(errorJson.toString())
         }
 
         response.resolve(onSuccess, onFailure)

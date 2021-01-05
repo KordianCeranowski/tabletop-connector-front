@@ -3,7 +3,6 @@ package com.example.tabletop.main.activity
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
 import com.example.tabletop.databinding.ActivityUserChangeUsernameBinding
-import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
@@ -96,24 +95,39 @@ class UserChangeUsernameActivity : BaseActivity() {
     private fun handleResponse(response: Response<JsonObject>) {
         val onSuccess = {
             logD(response.status())
-            logD(response.getFullResponse())
 
             toast("Username changed")
             finish()
         }
 
         val onFailure = {
+            val errorJson = response.getErrorJson()
+
             logW(response.getFullResponse())
-            logW(response.getErrorBodyProperties().toString())
-            toast(ERROR_MESSAGE_FAILURE)
+            logW(errorJson.toString())
 
-            //validate client side
-            //current_password=[This field may not be blank.], new_username=[This field may not be blank.]
+            val errors = mapOf(
+                "current_password" to "[Invalid password.]"
+            )
 
-            //handle error response
-            //{current_password=[Invalid password.]}
+            handleErrors(errorJson, errors)
         }
 
         response.resolve(onSuccess, onFailure)
+    }
+    private fun handleErrors(errorJson: Map<String, String>, errors: Map<String, String>) {
+        errorJson.forEach { (key, value) ->
+            when (key) {
+                "current_password" -> {
+                    binding.etChangeUsernameCurrentPassword.run {
+                        if (value == errors["current_password"]) {
+                            error = "Invalid password".also { toast("Invalid password") }
+                        } else {
+                            disableError().also { toast(ERROR_MESSAGE_FAILURE) }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

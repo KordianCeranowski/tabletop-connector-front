@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityRegisterBinding
@@ -18,10 +17,7 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.*
 import net.alexandroid.utils.mylogkt.logD
 import retrofit2.Response
@@ -31,13 +27,11 @@ import splitties.toast.toast
 
 @Suppress("COMPATIBILITY_WARNING", "SpellCheckingInspection")
 @UnreliableToastApi
-class RegisterActivity : BaseActivity(), IErrorBodyProperties {
+class RegisterActivity : BaseActivity() {
 
     override val binding: ActivityRegisterBinding by viewBinding()
 
     private val userViewModel by lazyViewModels { UserViewModel() }
-
-    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -93,10 +87,7 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
             val profile = ProfileSimple(firstname, lastname)
             val form = RegisterForm(email, username, password, confirmPassword, profile)
 
-            logD(form.toString())
-
             if (isFormValid(form)) {
-                logD("Form is valid")
                 registerUser(RegisterRequest(email, username, password, profile))
             } else {
                 toast("Please correct invalid fields")
@@ -180,35 +171,42 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         val onSuccess = {
             logD(response.status())
             loginUser(
-                LoginRequest(
-                    binding.registerEtUsername.value,
-                    binding.registerEtPassword.value
-                )
+                LoginRequest(binding.registerEtUsername.value, binding.registerEtPassword.value)
             )
         }
 
         val onFailure = {
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
+            val errorJson = response.getErrorJson()
 
             logW(response.getFullResponse())
-            logW(errorBodyProperties.toString())
-            toast("Something went wrong REGISTER")
+            logW(errorJson.toString())
 
             val errors = mapOf(
                 "username" to "[A user with that username already exists.]"
             )
 
-            if (errorBodyProperties["username"] == errors["username"]) {
-                binding.registerEtUsername.error = "Username is already taken"
-            }
-            // if (errorBodyProperties[key] == value) {
-            //     binding.registerEtEmail.error = "Email is already taken"
-            // }
+            handleRegisterErrors(errorJson, errors)
         }
 
         response.resolve(onSuccess, onFailure)
+    }
+
+    private fun handleRegisterErrors(errorJson: Map<String, String>, errors: Map<String, String>) {
+        errorJson.forEach { (key, value) ->
+            when (key) {
+                "username" -> {
+                    binding.registerEtUsername.run {
+                        if (value == errors["username"]) {
+                            error = "Username is already taken".also {
+                                toast("Please correct invalid fields")
+                            }
+                        } else {
+                            disableError().also { toast(ERROR_MESSAGE_FAILURE) }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun loginUser(loginRequest: LoginRequest) {
@@ -232,12 +230,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         }
 
         val onFailure = {
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
-            toast("Something went wrong LOGIN")
+            val errorJson = response.getErrorJson()
+
             logI(response.getFullResponse())
-            logI("Error body: $errorBodyProperties")
+            toast(errorJson.toString())
         }
 
         response.resolve(onSuccess, onFailure)

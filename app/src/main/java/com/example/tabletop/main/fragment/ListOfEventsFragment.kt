@@ -92,7 +92,7 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
 
         val onFailure = {
             logW(response.getFullResponse())
-            logW(response.getErrorBodyProperties().toString())
+            logW(response.getErrorJson().toString())
         }
 
         response.resolve(onSuccess, onFailure)

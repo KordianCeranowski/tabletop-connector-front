@@ -8,17 +8,4 @@
     android:paddingHorizontal="20dp"
 
     android:gravity="center">
-
-    <TextView
-        android:id="@+id/tv_distance"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="8dp"
-        android:paddingHorizontal="8dp"
-
-        android:text="Are you sure you want to delete this event?"
-        android:textSize="17sp" />
-
 </LinearLayout>
