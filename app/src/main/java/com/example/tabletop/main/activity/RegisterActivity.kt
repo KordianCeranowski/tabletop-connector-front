@@ -42,7 +42,6 @@ class RegisterActivity : BaseActivity() {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.registerEtEmail.value = "test@test.test"
         binding.registerEtUsername.value = USER_TEST_LOGIN
         binding.registerEtFirstname.value = "Łukasz"
         binding.registerEtLastname.value = "Stanisławowski"
@@ -76,7 +75,6 @@ class RegisterActivity : BaseActivity() {
         attachObservers()
 
         binding.btnRegister.setOnClickListener {
-            val email = binding.registerEtEmail.value
             val username = binding.registerEtUsername.value
             val password = binding.registerEtPassword.value
             val confirmPassword = binding.registerEtConfirmPassword.value
@@ -85,10 +83,10 @@ class RegisterActivity : BaseActivity() {
             val lastname = binding.registerEtLastname.value
 
             val profile = ProfileSimple(firstname, lastname)
-            val form = RegisterForm(email, username, password, confirmPassword, profile)
+            val form = RegisterForm(username, password, confirmPassword, profile)
 
             if (isFormValid(form)) {
-                registerUser(RegisterRequest(email, username, password, profile))
+                registerUser(RegisterRequest(username, password, profile))
             } else {
                 toast("Please correct invalid fields")
             }
@@ -98,9 +96,6 @@ class RegisterActivity : BaseActivity() {
     private fun isFormValid(registerForm: RegisterForm): Boolean {
         var areFieldsValid = true
 
-        if (!(isFieldValid(ValidationPattern.EMAIL))) {
-            areFieldsValid = false
-        }
         if (!(isFieldValid(ValidationPattern.NICKNAME))) {
             areFieldsValid = false
         }
@@ -137,8 +132,6 @@ class RegisterActivity : BaseActivity() {
 
     private fun isFieldValid(myPattern: ValidationPattern): Boolean {
         val (editText, fieldName, pattern) = when (myPattern) {
-            ValidationPattern.EMAIL ->
-                Triple(binding.registerEtEmail, "email", ValidationPattern.EMAIL())
             ValidationPattern.NICKNAME ->
                 Triple(binding.registerEtUsername, "username", ValidationPattern.NICKNAME())
             ValidationPattern.PASSWORD ->

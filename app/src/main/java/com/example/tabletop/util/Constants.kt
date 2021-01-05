@@ -72,9 +72,6 @@ enum class Query(private val value: String) {
 
 // VALIDATION PATTERN
 enum class ValidationPattern(private val value: Pattern) {
-    EMAIL(
-        Patterns.EMAIL_ADDRESS
-    ),
     NICKNAME(
         Pattern.compile(
             "^" +
