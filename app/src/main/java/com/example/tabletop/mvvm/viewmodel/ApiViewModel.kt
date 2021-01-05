@@ -12,4 +12,6 @@ abstract class ApiViewModel<T : Model> : ViewModel() {
     val responseOne = SingleLiveEvent<Response<T>>()
 
     val responseMany = SingleLiveEvent<Response<Many<T>>>()
+
+    val responseManyNext = SingleLiveEvent<Response<Many<T>>>()
 }

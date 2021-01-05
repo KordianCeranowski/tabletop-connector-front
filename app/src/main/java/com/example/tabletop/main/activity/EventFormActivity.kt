@@ -8,17 +8,24 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.main.adapter.ChosenGameAdapter
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
+import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
@@ -31,13 +38,11 @@ import java.util.*
 
 @UnreliableToastApi
 @Suppress("COMPATIBILITY_WARNING")
-class EventFormActivity : BaseActivity(), IErrorBodyProperties {
+class EventFormActivity : BaseActivity() {
 
     override val binding: ActivityEventFormBinding by viewBinding()
 
     private val eventViewModel by lazyViewModels { EventViewModel() }
-
-    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -45,10 +50,12 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
 
 
     override fun setup() {
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = gameAdapter
         }
+
         settingsManager = SettingsManager(applicationContext)
         setActionBarTitle("New Event")
     }
@@ -145,7 +152,7 @@ class EventFormActivity : BaseActivity(), IErrorBodyProperties {
             if (resultCode == Activity.RESULT_OK) {
                 val result = data?.extras?.get("game") as Game
                 gameAdapter.addGame(result)
-                logI("recived $result")
+                logI("recived ${result.toString()}")
             }
         }
     }

@@ -69,4 +69,9 @@ class SearchGameAdapter : RecyclerView.Adapter<SearchGameAdapter.MyViewHolder>()
         viewItems = newList
         notifyDataSetChanged()
     }
+
+    fun addGames(games: List<Game>) {
+        viewItems = viewItems + games
+        notifyDataSetChanged()
+    }
 }

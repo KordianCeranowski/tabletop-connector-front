@@ -6,17 +6,20 @@ import com.example.tabletop.mvvm.repository.GameRepository
 import kotlinx.coroutines.launch
 import net.alexandroid.utils.mylogkt.logI
 
-class GameViewModel : ApiViewModel<Game>() {
+class GameViewModel(var lastSearch: String = "") : ApiViewModel<Game>() {
 
-    fun getMany(accessToken: String, search: String) {
-        getMany(accessToken, mapOf(Pair("search", search)))
+    fun getNextPage(accessToken: String, nextPage: String){
+        viewModelScope.launch {
+            responseManyNext.value = GameRepository.getMany(accessToken, mapOf(Pair("page", nextPage), Pair("search", lastSearch)))
+        }
     }
 
-    fun getMany(accessToken: String, options: Map<String, String> = emptyMap()) {
-        logI("getMany $options")
+    fun getMany(accessToken: String, search: String) {
+        lastSearch = search
         viewModelScope.launch {
-            responseMany.value = GameRepository.getMany(accessToken, options)
+            responseMany.value = GameRepository.getMany(accessToken, mapOf(Pair("search", search)))
         }
+
     }
 
     fun getOne(accessToken: String, id: String) {
