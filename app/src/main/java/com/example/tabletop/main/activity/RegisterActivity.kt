@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityRegisterBinding
@@ -18,10 +17,7 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.*
 import net.alexandroid.utils.mylogkt.logD
 import retrofit2.Response
@@ -31,13 +27,11 @@ import splitties.toast.toast
 
 @Suppress("COMPATIBILITY_WARNING", "SpellCheckingInspection")
 @UnreliableToastApi
-class RegisterActivity : BaseActivity(), IErrorBodyProperties {
+class RegisterActivity : BaseActivity() {
 
     override val binding: ActivityRegisterBinding by viewBinding()
 
     private val userViewModel by lazyViewModels { UserViewModel() }
-
-    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -48,11 +42,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm() {
-        binding.registerEtEmail.value = "test@test.test"
-        binding.registerEtUsername.value = "testo5325"
-        binding.registerEtFirstname.value = "Kuba"
-        binding.registerEtLastname.value = "Talar"
-        binding.registerEtPassword.value = "qwqwqwqW1$"
+        binding.registerEtUsername.value = USER_TEST_LOGIN
+        binding.registerEtFirstname.value = "Łukasz"
+        binding.registerEtLastname.value = "Stanisławowski"
+        binding.registerEtPassword.value = USER_TEST_PASSWORD
         binding.registerEtConfirmPassword.value = binding.registerEtPassword.value
     }
 
@@ -82,7 +75,6 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         attachObservers()
 
         binding.btnRegister.setOnClickListener {
-            val email = binding.registerEtEmail.value
             val username = binding.registerEtUsername.value
             val password = binding.registerEtPassword.value
             val confirmPassword = binding.registerEtConfirmPassword.value
@@ -91,13 +83,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
             val lastname = binding.registerEtLastname.value
 
             val profile = ProfileSimple(firstname, lastname)
-            val form = RegisterForm(email, username, password, confirmPassword, profile)
-
-            logD(form.toString())
+            val form = RegisterForm(username, password, confirmPassword, profile)
 
             if (isFormValid(form)) {
-                logD("Form is valid")
-                registerUser(RegisterRequest(email, username, password, profile))
+                registerUser(RegisterRequest(username, password, profile))
             } else {
                 toast("Please correct invalid fields")
             }
@@ -107,71 +96,56 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun isFormValid(registerForm: RegisterForm): Boolean {
         var areFieldsValid = true
 
-        if (!(isFieldValid(registerForm.email, ValidationPattern.EMAIL))) {
+        if (!(isFieldValid(ValidationPattern.NICKNAME))) {
             areFieldsValid = false
         }
-        if (!(isFieldValid(registerForm.username, ValidationPattern.NICKNAME))) {
-            areFieldsValid = false
-        }
-        if (!(isFieldValid(registerForm.password, ValidationPattern.PASSWORD))) {
+        if (!(isFieldValid(ValidationPattern.PASSWORD))) {
             areFieldsValid = false
         }
 
-        if (registerForm.password.isEmpty()
-            || registerForm.confirmPassword != registerForm.password) {
-            areFieldsValid = false
-            logW("confirmPassword: ${registerForm.confirmPassword}")
-            binding.registerEtConfirmPassword.error = "Passwords do not match"
-        } else {
-            binding.registerEtConfirmPassword.disableError()
+        binding.registerEtConfirmPassword.run {
+            if (registerForm.password.isEmpty() || value != registerForm.password) {
+                areFieldsValid = false.also { error = "Passwords do not match" }
+            } else {
+                disableError()
+            }
         }
 
-        if (registerForm.profile.firstname.isEmpty()) {
-            areFieldsValid = false
-            binding.registerEtFirstname.setErrorEmpty()
-        } else {
-            binding.registerEtFirstname.disableError()
+        binding.registerEtFirstname.run {
+            if (value.isEmpty()) {
+                areFieldsValid = false.also { setErrorEmpty() }
+            } else {
+                disableError()
+            }
         }
-        if (registerForm.profile.lastname.isEmpty()) {
-            areFieldsValid = false
-            binding.registerEtLastname.setErrorEmpty()
-        } else {
-            binding.registerEtLastname.disableError()
+
+        binding.registerEtLastname.run {
+            if (value.isEmpty()) {
+                areFieldsValid = false.also { setErrorEmpty() }
+            } else {
+                disableError()
+            }
         }
+
         return areFieldsValid
     }
 
-    private fun isFieldValid(field: String, myPattern: ValidationPattern): Boolean {
+    private fun isFieldValid(myPattern: ValidationPattern): Boolean {
         val (editText, fieldName, pattern) = when (myPattern) {
-            ValidationPattern.EMAIL ->
-                Triple(
-                    binding.registerEtEmail,
-                    "email",
-                    ValidationPattern.EMAIL()
-                )
             ValidationPattern.NICKNAME ->
-                Triple(
-                    binding.registerEtUsername,
-                    "username",
-                    ValidationPattern.NICKNAME()
-                )
+                Triple(binding.registerEtUsername, "username", ValidationPattern.NICKNAME())
             ValidationPattern.PASSWORD ->
-                Triple(
-                    binding.registerEtPassword,
-                    "password",
-                    ValidationPattern.PASSWORD()
-                )
+                Triple(binding.registerEtPassword, "password", ValidationPattern.PASSWORD())
         }
 
-        return if (field.isEmpty()) {
-            editText.setErrorEmpty()
-            false
-        } else if (!(pattern.matcher(field).matches())) {
-            editText.setErrorInvalid(fieldName)
-            false
-        } else {
-            editText.disableError()
-            true
+        return editText.run {
+            if (value.isEmpty()) {
+                false.also { setErrorEmpty() }
+            } else if (!(pattern.matcher(value).matches())) {
+                false.also { setErrorInvalid(fieldName) }
+            } else {
+                true.also { disableError() }
+            }
         }
     }
 
@@ -187,39 +161,45 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponseRegister(response: Response<User>) {
-
         val onSuccess = {
             logD(response.status())
             loginUser(
-                LoginRequest(
-                    binding.registerEtUsername.value,
-                    binding.registerEtPassword.value
-                )
+                LoginRequest(binding.registerEtUsername.value, binding.registerEtPassword.value)
             )
         }
 
         val onFailure = {
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
+            val errorJson = response.getErrorJson()
 
             logW(response.getFullResponse())
-            logW(errorBodyProperties.toString())
-            toast("Something went wrong REGISTER")
+            logW(errorJson.toString())
 
             val errors = mapOf(
                 "username" to "[A user with that username already exists.]"
             )
 
-            if (errorBodyProperties["username"] == errors["username"]) {
-                binding.registerEtUsername.error = "Username is already taken"
-            }
-            // if (errorBodyProperties[key] == value) {
-            //     binding.registerEtEmail.error = "Email is already taken"
-            // }
+            handleRegisterErrors(errorJson, errors)
         }
 
         response.resolve(onSuccess, onFailure)
+    }
+
+    private fun handleRegisterErrors(errorJson: Map<String, String>, errors: Map<String, String>) {
+        errorJson.forEach { (key, value) ->
+            when (key) {
+                "username" -> {
+                    binding.registerEtUsername.run {
+                        if (value == errors["username"]) {
+                            error = "Username is already taken".also {
+                                toast("Please correct invalid fields")
+                            }
+                        } else {
+                            disableError().also { toast(ERROR_MESSAGE_FAILURE) }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun loginUser(loginRequest: LoginRequest) {
@@ -228,13 +208,13 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponseLogin(response: Response<LoginResponse>) {
-
         val onSuccess = {
             val body = response.body()!!
             runBlocking {
                 settingsManager.run {
                     setIsFirstRun(false)
                     setUserAccessToken(body.auth_token)
+                    setUserFirstName(body.firstname)
                     setUserId(body.user_id)
                 }
             }
@@ -243,12 +223,10 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
         }
 
         val onFailure = {
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
-            toast("Something went wrong LOGIN")
+            val errorJson = response.getErrorJson()
+
             logI(response.getFullResponse())
-            logI("Error body: $errorBodyProperties")
+            toast(errorJson.toString())
         }
 
         response.resolve(onSuccess, onFailure)

@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -15,11 +16,11 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
+import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
-import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.activities.start
@@ -38,10 +39,11 @@ class MainActivity : BaseActivity() {
 
     private lateinit var toggle: ActionBarDrawerToggle
 
+    private var isMenuItemFilterVisible = true
+
     // Setup
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
-        logI("Starting ${this.className}")
     }
 
     private fun setupSidebar() {
@@ -53,6 +55,11 @@ class MainActivity : BaseActivity() {
         toggle.syncState()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Setup welcome message
+        val userFirstName = runBlocking { settingsManager.userFirstNameFlow.first() }
+        val tvUserFirstName = binding.nvSidebar.getHeaderView(0).tv_nav_header_user_firstname
+        tvUserFirstName.text = "Welcome, $userFirstName"
     }
 
     override fun onBackPressed() {
@@ -86,6 +93,14 @@ class MainActivity : BaseActivity() {
     // Sidebar
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.mi_main_filter).isVisible = isMenuItemFilterVisible
+
         return true
     }
 
@@ -112,8 +127,8 @@ class MainActivity : BaseActivity() {
                         ListOfEventsFragment().apply { arguments = bundleMyEvents },
                         "My Events"
                     )
-                R.id.mi_settings ->
-                    setFragmentAndTitle(SettingsFragment(), "Settings")
+                R.id.mi_account ->
+                    start<AccountActivity>()
                 R.id.mi_about ->
                     setFragmentAndTitle(AboutFragment(), "About")
                 R.id.mi_logout ->
@@ -126,36 +141,39 @@ class MainActivity : BaseActivity() {
 
     // Alert Dialog Filter
     private fun showAlertDialogFilter() {
-        val userLocation = object {
-            val longitude = runBlocking { settingsManager.userLongitudeFlow.first() }
-            val latitude = runBlocking { settingsManager.userLatitudeFlow.first() }
-        }
+        val (longitude, latitude) = getCurrentLocation()
 
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Filter")
+        val layout = layoutInflater.inflate(R.layout.alert_dialog_event_filter, null)
 
-        val customLayout = layoutInflater.inflate(R.layout.dialog_box_filter, null)
-        builder.setView(customLayout)
+        val sbDistance = layout.findViewById<SeekBar>(R.id.sb_distance)
+        val tvDistanceCounter = layout.findViewById<TextView>(R.id.tv_distance_counter)
 
-        builder.setPositiveButton("OK") { _, _ ->
-            val dialogBox = object {
-                val distance = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_distance)
-                    .text.toString()
-                val name = customLayout.findViewById<EditText>(R.id.ti_et_dialog_box_name)
-                    .text.toString()
+        sbDistance.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                    tvDistanceCounter.text = "${p0?.progress} km"
+                }
+                override fun onStartTrackingTouch(p0: SeekBar?) {}
+                override fun onStopTrackingTouch(p0: SeekBar?) {}
             }
-            val queryMap = mapOf(
-                Query.DISTANCE to dialogBox.distance,
-                Query.NAME to dialogBox.name,
-                Query.GEO_X to userLocation.longitude.toString(),
-                Query.GEO_Y to userLocation.latitude.toString()
-            )
-            sendDialogDataToActivity(queryMap)
-        }
+        )
 
-        builder.setNegativeButton("Cancel") { _, _ ->
-            //dialog.cancel()
-            //dialog.dismiss()
+        val builder = AlertDialog.Builder(this).apply {
+            setTitle("Filter")
+            setView(layout)
+
+            setPositiveButton("OK") { _, _ ->
+                val queryMap = mapOf(
+                    Query.DISTANCE to sbDistance.progress.toString(),
+                    //Query.DATE_FROM to
+                    //Query.DATE_TO to
+                    Query.GEO_X to longitude.toString(),
+                    Query.GEO_Y to latitude.toString()
+                )
+                sendDialogDataToActivity(queryMap)
+            }
+
+            setNegativeButton("Cancel") { _, _ -> }
         }
 
         val dialog = builder.create()
@@ -167,7 +185,7 @@ class MainActivity : BaseActivity() {
         val bundle = Bundle().apply {
             putSerializable(Extra.QUERY_MAP(), queryMap as Serializable)
         }
-        setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "My Events")
+        setFragmentAndTitle(ListOfEventsFragment().apply { arguments = bundle }, "Events")
     }
 
     // Fragments
@@ -184,6 +202,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
+        isMenuItemFilterVisible = (fragment.className == "ListOfEventsFragment").also {
+            invalidateOptionsMenu()
+        }
+
         supportFragmentManager.beginTransaction().apply {
             replace(binding.flFragmentMain.id, fragment)
             commit()
@@ -226,9 +248,12 @@ class MainActivity : BaseActivity() {
         }
 
         val onFailure = {
+            val errorJson = response.getErrorJson()
+
             logW(response.getFullResponse())
-            logW(response.getErrorBodyProperties().toString())
-            toast("Something went wrong with logging out")
+            logW(errorJson.toString())
+
+            toast("Something went wrong")
         }
 
         response.resolve(onSuccess, onFailure)

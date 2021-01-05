@@ -6,25 +6,10 @@ import com.example.tabletop.mvvm.model.helpers.*
 import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.model.helpers.request.RefreshRequest
 import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
+import com.google.gson.JsonObject
 import retrofit2.Response
 
-object UserRepository : Repository<User>() {
-
-    override suspend fun getMany(accessToken: String, options: Map<String, String>): Response<Many<User>> {
-        return userApi.getMany(accessToken, options)
-    }
-
-    override suspend fun getOne(accessToken: String, id: String): Response<User> {
-        return userApi.getOne(id)
-    }
-
-    override suspend fun remove(accessToken: String, id: String): Response<User> {
-        return userApi.remove(id)
-    }
-
-    override suspend fun edit(accessToken: String, id: String, model: User): Response<User> {
-        return userApi.edit(id, model)
-    }
+object UserRepository {
 
     suspend fun getMyProfile(accessToken: String): Response<Profile> {
         return userApi.getMyProfile(accessToken)
@@ -50,4 +35,15 @@ object UserRepository : Repository<User>() {
         return userApi.logout(accessToken)
     }
 
+    suspend fun changeUsername(accessToken: String, json: JsonObject): Response<JsonObject> {
+        return userApi.changeUsername(accessToken, json)
+    }
+
+    suspend fun changePassword(accessToken: String, json: JsonObject): Response<JsonObject> {
+        return userApi.changePassword(accessToken, json)
+    }
+
+    suspend fun deleteMyAccount(accessToken: String, json: JsonObject): Response<JsonObject> {
+        return userApi.deleteMyAccount(accessToken, json)
+    }
 }

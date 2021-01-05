@@ -15,6 +15,7 @@ import com.example.tabletop.util.getErrorBodyProperties
 import com.example.tabletop.util.getFullResponse
 import com.example.tabletop.util.resolve
 import com.example.tabletop.util.status
+import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -71,11 +72,23 @@ class GamesListActivity : BaseActivity() {
             val onFailure = {
                 logI("OnFailure")
                 logW(it.getFullResponse())
-                logW(it.getErrorBodyProperties().toString())
+                logW(it.getErrorJson().toString())
             }
 
             logI("Resolve")
             it.resolve(onSuccess, onFailure)
         }
+
+        setActionBarTitle("Games")
+    }
+
+    private fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setup()
+        logI("GamesListActivity started")
     }
 }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="20dp" >
+
+    <TextView
+        android:id="@+id/tv_distance"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="15dp"
+        android:paddingHorizontal="8dp"
+
+        android:text="Distance"
+        android:textSize="17sp" />
+
+    <SeekBar
+        android:id="@+id/sb_distance"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:min="1"
+        android:max="50"
+        android:progress="1" />
+
+    <TextView
+        android:id="@+id/tv_distance_counter"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="8dp"
+
+        android:layout_gravity="center"
+
+        android:text="1 Km"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/tv_date_label"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="15dp"
+        android:paddingHorizontal="8dp"
+
+        android:layout_gravity="start"
+
+        android:text="Date"
+        android:textSize="17sp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:paddingTop="8dp" >
+
+        <LinearLayout
+            android:orientation="vertical"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_date_from"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="start"
+
+                android:text="From"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            >
+            <TextView
+                android:id="@+id/tv_date_to"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="end"
+                android:text="To"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

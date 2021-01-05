@@ -7,4 +7,7 @@ data class Profile(
     val lastname: String,
     val avatar: String,
     val id: String = ""
-) : Serializable
+) : Serializable {
+    val fullName: String
+        get() = "$firstname $lastname"
+}

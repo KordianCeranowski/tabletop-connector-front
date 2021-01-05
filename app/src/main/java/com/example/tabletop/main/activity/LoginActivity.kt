@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityLoginBinding
@@ -15,9 +14,7 @@ import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logW
@@ -28,13 +25,11 @@ import splitties.toast.toast
 
 @Suppress("COMPATIBILITY_WARNING")
 @UnreliableToastApi
-class LoginActivity : BaseActivity(), IErrorBodyProperties {
+class LoginActivity : BaseActivity() {
 
     override val binding: ActivityLoginBinding by viewBinding()
 
     private val userViewModel by lazyViewModels { UserViewModel() }
-
-    override lateinit var errorBodyProperties: Map<String, String>
 
     private lateinit var settingsManager: SettingsManager
 
@@ -46,7 +41,12 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
 
     // DEVELOPMENT ONLY
     private fun fillForm(isError: Boolean = false) {
-        val (username, password) = if (isError) "error" to "error" else "testo5325" to "qwqwqwqW1$"
+        val (username, password) =
+            if (isError)
+                "error" to "error"
+            else
+                USER_TEST_LOGIN to USER_TEST_PASSWORD
+
         binding.loginEtUsername.value = username
         binding.loginEtPassword.value = password
     }
@@ -80,9 +80,8 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             val username = binding.loginEtUsername.value
             val password = binding.loginEtPassword.value
 
-            val loginRequest = LoginRequest(username, password)
-
-            if (isFormValid(loginRequest)) {
+            if (isFormValid()) {
+                val loginRequest = LoginRequest(username, password)
                 loginUser(loginRequest)
             } else {
                 toast("Please correct invalid fields")
@@ -90,16 +89,25 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         }
     }
 
-    private fun isFormValid(loginRequest: LoginRequest): Boolean {
+    private fun isFormValid(): Boolean {
         var areFieldsValid = true
-        if (loginRequest.username.isEmpty()) {
-            binding.loginEtUsername.error = "Field cannot be empty"
-            areFieldsValid = false
+        binding.loginEtUsername.run {
+            if (text.isEmpty()) {
+                error = "Field cannot be empty"
+                areFieldsValid = false
+            } else {
+                disableError()
+            }
         }
-        if (loginRequest.password.isEmpty()) {
-            binding.loginEtPassword.error = "Field cannot be empty"
-            areFieldsValid = false
+        binding.loginEtPassword.run {
+            if (text.isEmpty()) {
+                error = "Field cannot be empty"
+                areFieldsValid = false
+            } else {
+                disableError()
+            }
         }
+
         return areFieldsValid
     }
 
@@ -117,33 +125,41 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             val body = response.body()!!
             runBlocking {
                 settingsManager.run {
+                    setIsFirstRun(false)
                     setUserAccessToken(body.auth_token)
+                    setUserFirstName(body.firstname)
                     setUserId(body.user_id)
                 }
             }
             start<MainActivity>()
             finish()
-
         }
 
         val onFailure = {
-            if (!(this::errorBodyProperties.isInitialized)) {
-                errorBodyProperties = response.getErrorBodyProperties()
-            }
+            val errorJson = response.getErrorJson()
 
             logW(response.getFullResponse())
-            logI(errorBodyProperties.toString())
+            logI(errorJson.toString())
 
-            val key = "detail"
-            val value = "No active account found with the given credentials"
+            val errors = mapOf(
+                "non_field_errors" to "[Unable to log in with provided credentials.]"
+            )
 
-            if (errorBodyProperties[key] == value) {
-                toast("Invalid credentials")
-            } else {
-                toast("Something went wrong")
-            }
+            handleErrors(errorJson, errors)
         }
 
         response.resolve(onSuccess, onFailure)
+    }
+
+    private fun handleErrors(errorJson: Map<String, String>, errors: Map<String, String>) {
+        errorJson.forEach { (key, value) ->
+            when (key) {
+                "non_field_errors" -> {
+                    if (value == errors["non_field_errors"]) {
+                        toast("Invalid credentials")
+                    }
+                }
+            }
+        }
     }
 }

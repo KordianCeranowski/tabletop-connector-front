@@ -3,7 +3,6 @@ package com.example.tabletop.main.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.viewbinding.library.activity.viewBinding
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -16,7 +15,6 @@ import com.example.tabletop.mvvm.viewmodel.BottomNavBarViewModel
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
-import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -25,7 +23,6 @@ import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
-import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.io.Serializable
@@ -93,7 +90,9 @@ class EventActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mi_event_edit -> start<EventEditActivity>()
+            R.id.mi_event_edit -> startWithExtra<EventEditActivity>(
+                Extra.EVENT_ID() to currentEvent.id
+            )
         }
         return true
     }
@@ -153,7 +152,7 @@ class EventActivity : BaseActivity() {
         val onFailure = {
             toast("Something went wrong while retrieving event")
             logW(response.getFullResponse())
-            logI(response.getErrorBodyProperties().toString())
+            logI(response.getErrorJson().toString())
         }
 
         response.resolve(onSuccess, onFailure)

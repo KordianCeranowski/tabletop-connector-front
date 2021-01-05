@@ -7,6 +7,7 @@ import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.model.helpers.request.RegisterRequest
 import com.example.tabletop.mvvm.repository.UserRepository
 import com.example.tabletop.util.SingleLiveEvent
+import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -20,6 +21,30 @@ class UserViewModel : ApiViewModel<User>() {
     val responseEditProfile = SingleLiveEvent<Response<Profile>>()
 
     val responseLogout = SingleLiveEvent<Response<Unit>>()
+
+    val responseChangeUsername = SingleLiveEvent<Response<JsonObject>>()
+
+    val responseChangePassword  = SingleLiveEvent<Response<JsonObject>>()
+
+    val responseDeleteMyAccount  = SingleLiveEvent<Response<JsonObject>>()
+
+    fun deleteMyAccount(accessToken: String, json: JsonObject) {
+        viewModelScope.launch {
+            responseDeleteMyAccount.value = UserRepository.deleteMyAccount(accessToken, json)
+        }
+    }
+
+    fun changeUsername(accessToken: String, json: JsonObject) {
+        viewModelScope.launch {
+            responseChangeUsername.value = UserRepository.changeUsername(accessToken, json)
+        }
+    }
+
+    fun changePassword(accessToken: String, json: JsonObject) {
+        viewModelScope.launch {
+            responseChangePassword.value = UserRepository.changePassword(accessToken, json)
+        }
+    }
 
     fun logout(accessToken: String) {
         viewModelScope.launch {
@@ -55,30 +80,6 @@ class UserViewModel : ApiViewModel<User>() {
         viewModelScope.launch {
             responseEditProfile.value =
                 UserRepository.editProfile(accessToken, id, profile)
-        }
-    }
-
-    fun getMany(accessToken: String, options: Map<String, String> = emptyMap()) {
-        viewModelScope.launch {
-            responseMany.value = UserRepository.getMany(accessToken, options)
-        }
-    }
-
-    fun getOne(accessToken: String, id: String) {
-        viewModelScope.launch {
-            responseOne.value = UserRepository.getOne(accessToken, id)
-        }
-    }
-
-    fun remove(accessToken: String, id: String) {
-        viewModelScope.launch {
-            responseOne.value = UserRepository.remove(accessToken, id)
-        }
-    }
-
-    fun edit(accessToken: String, id: String, newModel: User) {
-        viewModelScope.launch {
-            responseOne.value = UserRepository.edit(accessToken, id, newModel)
         }
     }
 }
