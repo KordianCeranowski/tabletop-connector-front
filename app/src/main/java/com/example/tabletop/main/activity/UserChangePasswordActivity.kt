@@ -7,6 +7,7 @@ import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import com.google.gson.JsonObject
+import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -16,9 +17,11 @@ import retrofit2.Response
 import splitties.toast.toast
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-class UserChangePasswordActivity : BaseActivity() {
+class UserChangePasswordActivity : BaseActivity(), IErrorBodyProperties {
 
     override val binding: ActivityUserChangePasswordBinding by viewBinding()
+
+    override lateinit var errorBodyProperties: Map<String, String>
 
     private val userViewModel by lazyViewModels { UserViewModel() }
 
@@ -50,12 +53,41 @@ class UserChangePasswordActivity : BaseActivity() {
                     )
                 }
 
-            val json = JsonObject().apply {
-                addProperty("current_password", currentPassword)
-                addProperty("new_password", newPassword)
+            if (isFormValid()) {
+                val json = JsonObject().apply {
+                    addProperty("current_password", currentPassword)
+                    addProperty("new_password", newPassword)
+                }
+                changePassword(accessToken, json)
+            } else {
+                toast("Please correct invalid fields")
             }
+        }
+    }
 
-            changePassword(accessToken, json)
+    private fun isFormValid(): Boolean = isNewPasswordValid() && isCurrentPasswordValid()
+
+    private fun isCurrentPasswordValid(): Boolean {
+        return binding.etChangePasswordCurrentPassword.run {
+            if (value.isEmpty()) {
+                false.also { setErrorEmpty() }
+            } else {
+                true.also { disableError() }
+            }
+        }
+    }
+
+    private fun isNewPasswordValid(): Boolean {
+        val pattern = ValidationPattern.PASSWORD()
+
+        return binding.etChangePasswordNewPassword.run {
+            if (value.isEmpty()) {
+                false.also { setErrorEmpty() }
+            } else if (!(pattern.matcher(value).matches())) {
+                false.also { setErrorInvalid("password") }
+            } else {
+                true.also { disableError() }
+            }
         }
     }
 
@@ -71,7 +103,8 @@ class UserChangePasswordActivity : BaseActivity() {
         val onSuccess = {
             logD(response.status())
             logD(response.getFullResponse())
-            //toast("Password changed")
+
+            toast("Password changed")
             finish()
         }
 
@@ -79,6 +112,27 @@ class UserChangePasswordActivity : BaseActivity() {
             logW(response.getFullResponse())
             logW(response.getErrorBodyProperties().toString())
             toast(ERROR_MESSAGE_FAILURE)
+
+            if (!(this::errorBodyProperties.isInitialized)) {
+                errorBodyProperties = response.getErrorBodyProperties()
+            }
+            logD(errorBodyProperties.toString())
+
+            val errors = mapOf(
+                "current_password" to "[Invalid password.]"
+            )
+
+            errorBodyProperties.forEach { (key, value) ->
+                when(key) {
+                    "current_password" -> {
+                        val tempKey = "current_password"
+                        if (value == errors[tempKey]) {
+                            toast("Invalid password")
+                            binding.etChangePasswordCurrentPassword.error = "Invalid password"
+                        }
+                    }
+                }
+            }
         }
 
         response.resolve(onSuccess, onFailure)

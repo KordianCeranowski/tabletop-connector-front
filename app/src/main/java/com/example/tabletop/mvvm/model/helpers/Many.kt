@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class Many<T : Model>(
     val count: Int,
-    val next: String? = null,
-    val previous: String? = null,
+    val next: String?,
+    val previous: String?,
     val results: List<T>
 ) : Serializable

@@ -26,6 +26,14 @@ class UserViewModel : ApiViewModel<User>() {
 
     val responseChangePassword  = SingleLiveEvent<Response<JsonObject>>()
 
+    val responseDeleteMyAccount  = SingleLiveEvent<Response<JsonObject>>()
+
+    fun deleteMyAccount(accessToken: String, json: JsonObject) {
+        viewModelScope.launch {
+            responseDeleteMyAccount.value = UserRepository.deleteMyAccount(accessToken, json)
+        }
+    }
+
     fun changeUsername(accessToken: String, json: JsonObject) {
         viewModelScope.launch {
             responseChangeUsername.value = UserRepository.changeUsername(accessToken, json)
@@ -72,24 +80,6 @@ class UserViewModel : ApiViewModel<User>() {
         viewModelScope.launch {
             responseEditProfile.value =
                 UserRepository.editProfile(accessToken, id, profile)
-        }
-    }
-
-    fun getMany(accessToken: String, options: Map<String, String> = emptyMap()) {
-        viewModelScope.launch {
-            responseMany.value = UserRepository.getMany(accessToken, options)
-        }
-    }
-
-    fun getOne(accessToken: String, id: String) {
-        viewModelScope.launch {
-            responseOne.value = UserRepository.getOne(accessToken, id)
-        }
-    }
-
-    fun remove(accessToken: String, id: String) {
-        viewModelScope.launch {
-            responseOne.value = UserRepository.remove(accessToken, id)
         }
     }
 }

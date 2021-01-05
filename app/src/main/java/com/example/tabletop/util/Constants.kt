@@ -19,6 +19,8 @@ const val USER_API_ENDPOINT = "users/"
 
 const val USER_API_ENDPOINT_REGISTER = "auth/users/"
 
+const val USER_API_ENDPOINT_DELETE_MY_ACCOUNT = "auth/users/me/"
+
 const val USER_API_ENDPOINT_SET_PASSWORD = "auth/users/set_password/"
 
 const val USER_API_ENDPOINT_SET_USERNAME = "auth/users/set_username/"

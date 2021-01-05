@@ -267,17 +267,17 @@ fun <T> Response<T>.getErrorBodyProperties(): Map<String, String> {
                 logW("Response body is JsonPrimitive")
             }
         is JSONObject ->
-            getMapFromJson(errorBodyString ?: "{}")
+            getMapFromJson(errorBodyString ?: "")
         is JsonObject ->
-            getMapFromJson(errorBodyString ?: "{}")
+            getMapFromJson(errorBodyString ?: "")
         is String ->
             emptyMap<String, String>().also {
                 logV(errorBodyString.toString())
             }
         else ->
-        emptyMap<String, String>().also {
-            logW("Response body is of type <${responseBody.className}>")
-        }
+            emptyMap<String, String>().also {
+                logW("Response body is of type <${responseBody.className}>")
+            }
     }
 }
 

@@ -146,7 +146,7 @@ class MainActivity : BaseActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Filter")
 
-        val customLayout = layoutInflater.inflate(R.layout.dialog_box_filter, null)
+        val customLayout = layoutInflater.inflate(R.layout.alert_dialog_event_filter, null)
         builder.setView(customLayout)
 
         val sbDistance = customLayout.findViewById<SeekBar>(R.id.sb_distance)

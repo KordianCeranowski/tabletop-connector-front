@@ -3,10 +3,12 @@ package com.example.tabletop.main.activity
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
 import com.example.tabletop.databinding.ActivityUserChangeUsernameBinding
+import com.example.tabletop.mvvm.model.helpers.request.LoginRequest
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import com.google.gson.JsonObject
+import com.livinglifetechway.k4kotlin.core.value
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -49,15 +51,39 @@ class UserChangeUsernameActivity : BaseActivity() {
                         etChangeUsernameCurrentPassword.text.toString()
                     )
                 }
-
-            val json = JsonObject().apply {
-                addProperty("current_password", currentPassword)
-                addProperty("new_username", newUsername)
+            if (isFormValid()) {
+                val json = JsonObject().apply {
+                    addProperty("current_password", currentPassword)
+                    addProperty("new_username", newUsername)
+                }
+                changeUsername(accessToken, json)
+            } else {
+                toast("Please correct invalid fields")
             }
-
-            changeUsername(accessToken, json)
         }
     }
+
+    private fun isFormValid(): Boolean {
+        var areFieldsValid = true
+        binding.etChangeUsernameNewUsername.run {
+            if (value.isEmpty()) {
+                error = "Field cannot be empty"
+                areFieldsValid = false
+            } else {
+                disableError()
+            }
+        }
+        binding.etChangeUsernameCurrentPassword.run {
+            if (value.isEmpty()) {
+                error = "Field cannot be empty"
+                areFieldsValid = false
+            } else {
+                disableError()
+            }
+        }
+        return areFieldsValid
+    }
+
 
     private fun changeUsername(accessToken: String, json: JsonObject) {
         userViewModel.changeUsername(accessToken, json)
@@ -71,7 +97,8 @@ class UserChangeUsernameActivity : BaseActivity() {
         val onSuccess = {
             logD(response.status())
             logD(response.getFullResponse())
-            //toast("Username changed")
+
+            toast("Username changed")
             finish()
         }
 

@@ -13,26 +13,6 @@ import retrofit2.http.*
 interface UserApi {
 
     // USER
-
-    // useless
-    @GET(USER_API_ENDPOINT)
-    suspend fun getMany(
-        @Header("Authorization") auth: String,
-        @QueryMap options: Map<String, String>
-    ): Response<Many<User>>
-
-    @GET("$USER_API_ENDPOINT{id}/")
-    suspend fun getOne(
-        @Path("id") id: String
-    ): Response<User>
-
-    @PATCH("$USER_API_ENDPOINT{id}/")
-    suspend fun edit(
-        @Path("id") id: String,
-        @Body user: User
-    ): Response<User>
-    //
-
     @DELETE("$USER_API_ENDPOINT{id}/")
     suspend fun remove(
         @Path("id") id: String
@@ -50,15 +30,15 @@ interface UserApi {
         @Body json: JsonObject
     ): Response<JsonObject>
 
-    @POST(USER_API_ENDPOINT_LOGIN)
-    suspend fun login(
-        @Body loginRequest: LoginRequest
-    ): Response<LoginResponse>
-
     @POST(USER_API_ENDPOINT_REGISTER)
     suspend fun register(
         @Body registerRequest: RegisterRequest
     ): Response<User>
+
+    @POST(USER_API_ENDPOINT_LOGIN)
+    suspend fun login(
+        @Body loginRequest: LoginRequest
+    ): Response<LoginResponse>
 
     @POST(USER_API_ENDPOINT_LOGOUT)
     suspend fun logout(
@@ -83,4 +63,11 @@ interface UserApi {
         @Path("id") id: String,
         @Body profile: Profile
     ): Response<Profile>
+
+    //@DELETE(USER_API_ENDPOINT_DELETE_MY_ACCOUNT)
+    @HTTP(method = "DELETE", path = USER_API_ENDPOINT_DELETE_MY_ACCOUNT, hasBody = true)
+    suspend fun deleteMyAccount(
+        @Header("Authorization") accessToken: String,
+        @Body json: JsonObject
+    ): Response<JsonObject>
 }

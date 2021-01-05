@@ -85,9 +85,8 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             val username = binding.loginEtUsername.value
             val password = binding.loginEtPassword.value
 
-            val loginRequest = LoginRequest(username, password)
-
-            if (isFormValid(loginRequest)) {
+            if (isFormValid()) {
+                val loginRequest = LoginRequest(username, password)
                 loginUser(loginRequest)
             } else {
                 toast("Please correct invalid fields")
@@ -95,16 +94,25 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
         }
     }
 
-    private fun isFormValid(loginRequest: LoginRequest): Boolean {
+    private fun isFormValid(): Boolean {
         var areFieldsValid = true
-        if (loginRequest.username.isEmpty()) {
-            binding.loginEtUsername.error = "Field cannot be empty"
-            areFieldsValid = false
+        binding.loginEtUsername.run {
+            if (text.isEmpty()) {
+                error = "Field cannot be empty"
+                areFieldsValid = false
+            } else {
+                disableError()
+            }
         }
-        if (loginRequest.password.isEmpty()) {
-            binding.loginEtPassword.error = "Field cannot be empty"
-            areFieldsValid = false
+        binding.loginEtPassword.run {
+            if (text.isEmpty()) {
+                error = "Field cannot be empty"
+                areFieldsValid = false
+            } else {
+                disableError()
+            }
         }
+
         return areFieldsValid
     }
 
@@ -122,6 +130,7 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             val body = response.body()!!
             runBlocking {
                 settingsManager.run {
+                    setIsFirstRun(false)
                     setUserAccessToken(body.auth_token)
                     setUserFirstName(body.firstname)
                     setUserId(body.user_id)
@@ -129,7 +138,6 @@ class LoginActivity : BaseActivity(), IErrorBodyProperties {
             }
             start<MainActivity>()
             finish()
-
         }
 
         val onFailure = {

@@ -107,71 +107,61 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     private fun isFormValid(registerForm: RegisterForm): Boolean {
         var areFieldsValid = true
 
-        if (!(isFieldValid(registerForm.email, ValidationPattern.EMAIL))) {
+        if (!(isFieldValid(ValidationPattern.EMAIL))) {
             areFieldsValid = false
         }
-        if (!(isFieldValid(registerForm.username, ValidationPattern.NICKNAME))) {
+        if (!(isFieldValid(ValidationPattern.NICKNAME))) {
             areFieldsValid = false
         }
-        if (!(isFieldValid(registerForm.password, ValidationPattern.PASSWORD))) {
+        if (!(isFieldValid(ValidationPattern.PASSWORD))) {
             areFieldsValid = false
         }
 
-        if (registerForm.password.isEmpty()
-            || registerForm.confirmPassword != registerForm.password) {
-            areFieldsValid = false
-            logW("confirmPassword: ${registerForm.confirmPassword}")
-            binding.registerEtConfirmPassword.error = "Passwords do not match"
-        } else {
-            binding.registerEtConfirmPassword.disableError()
+        binding.registerEtConfirmPassword.run {
+            if (registerForm.password.isEmpty() || value != registerForm.password) {
+                areFieldsValid = false.also { error = "Passwords do not match" }
+            } else {
+                disableError()
+            }
         }
 
-        if (registerForm.profile.firstname.isEmpty()) {
-            areFieldsValid = false
-            binding.registerEtFirstname.setErrorEmpty()
-        } else {
-            binding.registerEtFirstname.disableError()
+        binding.registerEtFirstname.run {
+            if (value.isEmpty()) {
+                areFieldsValid = false.also { setErrorEmpty() }
+            } else {
+                disableError()
+            }
         }
-        if (registerForm.profile.lastname.isEmpty()) {
-            areFieldsValid = false
-            binding.registerEtLastname.setErrorEmpty()
-        } else {
-            binding.registerEtLastname.disableError()
+
+        binding.registerEtLastname.run {
+            if (value.isEmpty()) {
+                areFieldsValid = false.also { setErrorEmpty() }
+            } else {
+                disableError()
+            }
         }
+
         return areFieldsValid
     }
 
-    private fun isFieldValid(field: String, myPattern: ValidationPattern): Boolean {
+    private fun isFieldValid(myPattern: ValidationPattern): Boolean {
         val (editText, fieldName, pattern) = when (myPattern) {
             ValidationPattern.EMAIL ->
-                Triple(
-                    binding.registerEtEmail,
-                    "email",
-                    ValidationPattern.EMAIL()
-                )
+                Triple(binding.registerEtEmail, "email", ValidationPattern.EMAIL())
             ValidationPattern.NICKNAME ->
-                Triple(
-                    binding.registerEtUsername,
-                    "username",
-                    ValidationPattern.NICKNAME()
-                )
+                Triple(binding.registerEtUsername, "username", ValidationPattern.NICKNAME())
             ValidationPattern.PASSWORD ->
-                Triple(
-                    binding.registerEtPassword,
-                    "password",
-                    ValidationPattern.PASSWORD()
-                )
+                Triple(binding.registerEtPassword, "password", ValidationPattern.PASSWORD())
         }
 
-        return if (field.isEmpty()) {
-            editText.setErrorEmpty()
-            false
-        } else if (!(pattern.matcher(field).matches())) {
-            editText.setErrorInvalid(fieldName)
-            false
-        } else {
-            editText.disableError()
-            true
+        return editText.run {
+            if (value.isEmpty()) {
+                false.also { setErrorEmpty() }
+            } else if (!(pattern.matcher(value).matches())) {
+                false.also { setErrorInvalid(fieldName) }
+            } else {
+                true.also { disableError() }
+            }
         }
     }
 
@@ -187,7 +177,6 @@ class RegisterActivity : BaseActivity(), IErrorBodyProperties {
     }
 
     private fun handleResponseRegister(response: Response<User>) {
-
         val onSuccess = {
             logD(response.status())
             loginUser(

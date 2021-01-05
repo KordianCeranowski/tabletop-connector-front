@@ -1,9 +1,10 @@
 package com.example.tabletop.main.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.observe
+import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityEventEditBinding
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
-import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.activities.start
 import splitties.toast.toast
@@ -43,9 +43,25 @@ class EventEditActivity : BaseActivity() {
         val eventId = intent.getStringExtra(Extra.EVENT_ID())!!
 
         binding.btnDeleteEvent.setOnClickListener {
-            //todo dialog box prompt
+            showAlertDialogDeleteEvent(accessToken, eventId)
+        }
+    }
+
+    private fun showAlertDialogDeleteEvent(accessToken: String, eventId: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirm")
+
+        val customLayout = layoutInflater.inflate(R.layout.alert_dialog_delete_event, null)
+        builder.setView(customLayout)
+
+        builder.setPositiveButton("OK") { _, _ ->
             deleteEvent(accessToken, eventId)
         }
+
+        builder.setNegativeButton("Cancel") { _, _ -> }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun deleteEvent(accessToken: String, eventId: String) {

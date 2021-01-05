@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".main.activity.AccountActivity"></activity>
+        <activity android:name=".main.activity.AccountDeleteActivity"></activity>
+        <activity android:name=".main.activity.AccountActivity" />
         <activity android:name=".main.activity.UserChangePasswordActivity" />
         <activity android:name=".main.activity.UserChangeUsernameActivity" />
         <activity
