@@ -73,10 +73,6 @@ class GamesListActivity : BaseActivity() {
         }
     }
 
-    private fun getAccessToken(): String {
-        return runBlocking { settingsManager.userAccessTokenFlow.first() }
-    }
-
     fun loadMoreData() {
         if (nextPage == null){
             logI("Wont load, next page is null")
@@ -84,7 +80,7 @@ class GamesListActivity : BaseActivity() {
         }
         logI("Loading new games")
         logI("nextpage = $nextPage")
-        gameViewModel.getNextPage(getAccessToken(), nextPage!!)
+        gameViewModel.getNextPage(getAccessToken(this), nextPage!!)
         gameViewModel.responseManyNext.observe(this) {
             val onSuccess = {
                 logI("OnSuccess")
@@ -104,7 +100,7 @@ class GamesListActivity : BaseActivity() {
 
     private fun searchGames(name: String) {
         logI("searchGames")
-        gameViewModel.getMany(getAccessToken(), name)
+        gameViewModel.getMany(getAccessToken(this), name)
         gameViewModel.responseMany.observe(this) {
             val onSuccess = {
                 val games = it.body()?.results ?: emptyList()

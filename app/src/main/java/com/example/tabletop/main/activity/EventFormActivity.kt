@@ -93,7 +93,7 @@ class EventFormActivity : BaseActivity() {
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{
-                view, mYear, mMonth, mDay -> binding.btnDate.text = "$mDay/$mMonth/$mYear"
+                view, mYear, mMonth, mDay -> binding.btnDate.text = "$mYear-${mMonth + 1}-$mDay"
         }, year, month, day)
 
         dpd.show()
@@ -130,12 +130,10 @@ class EventFormActivity : BaseActivity() {
         }
         else {
             val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
-            // val addr = Address(country, city, street, postalCode, number, null, null)
-
             binding.tfCountry.setText(address.countryName)
             binding.tfCity.setText(address.locality)
-            binding.tfPostal.setText(address.thoroughfare)
-            binding.tfStreet.setText(address.postalCode)
+            binding.tfPostal.setText(address.postalCode)
+            binding.tfStreet.setText(address.thoroughfare)
             binding.tfNumber.setText(address.featureName)
         }
     }
@@ -158,8 +156,8 @@ class EventFormActivity : BaseActivity() {
     }
 
     private fun handleSubmitClick() {
-        val date = binding.btnDate.text.toString()
-        val time = binding.btnTime.text.toString()
+        val name = binding.tfName.text.toString()
+        val date = binding.btnDate.text.toString() + "T" + binding.btnTime.text.toString() + ":00+0000"
         val address = Address(
             binding.tfCountry.text.toString(),
             binding.tfCity.text.toString(),
@@ -170,11 +168,10 @@ class EventFormActivity : BaseActivity() {
         )
         val games = gameAdapter.getGames()
 
-    }
+        val eventRequest = EventRequest(name, date, address, games)
 
-    // Save Event
-    private fun saveEvent(accessToken: String, eventRequest: EventRequest) {
-        eventViewModel.save(accessToken, eventRequest)
+        logI(eventRequest.toString())
+        eventViewModel.save(getAccessToken(this), eventRequest)
     }
 
     private fun attachObserver() {
@@ -186,7 +183,6 @@ class EventFormActivity : BaseActivity() {
             logD(response.getFullResponse())
 
             response.body()?.let {
-                //startWithExtra<EventActivity>(EXTRA_EVENT to it)
                 startWithExtra<MainActivity>(Extra.IS_MY_EVENTS() to true)
                 finish()
             } as Unit

@@ -19,8 +19,10 @@ import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.model.helpers.request.AddressSimple
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
+import com.example.tabletop.settings.SettingsManager
 import com.google.gson.*
 import im.delight.android.location.SimpleLocation
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logV
@@ -105,7 +107,8 @@ fun getMockEventRequest(): EventRequest {
     return EventRequest(
         "mock name",
         getRandomDate(),
-        getMockAddressSimple()
+        getMockAddress(),
+        listOf(getMockGame())
     )
 }
 
@@ -325,6 +328,10 @@ fun BaseActivity.getCurrentLocation(): Pair<Double, Double>{
     location.endUpdates()
 
     return (longitude to latitude)
+}
+
+fun getAccessToken(context: Context): String {
+    return runBlocking { SettingsManager(context).userAccessTokenFlow.first() }
 }
 
 fun <T> T.withPrint(): T = this.also { println(it) }
