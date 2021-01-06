@@ -16,6 +16,7 @@ import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
 import com.example.tabletop.mvvm.model.helpers.Address
+import com.example.tabletop.mvvm.model.helpers.Message
 import com.example.tabletop.mvvm.model.helpers.Profile
 import com.example.tabletop.mvvm.model.helpers.request.AddressSimple
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
@@ -207,6 +208,15 @@ fun getMockGame(): Game {
     )
 }
 
+fun getMockMessage(): Message {
+    return Message(
+        "sender",
+        "message message message",
+        "",
+        "id"
+    )
+}
+
 fun getMockUser(): User {
     return User(
         "email",
@@ -321,6 +331,7 @@ fun BaseActivity.getCurrentLocation(): Pair<Double, Double>{
         // ask the user to enable location access
         SimpleLocation.openSettings(this)
     }
+
 
     val longitude = location.longitude.also { logI(it.toString()) }
     val latitude = location.latitude.also { logI(it.toString()) }
