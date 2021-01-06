@@ -217,6 +217,15 @@ fun getMockMessage(): Message {
     )
 }
 
+fun getMockMessageYou(): Message {
+    return Message(
+        "you",
+        "message message message",
+        "",
+        "id"
+    )
+}
+
 fun getMockUser(): User {
     return User(
         "email",
