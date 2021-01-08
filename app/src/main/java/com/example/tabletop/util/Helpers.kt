@@ -211,15 +211,15 @@ fun getMockGame(): Game {
 fun getMockMessage(): Message {
     return Message(
         "sender",
-        "message message message",
+        "xdddd kappa 123 tryhard7",
         "",
         "id"
     )
 }
 
-fun getMockMessageYou(): Message {
+fun getMockMessage(handle: String): Message {
     return Message(
-        "you",
+        handle,
         "message message message",
         "",
         "id"

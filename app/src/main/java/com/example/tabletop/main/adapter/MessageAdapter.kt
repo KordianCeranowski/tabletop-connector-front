@@ -8,13 +8,17 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.R
+import com.example.tabletop.R.drawable.chat_message_background_friend
 import com.example.tabletop.R.drawable.chat_message_background_you
 import com.example.tabletop.mvvm.model.helpers.Message
+import com.example.tabletop.util.Extra
 import kotlinx.android.synthetic.main.row_message.view.*
+import net.alexandroid.utils.mylogkt.logI
 
 
-class MessageAdapter: RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
+class MessageAdapter(): RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
     private var viewItems = emptyList<Message>()
+    var userIdMarker: String = "You"
     var activity: Activity? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,15 +26,23 @@ class MessageAdapter: RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
         fun bind(message: Message) {
             itemView.apply {
                 tv_message.text = message.message
-                tv_sender.text = message.handle
-                if (message.handle == "you"){
-                    val param = LinearLayout.LayoutParams(
+
+                if (message.handle == userIdMarker) {
+                    tv_sender.text = "Ty polaku brudasie"
+                    user_block.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1.0f
                     )
-                    user_block.layoutParams = param
-                    user_color.background = resources.getDrawable(R.drawable.chat_message_background_you)
+                    user_color.background = resources.getDrawable(chat_message_background_you)
+                } else {
+                    tv_sender.text = message.handle
+                    user_block.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        0.0f
+                    )
+                    user_color.background = resources.getDrawable(chat_message_background_friend)
                 }
             }
         }
@@ -55,8 +67,10 @@ class MessageAdapter: RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
         return viewItems
     }
 
-    fun setData(newViewItems: List<Message>) {
-        viewItems = newViewItems
-        notifyDataSetChanged()
+    fun addData(addedViewItems: List<Message>, view: View){
+        viewItems = viewItems + addedViewItems
+        view.post {
+            notifyDataSetChanged()
+        }
     }
 }
