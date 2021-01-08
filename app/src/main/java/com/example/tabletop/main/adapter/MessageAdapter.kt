@@ -73,4 +73,18 @@ class MessageAdapter(): RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
             notifyDataSetChanged()
         }
     }
+
+    fun addDataOnTop(addedViewItems: List<Message>, view: View){
+        viewItems = addedViewItems + viewItems
+        view.post {
+            notifyDataSetChanged()
+        }
+    }
+
+    fun addDataOnTop(viewItem: Message, view: View){
+        viewItems = listOf(viewItem) + viewItems
+        view.post {
+            notifyDataSetChanged()
+        }
+    }
 }

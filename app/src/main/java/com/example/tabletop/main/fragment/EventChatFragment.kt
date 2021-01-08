@@ -57,9 +57,21 @@ class EventChatFragment : BaseFragment(R.layout.fragment_event_chat) {
             addOnScrollListener(scrollListener)
         }
 
+        binding.button.setOnClickListener{
+            handleButton()
+        }
+
         userIdMarker = messageAdapter.userIdMarker
         val id = "284166ef-b4ca-4b34-9fa6-c6a102d59f22"
         getProfileIdAndSetData(listOf(getMockMessage(), getMockMessage(), getMockMessage(), getMockMessage(),  getMockMessage(),getMockMessage(), getMockMessage(), getMockMessage(), getMockMessage(),  getMockMessage()))
+    }
+
+    private fun handleButton() {
+        if (binding.message.text.toString().trim() != "") {
+            val message = Message("You", binding.message.text.toString(), "")
+            messageAdapter.addDataOnTop(message, binding.recyclerView)
+            binding.message.setText("")
+        }
     }
 
     private fun getProfileIdAndSetData(messages: List<Message>){
