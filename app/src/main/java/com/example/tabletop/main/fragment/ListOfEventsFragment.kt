@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentListOfEventsBinding
@@ -18,10 +19,12 @@ import dev.ajkueterman.lazyviewmodels.lazyActivityViewModels
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
+import net.alexandroid.utils.mylogkt.logV
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.fragments.start
 import splitties.toast.UnreliableToastApi
+
 
 @Suppress("COMPATIBILITY_WARNING", "UNCHECKED_CAST")
 @UnreliableToastApi
@@ -39,6 +42,9 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = eventAdapter
+            addItemDecoration(
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            )
         }
         settingsManager = SettingsManager(requireContext())
     }
@@ -66,8 +72,12 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
     }
 
     private fun retrieveEvents(accessToken: String) {
-        val queryMap = (arguments?.getSerializable("QUERY_MAP") ?: emptyMap<Query, String>())
-                as Map<Query, String>
+        val queryMap =
+            (arguments?.getSerializable(Extra.QUERY_MAP()) ?: (emptyMap<Query, String>().also {
+                logV("No query map received")
+            })) as Map<Query, String>
+
+        queryMap.withLog()
 
         eventViewModel.getManyCustom(accessToken, queryMap)
     }

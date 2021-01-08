@@ -8,11 +8,10 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
+import android.widget.TextView
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.main.adapter.ChosenGameAdapter
 import com.example.tabletop.mvvm.model.Event
@@ -23,9 +22,6 @@ import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
@@ -37,6 +33,7 @@ import java.util.*
 
 
 @UnreliableToastApi
+@SuppressLint("SimpleDateFormat", "SetTextI18n")
 @Suppress("COMPATIBILITY_WARNING")
 class EventFormActivity : BaseActivity() {
 
@@ -48,12 +45,13 @@ class EventFormActivity : BaseActivity() {
 
     private val gameAdapter by lazy { ChosenGameAdapter() }
 
-
     override fun setup() {
-
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = gameAdapter
+            addItemDecoration(
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            )
         }
 
         settingsManager = SettingsManager(applicationContext)
@@ -68,14 +66,17 @@ class EventFormActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setup()
 
-        logI("Opened EventFormActivity.OnCreate")
-
-        binding.btnDate.setOnClickListener { handleDateClick() }
-        binding.btnTime.setOnClickListener { handleTimeClick() }
+        binding.btnDate.apply {
+            text = getCurrentDate()
+            setOnClickListener { handleDateClick() }
+        }
+        binding.btnTime.apply {
+            text = getCurrentTime()
+            setOnClickListener { handleTimeClick() }
+        }
         binding.btnAutofill.setOnClickListener { handleAddressClick() }
         binding.btnAdd.setOnClickListener { handleGamesClick() }
-        binding.btnSubmit.setOnClickListener { handleSubmitClick()}
-
+        binding.btnSubmit.setOnClickListener { handleSubmitClick() }
 
         attachObserver()
 
@@ -85,34 +86,55 @@ class EventFormActivity : BaseActivity() {
 
     // Handling
     private fun handleDateClick() {
-        logI("Clicked Date")
+        val calendar = Calendar.getInstance()
 
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val initialDate = object {
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+        }
 
-        val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{
-                view, mYear, mMonth, mDay -> binding.btnDate.text = "$mYear-${mMonth + 1}-$mDay"
-        }, year, month, day)
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, day)
 
-        dpd.show()
+            val date = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+
+            binding.btnDate.text = "From $date"
+        }
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            dateSetListener, initialDate.year, initialDate.month, initialDate.day
+        )
+        datePickerDialog.show()
     }
 
-    @SuppressLint("SimpleDateFormat")
     private fun handleTimeClick() {
         logI("Clicked Time")
 
-        val c = Calendar.getInstance()
-        val hour = c.get(Calendar.HOUR)
-        val minute = c.get(Calendar.MINUTE)
+        val calendar = Calendar.getInstance()
 
-        val timeSetListener = TimePickerDialog.OnTimeSetListener{ timePicker, hour, minute ->
-            c.set(Calendar.HOUR_OF_DAY, hour)
-            c.set(Calendar.MINUTE, minute)
-            binding.btnTime.text = SimpleDateFormat("HH:mm").format(c.time)
+        val initialTime = object {
+            val hour = calendar.get(Calendar.HOUR)
+            val minute = calendar.get(Calendar.MINUTE)
         }
-        TimePickerDialog(this, timeSetListener, hour, minute, true).show()
+
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+
+            val time = SimpleDateFormat("HH:mm").format(calendar.time)
+            binding.btnTime.text = "To $time"
+        }
+
+        val timePickerDialog = TimePickerDialog(
+            this,
+            timeSetListener, initialTime.hour, initialTime.minute,
+            true
+        )
+        timePickerDialog.show()
     }
 
     private fun handleAddressClick() {
@@ -127,8 +149,7 @@ class EventFormActivity : BaseActivity() {
         if (loc == null || loc.size == 0) {
             toast("Couldn't access location")
             logI(loc.toString())
-        }
-        else {
+        } else {
             val address = geocoder.getFromLocation(latitude, longitude, 1)[0]
             binding.tfCountry.setText(address.countryName)
             binding.tfCity.setText(address.locality)
@@ -150,7 +171,7 @@ class EventFormActivity : BaseActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val result = data?.extras?.get("game") as Game
                 gameAdapter.addGame(result)
-                logI("recived ${result.toString()}")
+                logI("Received $result")
             }
         }
     }

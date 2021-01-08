@@ -3,6 +3,7 @@ package com.example.tabletop.main.fragment
 import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventParticipantsBinding
@@ -21,6 +22,9 @@ class EventParticipantsFragment : BaseFragment(R.layout.fragment_event_participa
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = participantAdapter
+            addItemDecoration(
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            )
         }
     }
 

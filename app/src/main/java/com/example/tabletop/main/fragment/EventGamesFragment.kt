@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.viewbinding.library.fragment.viewBinding
 import android.widget.Adapter
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventGamesBinding
@@ -24,6 +25,9 @@ class EventGamesFragment : BaseFragment(R.layout.fragment_event_games) {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = gameAdapter
+            addItemDecoration(
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            )
         }
     }
 

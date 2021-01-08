@@ -7,11 +7,10 @@
     android:paddingHorizontal="20dp" >
 
     <TextView
-        android:id="@+id/tv_distance"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:layout_marginTop="10dp"
         android:layout_marginStart="15dp"
         android:paddingHorizontal="8dp"
 
@@ -25,7 +24,7 @@
         android:layout_height="wrap_content"
 
         android:min="1"
-        android:max="50"
+        android:max="75"
         android:progress="1" />
 
     <TextView
@@ -42,8 +41,6 @@
         android:textSize="17sp" />
 
     <TextView
-        android:id="@+id/tv_date_label"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -55,49 +52,84 @@
         android:text="Date"
         android:textSize="17sp" />
 
+    <!-- SEPARATOR -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginVertical="8dp"
+        android:layout_height="1dp"
+        android:background="@color/light_grey" />
+
     <LinearLayout
         android:orientation="horizontal"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:paddingTop="8dp" >
+        android:layout_marginStart="15dp">
 
         <LinearLayout
+            android:id="@+id/linear_layout_filter_date_from"
             android:orientation="vertical"
 
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
 
             <TextView
-                android:id="@+id/tv_date_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:paddingHorizontal="8dp"
+
+                android:text="From"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_filter_date_from"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:layout_gravity="start"
+                android:layout_gravity="center"
 
-                android:text="From"
+                android:text="yyyy-MM-dd"
                 android:textSize="17sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linear_layout_filter_date_to"
             android:orientation="vertical"
+
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1" >
 
-            >
             <TextView
-                android:id="@+id/tv_date_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:paddingHorizontal="8dp"
+
+                android:text="To"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_filter_date_to"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:layout_gravity="end"
-                android:text="To"
+                android:layout_gravity="center"
+
+                android:text="yyyy-MM-dd"
                 android:textSize="17sp" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -1,9 +1,12 @@
 package com.example.tabletop.main.activity
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -11,7 +14,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityMainBinding
-import com.example.tabletop.main.fragment.*
+import com.example.tabletop.main.fragment.AboutFragment
+import com.example.tabletop.main.fragment.EventParticipantsFragment
+import com.example.tabletop.main.fragment.ListOfEventsFragment
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
@@ -27,7 +32,10 @@ import splitties.activities.start
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.io.Serializable
+import java.text.SimpleDateFormat
+import java.util.*
 
+@SuppressLint("SimpleDateFormat", "SetTextI18n")
 @UnreliableToastApi
 class MainActivity : BaseActivity() {
 
@@ -84,10 +92,12 @@ class MainActivity : BaseActivity() {
         val bundleQueryMap = Bundle().apply {
             putSerializable(Extra.QUERY_MAP(), queryMap as Serializable)
         }
-
         setupInitialFragment(isMyEvents, bundleQueryMap)
 
-        setupSidebarItemSelectedListener(bundleQueryMap)
+        val bundleQueryMapParticipant = Bundle().apply {
+            putSerializable(Extra.QUERY_MAP(), mapOf(Query.PARTICIPANT to userId) as Serializable)
+        }
+        setupSidebarItemSelectedListener(bundleQueryMapParticipant)
     }
 
     // Sidebar
@@ -115,7 +125,7 @@ class MainActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setupSidebarItemSelectedListener(bundleMyEvents: Bundle) {
+    private fun setupSidebarItemSelectedListener(bundleQueryMapParticipant: Bundle) {
         binding.nvSidebar.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.mi_profile ->
@@ -124,7 +134,7 @@ class MainActivity : BaseActivity() {
                     setFragmentAndTitle(ListOfEventsFragment(), "Events")
                 R.id.mi_my_events ->
                     setFragmentAndTitle(
-                        ListOfEventsFragment().apply { arguments = bundleMyEvents },
+                        ListOfEventsFragment().apply { arguments = bundleQueryMapParticipant },
                         "My Events"
                     )
                 R.id.mi_account ->
@@ -141,7 +151,9 @@ class MainActivity : BaseActivity() {
 
     // Alert Dialog Filter
     private fun showAlertDialogFilter() {
-        val (longitude, latitude) = getCurrentLocation()
+        //TODO
+        //val (longitude, latitude) = getCurrentLocation()
+        val (longitude, latitude) = (54.395704550000005 to 18.5739726651911)
 
         val layout = layoutInflater.inflate(R.layout.alert_dialog_event_filter, null)
 
@@ -158,6 +170,20 @@ class MainActivity : BaseActivity() {
             }
         )
 
+        val llDateFrom = layout.findViewById<LinearLayout>(R.id.linear_layout_filter_date_from)
+        val llDateTo = layout.findViewById<LinearLayout>(R.id.linear_layout_filter_date_to)
+
+        val tvDateFrom =
+            llDateFrom.findViewById<TextView>(R.id.tv_filter_date_from)
+                .apply { text = getCurrentDate() }
+
+        val tvDateTo =
+            llDateTo.findViewById<TextView>(R.id.tv_filter_date_to)
+                .apply { text = getCurrentDate() }
+
+        llDateFrom.setOnClickListener { handleDateClick(tvDateFrom, "From") }
+        llDateTo.setOnClickListener { handleDateClick(tvDateTo, "To") }
+
         val builder = AlertDialog.Builder(this).apply {
             setTitle("Filter")
             setView(layout)
@@ -165,8 +191,8 @@ class MainActivity : BaseActivity() {
             setPositiveButton("OK") { _, _ ->
                 val queryMap = mapOf(
                     Query.DISTANCE to sbDistance.progress.toString(),
-                    //Query.DATE_FROM to
-                    //Query.DATE_TO to
+                    Query.DATE_FROM to tvDateFrom.text.toString(),
+                    Query.DATE_TO to tvDateTo.text.toString(),
                     Query.GEO_X to longitude.toString(),
                     Query.GEO_Y to latitude.toString()
                 )
@@ -178,6 +204,32 @@ class MainActivity : BaseActivity() {
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun handleDateClick(textView: TextView, prefix: String) {
+        val calendar = Calendar.getInstance()
+
+        val initialDate = object {
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+        }
+
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, day)
+
+            val date = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+
+            textView.text = "$prefix $date"
+        }
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            dateSetListener, initialDate.year, initialDate.month, initialDate.day
+        )
+        datePickerDialog.show()
     }
 
     private fun sendDialogDataToActivity(queryMap: Map<Query, String>) {

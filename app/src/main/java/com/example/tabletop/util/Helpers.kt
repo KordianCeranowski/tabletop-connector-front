@@ -4,6 +4,7 @@ package com.example.tabletop.util
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.widget.EditText
@@ -34,6 +35,8 @@ import org.json.JSONTokener
 import retrofit2.Response
 import splitties.permissions.requestPermission
 import java.io.Serializable
+import java.text.SimpleDateFormat
+import java.util.*
 
 val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
@@ -354,4 +357,25 @@ fun getAccessToken(context: Context): String {
     return runBlocking { SettingsManager(context).userAccessTokenFlow.first() }
 }
 
-fun <T> T.withPrint(): T = this.also { println(it) }
+fun <T> T.withLog(): T = this.also { logV(it.toString()) }
+
+fun getCurrentDate(): String {
+    return SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time)
+}
+
+fun getCurrentTime(): String {
+    return SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

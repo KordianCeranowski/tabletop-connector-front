@@ -8,7 +8,6 @@ import com.example.tabletop.R
 import com.example.tabletop.databinding.FragmentEventInfoBinding
 import com.example.tabletop.main.activity.ProfileActivity
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.viewmodel.BottomNavBarViewModel
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
@@ -30,8 +29,6 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
     override val binding: FragmentEventInfoBinding by viewBinding()
 
     private val eventViewModel by lazyActivityViewModels { EventViewModel() }
-
-    private val bottomNavBarViewModel by lazyActivityViewModels { BottomNavBarViewModel() }
 
     private lateinit var settingsManager: SettingsManager
 
@@ -99,7 +96,6 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
     private fun setChatAble() {
         val isChatEnabled = participantsId.contains(userId)
-        bottomNavBarViewModel.setChatEnabled(isChatEnabled)
     }
 
     private fun setupOnClickListeners() {

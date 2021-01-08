@@ -7,4 +7,6 @@
     <color name="darkblue">#23348F</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="light_grey">#D3D3D3</color>
+    <color name="royal_blue">#4169E1</color>
 </resources>

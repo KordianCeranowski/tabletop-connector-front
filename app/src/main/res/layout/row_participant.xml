@@ -11,9 +11,7 @@
 
     android:focusable="true"
     android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-
-    android:background="@drawable/border">
+    android:foreground="?android:attr/selectableItemBackground" >
 
     <TextView
         android:id="@+id/row_participant_name"

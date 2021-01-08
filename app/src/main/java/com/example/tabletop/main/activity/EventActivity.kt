@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.viewbinding.library.activity.viewBinding
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityEventBinding
 import com.example.tabletop.main.fragment.*
 import com.example.tabletop.mvvm.model.Event
-import com.example.tabletop.mvvm.viewmodel.BottomNavBarViewModel
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
@@ -36,7 +34,6 @@ class EventActivity : BaseActivity() {
 
     private val eventViewModel by lazyViewModels { EventViewModel() }
 
-    private val bottomNavBarViewModel by lazyViewModels { BottomNavBarViewModel() }
 
     private lateinit var settingsManager: SettingsManager
 
@@ -108,18 +105,6 @@ class EventActivity : BaseActivity() {
             }
             true
         }
-
-        val miChat =
-            binding.bottomNavBar.menu.children.find { it.itemId == R.id.mi_chat } as MenuItem
-
-        bottomNavBarViewModel.isChatEnabled.observe(this) { isChatEnabled ->
-            if (isChatEnabled) {
-                miChat.isEnabled = true.also { logV("Chat enabled") }
-            } else {
-                miChat.isEnabled = false.also { logV("Chat disabled") }
-            }
-        }
-        bottomNavBarViewModel.setChatEnabled(true)
     }
 
     private fun selectFragment(fragment: Fragment) {

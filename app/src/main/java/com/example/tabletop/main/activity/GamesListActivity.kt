@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.viewbinding.library.activity.viewBinding
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabletop.databinding.ActivityGamesListBinding
@@ -15,11 +16,7 @@ import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.viewmodel.GameViewModel
 import com.example.tabletop.settings.SettingsManager
 import com.example.tabletop.util.*
-import com.example.tabletop.util.*
 import dev.ajkueterman.lazyviewmodels.lazyViewModels
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logI
 import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
@@ -35,15 +32,18 @@ class GamesListActivity : BaseActivity() {
     override fun setup() {
         settingsManager = SettingsManager(applicationContext)
         binding.recyclerView.apply {
-            val l = LinearLayoutManager(applicationContext)
-            layoutManager = l
+            val linearLayoutManager = LinearLayoutManager(applicationContext)
+            layoutManager = linearLayoutManager
             adapter = gameAdapter
-            val scrollListener = object : EndlessRecyclerViewScrollListener(l) {
+            val scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
                     loadMoreData()
                 }
             }
             addOnScrollListener(scrollListener)
+            addItemDecoration(
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            )
         }
     }
 

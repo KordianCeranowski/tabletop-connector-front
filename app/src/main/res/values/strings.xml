@@ -31,7 +31,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="edit">Edit</string>
     <string name="distance">Distance</string>
-    <string name="empty_recycler_view">No events to show :(</string>
+    <string name="empty_recycler_view">No events to show</string>
     <string name="confirm">Confirm</string>
 
     <string name="event_form_btn_add">Add</string>
@@ -50,5 +50,6 @@
     <string name="event_form_name">Name</string>
     <string name="event_form_add_new_event">ADD NEW EVENT</string>
     <string name="search_here">Search Here</string>
-    <string name="name">Name</string>
+
+    <string name="hint_name">Name</string>
 </resources>
