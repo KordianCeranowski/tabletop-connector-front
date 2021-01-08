@@ -17,9 +17,10 @@ import net.alexandroid.utils.mylogkt.logI
 
 
 class MessageAdapter(): RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
+
     private var viewItems = emptyList<Message>()
+
     var userIdMarker: String = "You"
-    var activity: Activity? = null
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("UseCompatLoadingForDrawables")
