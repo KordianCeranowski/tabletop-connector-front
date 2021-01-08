@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityMainBinding
 import com.example.tabletop.main.fragment.AboutFragment
-import com.example.tabletop.main.fragment.EventParticipantsFragment
 import com.example.tabletop.main.fragment.ListOfEventsFragment
 import com.example.tabletop.mvvm.viewmodel.UserViewModel
 import com.example.tabletop.settings.SettingsManager
@@ -154,6 +153,13 @@ class MainActivity : BaseActivity() {
         //TODO
         //val (longitude, latitude) = getCurrentLocation()
         val (longitude, latitude) = (54.395704550000005 to 18.5739726651911)
+
+        runBlocking {
+            settingsManager.run {
+                setLongitude(longitude)
+                setLatitude(latitude)
+            }
+        }
 
         val layout = layoutInflater.inflate(R.layout.alert_dialog_event_filter, null)
 

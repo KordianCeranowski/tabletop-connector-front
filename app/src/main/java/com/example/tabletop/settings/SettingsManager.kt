@@ -25,6 +25,10 @@ class SettingsManager(context: Context) {
 
     val userIdFlow: Flow<String> = getFlow { it[USER_ID] ?: ""  }
 
+    val longitudeFlow: Flow<Double> = getFlow { it[LONGITUDE] ?: 0.0  }
+
+    val latitudeFlow: Flow<Double> = getFlow { it[LATITUDE] ?: 0.0  }
+
     suspend fun setIsFirstRun(isFirstRun: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_FIRST_RUN] = isFirstRun.also { logV("Is First Run : \"$it\"") }
@@ -54,6 +58,18 @@ class SettingsManager(context: Context) {
         }
     }
 
+    suspend fun setLongitude(longitude: Double) {
+        dataStore.edit { preferences ->
+            preferences[LONGITUDE] = longitude.also { logV("Longitude : \"$it\"") }
+        }
+    }
+
+    suspend fun setLatitude(latitude: Double) {
+        dataStore.edit { preferences ->
+            preferences[LATITUDE] = latitude.also { logV("Latitude : \"$it\"") }
+        }
+    }
+
     private fun <T> getFlow(action: (Preferences) -> T): Flow<T> {
         return dataStore.data
             .catch {
@@ -72,5 +88,7 @@ class SettingsManager(context: Context) {
         private val USER_ACCESS_TOKEN = preferencesKey<String>("userAccessToken")
         private val USER_FIRST_NAME = preferencesKey<String>("userFirstName")
         private val USER_ID = preferencesKey<String>("userId")
+        private val LONGITUDE = preferencesKey<Double>("userLongitude")
+        private val LATITUDE = preferencesKey<Double>("userLatitude")
     }
 }

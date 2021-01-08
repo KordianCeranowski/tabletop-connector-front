@@ -11,6 +11,7 @@ import com.example.tabletop.databinding.FragmentListOfEventsBinding
 import com.example.tabletop.main.activity.EventFormActivity
 import com.example.tabletop.main.adapter.EventAdapter
 import com.example.tabletop.mvvm.model.Event
+import com.example.tabletop.mvvm.model.helpers.EventWrapper
 import com.example.tabletop.mvvm.model.helpers.Many
 import com.example.tabletop.mvvm.viewmodel.EventViewModel
 import com.example.tabletop.settings.SettingsManager
@@ -24,7 +25,6 @@ import net.alexandroid.utils.mylogkt.logW
 import retrofit2.Response
 import splitties.fragments.start
 import splitties.toast.UnreliableToastApi
-
 
 @Suppress("COMPATIBILITY_WARNING", "UNCHECKED_CAST")
 @UnreliableToastApi
@@ -77,8 +77,6 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
                 logV("No query map received")
             })) as Map<Query, String>
 
-        queryMap.withLog()
-
         eventViewModel.getManyCustom(accessToken, queryMap)
     }
 
@@ -96,7 +94,21 @@ class ListOfEventsFragment : BaseFragment(R.layout.fragment_list_of_events) {
             if (events.isEmpty()) {
                 binding.tvEmptyList.text = getString(R.string.empty_recycler_view)
             } else {
-                response.body()?.let { eventAdapter.setData(it.results) } as Unit
+                var longitude = runBlocking { settingsManager.longitudeFlow.first() }
+                var latitude = runBlocking { settingsManager.latitudeFlow.first() }
+
+                if (longitude == 0.0 || latitude == 0.0) {
+                    val (_longitude, _latitude) = getCurrentLocation()
+                    longitude = _longitude
+                    latitude = _latitude
+                }
+
+                response.body()?.let {
+                    val wrappedEvents = it.results.map { event ->
+                        EventWrapper(event, event.getDistanceInMetersFrom(longitude, latitude))
+                    }
+                    eventAdapter.setData(wrappedEvents)
+                } as Unit
             }
         }
 

@@ -4,7 +4,6 @@ package com.example.tabletop.util
 
 import android.Manifest
 import android.app.Activity
-import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.widget.EditText
@@ -13,6 +12,7 @@ import androidx.activity.ComponentActivity
 import com.bumptech.glide.Glide
 import com.example.tabletop.R
 import com.example.tabletop.main.activity.BaseActivity
+import com.example.tabletop.main.fragment.BaseFragment
 import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.User
@@ -353,6 +353,27 @@ fun BaseActivity.getCurrentLocation(): Pair<Double, Double>{
     return (longitude to latitude)
 }
 
+fun BaseFragment.getCurrentLocation(): Pair<Double, Double>{
+    runBlocking { requestPermission(Manifest.permission.ACCESS_FINE_LOCATION) }
+
+    val location = SimpleLocation(requireContext())
+
+    location.beginUpdates()
+
+    if (!location.hasLocationEnabled()) {
+        // ask the user to enable location access
+        SimpleLocation.openSettings(requireContext())
+    }
+
+
+    val longitude = location.longitude.also { logI(it.toString()) }
+    val latitude = location.latitude.also { logI(it.toString()) }
+
+    location.endUpdates()
+
+    return (longitude to latitude)
+}
+
 fun getAccessToken(context: Context): String {
     return runBlocking { SettingsManager(context).userAccessTokenFlow.first() }
 }
@@ -366,6 +387,8 @@ fun getCurrentDate(): String {
 fun getCurrentTime(): String {
     return SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
 }
+
+fun Double.format(pattern: String) = pattern.format(this).toDouble()
 
 
 
