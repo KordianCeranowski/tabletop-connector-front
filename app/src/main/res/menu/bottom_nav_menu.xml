@@ -24,7 +24,6 @@
     <item
         android:id="@+id/mi_chat"
         android:title="Chat"
-        android:icon="@drawable/ic_messages"
+        android:icon="@drawable/ic_messages"/>
 
-        android:enabled="false"/>
 </menu>
