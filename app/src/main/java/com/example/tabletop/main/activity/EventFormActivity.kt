@@ -101,7 +101,7 @@ class EventFormActivity : BaseActivity() {
 
             val date = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
 
-            binding.btnDate.text = "From $date"
+            binding.btnDate.text = date
         }
 
         val datePickerDialog = DatePickerDialog(
@@ -126,7 +126,7 @@ class EventFormActivity : BaseActivity() {
             calendar.set(Calendar.MINUTE, minute)
 
             val time = SimpleDateFormat("HH:mm").format(calendar.time)
-            binding.btnTime.text = "To $time"
+            binding.btnTime.text = time
         }
 
         val timePickerDialog = TimePickerDialog(
