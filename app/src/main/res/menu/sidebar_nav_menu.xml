@@ -22,11 +22,6 @@
         android:icon="@drawable/ic_person"/>
 
     <item
-        android:id="@+id/mi_about"
-        android:title="About"
-        android:icon="@drawable/ic_info"/>
-
-    <item
         android:id="@+id/mi_logout"
         android:title="Logout"
         android:icon="@drawable/ic_logout"/>

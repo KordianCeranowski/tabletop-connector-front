@@ -15,6 +15,8 @@ class EventViewModel : ApiViewModel<Event>() {
 
     val responseOneParticipation = SingleLiveEvent<Response<Event>>()
 
+    val responseOneDelete = SingleLiveEvent<Response<Event>>()
+
     fun participateInEvent(accessToken: String, id: String) {
         viewModelScope.launch {
             responseParticipation.value = EventRepository.participateInEvent(accessToken, id)
@@ -53,7 +55,7 @@ class EventViewModel : ApiViewModel<Event>() {
 
     fun remove(accessToken: String, id: String) {
         viewModelScope.launch {
-            responseOne.value = EventRepository.remove(accessToken, id)
+            responseOneDelete.value = EventRepository.remove(accessToken, id)
         }
     }
 

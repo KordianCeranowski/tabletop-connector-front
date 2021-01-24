@@ -7,14 +7,14 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
+import android.view.Menu
 import android.viewbinding.library.activity.viewBinding
-import android.widget.TextView
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tabletop.R
 import com.example.tabletop.databinding.ActivityEventFormBinding
 import com.example.tabletop.main.adapter.ChosenGameAdapter
-import com.example.tabletop.mvvm.model.Event
 import com.example.tabletop.mvvm.model.Game
 import com.example.tabletop.mvvm.model.helpers.Address
 import com.example.tabletop.mvvm.model.helpers.request.EventRequest
@@ -25,7 +25,6 @@ import dev.ajkueterman.lazyviewmodels.lazyViewModels
 import net.alexandroid.utils.mylogkt.logD
 import net.alexandroid.utils.mylogkt.logE
 import net.alexandroid.utils.mylogkt.logI
-import retrofit2.Response
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import java.text.SimpleDateFormat
@@ -62,6 +61,7 @@ class EventFormActivity : BaseActivity() {
         supportActionBar?.title = title
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup()
@@ -70,18 +70,17 @@ class EventFormActivity : BaseActivity() {
             text = getCurrentDate()
             setOnClickListener { handleDateClick() }
         }
+
         binding.btnTime.apply {
             text = getCurrentTime()
             setOnClickListener { handleTimeClick() }
         }
+
         binding.btnAutofill.setOnClickListener { handleAddressClick() }
         binding.btnAdd.setOnClickListener { handleGamesClick() }
         binding.btnSubmit.setOnClickListener { handleSubmitClick() }
 
         attachObserver()
-
-        //val accessToken = runBlocking { settingsManager.userAccessTokenFlow.first() }
-        //saveEvent(accessToken, getMockEventRequest())
     }
 
     // Handling
@@ -196,26 +195,24 @@ class EventFormActivity : BaseActivity() {
     }
 
     private fun attachObserver() {
-        eventViewModel.responseOne.observe(this) { handleResponse(it) }
-    }
+        eventViewModel.responseOne.observe(this) {
+            val onSuccess = {
+                logD(it.getFullResponse())
 
-    private fun handleResponse(response: Response<Event>) {
-        val onSuccess = {
-            logD(response.getFullResponse())
+                it.body()?.let {
+                    startWithExtra<MainActivity>(Extra.IS_MY_EVENTS() to true)
+                    finish()
+                } as Unit
+            }
 
-            response.body()?.let {
-                startWithExtra<MainActivity>(Extra.IS_MY_EVENTS() to true)
-                finish()
-            } as Unit
+            val onFailure = {
+                val errorJson = it.getErrorJson()
+
+                logE(it.getFullResponse())
+                logD(errorJson.toString())
+            }
+
+            it.resolve(onSuccess, onFailure)
         }
-
-        val onFailure = {
-            val errorJson = response.getErrorJson()
-
-            logE(response.getFullResponse())
-            logD(errorJson.toString())
-        }
-
-        response.resolve(onSuccess, onFailure)
     }
 }

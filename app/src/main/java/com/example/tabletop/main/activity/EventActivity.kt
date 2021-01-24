@@ -34,7 +34,6 @@ class EventActivity : BaseActivity() {
 
     private val eventViewModel by lazyViewModels { EventViewModel() }
 
-
     private lateinit var settingsManager: SettingsManager
 
     private lateinit var currentEvent: Event
@@ -69,11 +68,13 @@ class EventActivity : BaseActivity() {
         selectFragment(EventInfoFragment())
 
         setupBottomNavBarItemSelectedIListener()
+    }
 
-        // todo (maybe?) Chat notifications
-        /*bottomNavigationView.getOrCreateBadge(R.id.mi_chat).apply {
-            eventChatFragment?.let { number = 3 }
-        }*/
+    override fun onResume() {
+        super.onResume()
+        logV("RESUMING")
+        selectedFragment = EventInfoFragment()
+        retrieveEvent(accessToken, currentEvent.id)
     }
 
     // Top Right Menu
@@ -81,14 +82,13 @@ class EventActivity : BaseActivity() {
         if (userId == currentEvent.creator.id) {
             menuInflater.inflate(R.menu.event_info_menu, menu)
         }
-
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.mi_event_edit -> startWithExtra<EventEditActivity>(
-                Extra.EVENT_ID() to currentEvent.id
+                Extra.EVENT() to currentEvent
             )
         }
         return true

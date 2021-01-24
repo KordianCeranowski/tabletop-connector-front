@@ -138,8 +138,6 @@ class MainActivity : BaseActivity() {
                     )
                 R.id.mi_account ->
                     start<AccountActivity>()
-                R.id.mi_about ->
-                    setFragmentAndTitle(AboutFragment(), "About")
                 R.id.mi_logout ->
                     logout()
             }
