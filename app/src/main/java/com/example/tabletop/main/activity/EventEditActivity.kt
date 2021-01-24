@@ -253,13 +253,7 @@ class EventEditActivity : BaseActivity() {
 
                 toast("Event updated!")
 
-                // finishAffinity()
-                // start<MainActivity>()
-
-                it.body()?.let { event ->
-                    // startWithExtra<EventActivity>(Extra.EVENT() to event)
-                    finish()
-                } as Unit
+                finish()
             }
 
             val onFailure = {

@@ -69,8 +69,6 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
 
         setupBtnJoinEventVisibility()
         setBtnJoinEventIcon()
-
-        setChatAble()
     }
 
     private fun setupBtnJoinEventVisibility() {
@@ -92,10 +90,6 @@ class EventInfoFragment : BaseFragment(R.layout.fragment_event_info) {
                 R.drawable.ic_plus.also { if (showToast) shortToast("Left event!") }
 
         binding.btnJoinEvent.setImageResource(icon)
-    }
-
-    private fun setChatAble() {
-        val isChatEnabled = participantsId.contains(userId)
     }
 
     private fun setupOnClickListeners() {
